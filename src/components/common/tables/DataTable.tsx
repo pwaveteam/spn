@@ -1,0 +1,552 @@
+import React from "react";
+import Checkbox from "../base/Checkbox";
+import { Download, Image, Eye, Upload } from "lucide-react";
+import Badge, { BadgeColor } from "../base/Badge";
+import EditableCell from "@/components/common/inputs/EditableCell";
+import EditableTextArea from "@/components/common/inputs/EditableTextArea";
+import SitePhotoViewer from "@/components/modules/SitePhotoViewer";
+import ToggleSwitch from "@/components/common/base/ToggleSwitch";
+
+export type ColumnType =
+  | "text"
+  | "download"
+  | "manage"
+  | "photo"
+  | "image"
+  | "badge"
+  | "input"
+  | "textarea"
+  | "stateToggle"
+  | "resultView"
+  | "toggle"
+  | "detail"
+  | "sign"
+  | "date"
+  | "percent"
+  | "upload"
+  | "checkbox"
+  | "index";
+
+export type Column<T = DataRow> = {
+  key: string;
+  label: string;
+  type?: ColumnType;
+  minWidth?: number | string;
+  maxWidth?: number | string;
+  align?: "left" | "center" | "right";
+  renderCell?: (row: T, index: number) => React.ReactNode;
+  stateOptions?: {
+    left: { text: string; color: BadgeColor };
+    right: { text: string; color: BadgeColor };
+  };
+};
+
+export type DataRow = { id: number | string; [key: string]: any };
+
+export interface DataTableProps<T = DataRow> {
+  columns: Column<T>[];
+  data: T[];
+  selectable?: boolean;
+  onCheckedChange?: (checkedIds: (number | string)[]) => void;
+  onManageClick?: (row: T) => void;
+  onDownloadClick?: (row: T) => void;
+  onPhotoClick?: (row: T) => void;
+  onInputChange?: (id: number | string, key: string, value: string) => void;
+  onStateToggleChange?: (id: number | string, newValue: string) => void;
+  onToggleChange?: (id: number | string, key: string, value: boolean) => void;
+  onDetailClick?: (row: T) => void;
+  onSignClick?: (row: T) => void;
+  onUploadChange?: (id: number | string, key: string, file: File) => void;
+}
+
+const commonHeaderClass = "font-semibold text-[var(--tertiary)] whitespace-nowrap overflow-hidden text-ellipsis";
+const commonBodyClass = "font-normal text-[#666] whitespace-nowrap overflow-hidden text-ellipsis";
+const inputBaseClass = "border border-[var(--border)] rounded-lg px-2 py-1 text-sm outline-none focus:border-[var(--primary)] transition-colors";
+
+function DataTable<T extends DataRow = DataRow>({
+  columns,
+  data,
+  onCheckedChange,
+  onManageClick,
+  onDownloadClick,
+  onPhotoClick,
+  onInputChange,
+  onStateToggleChange,
+  onToggleChange,
+  onDetailClick,
+  onSignClick,
+  onUploadChange,
+}: DataTableProps<T>) {
+  const [checked, setChecked] = React.useState<(number | string)[]>([]);
+  const [viewerOpen, setViewerOpen] = React.useState(false);
+  const [viewerImages, setViewerImages] = React.useState<string[]>([]);
+  const [viewerIndex, setViewerIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    setChecked((prevChecked) => {
+      const currentIds = new Set(data.map((d) => d.id));
+      const validChecked = prevChecked.filter((id) => currentIds.has(id));
+      
+      if (prevChecked.length !== validChecked.length) {
+        return validChecked;
+      }
+      return prevChecked;
+    });
+  }, [data]);
+
+  const checkAll = () => {
+    if (data.length === 0) return;
+    const allSelected = data.every(r => checked.includes(r.id));
+    const newChecked = allSelected ? [] : data.map((r) => r.id);
+    setChecked(newChecked);
+  };
+
+  const checkOne = (id: number | string) => {
+    setChecked((prev) =>
+      prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]
+    );
+  };
+
+  React.useEffect(() => {
+    onCheckedChange?.(checked);
+  }, [checked, onCheckedChange]);
+
+  const safeBadgeColor = (c: any): BadgeColor => {
+    const ok: BadgeColor[] = [
+      "gray",
+      "red",
+      "yellow",
+      "blue",
+      "sky",
+      "green",
+      "orange",
+      "bgRed",
+    ];
+    return ok.includes(c) ? c : "gray";
+  };
+
+  const openPhotoViewer = (row: T) => {
+    const imgs = row.sitePhotos || row.photos || row.images || [];
+    if (!Array.isArray(imgs) || imgs.length === 0) return;
+    setViewerImages(imgs);
+    setViewerIndex(0);
+    setViewerOpen(true);
+    onPhotoClick?.(row);
+  };
+
+  const fileInputRefs = React.useRef<Record<string, HTMLInputElement | null>>({});
+
+  const resolveAlign = (col: Column<T>) => {
+    if (col.align) return col.align;
+    const centerTypes: ColumnType[] = [
+      "index",
+      "date",
+      "upload",
+      "download",
+      "manage",
+      "photo",
+      "image",
+      "badge",
+      "input",
+      "textarea",
+      "stateToggle",
+      "resultView",
+      "toggle",
+      "detail",
+      "sign",
+      "checkbox",
+    ];
+    if (centerTypes.includes(col.type || "text")) return "center";
+    if (col.type === "percent") return "right";
+    if (col.key === "id") return "center";
+    return "left";
+  };
+
+  const getJustifyClass = (align: "left" | "center" | "right") => {
+    if (align === "center") return "justify-center";
+    if (align === "right") return "justify-end";
+    return "justify-start";
+  };
+
+  const renderCell = (col: Column<T>, row: T, index: number) => {
+    if (col.renderCell) {
+      return col.renderCell(row, index);
+    }
+
+    const value = row[col.key];
+
+    switch (col.type) {
+      case "index":
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            {data.length - index}
+          </div>
+        );
+
+      case "image":
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            <img
+              src={value?.src}
+              alt={value?.alt || "image"}
+              className="w-[39px] h-[39px] object-contain block"
+            />
+          </div>
+        );
+
+      case "download":
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            <button
+              type="button"
+              onClick={() => onDownloadClick?.(row)}
+              className="flex justify-center items-center hover:text-[var(--primary)] transition-colors p-1 rounded-md"
+              aria-label="다운로드"
+            >
+              <Download size={19} />
+            </button>
+          </div>
+        );
+
+      case "upload":
+        return (
+          <div className="flex items-center justify-center gap-2 w-full h-full">
+            <button
+              type="button"
+              onClick={() => {
+                const input = document.createElement("input");
+                input.type = "file";
+                input.style.display = "none";
+                input.onchange = (e) => {
+                  const file = (e.target as HTMLInputElement).files?.[0];
+                  if (file) onUploadChange?.(row.id, col.key, file);
+                  document.body.removeChild(input);
+                };
+                document.body.appendChild(input);
+                input.click();
+              }}
+              className="flex justify-center items-center hover:text-[var(--primary)] transition-colors p-1 rounded-md shrink-0"
+              aria-label="업로드"
+            >
+              <Upload size={18} />
+            </button>
+            {value?.name && (
+              <span className="text-[11px] text-gray-500 max-w-[90px] truncate leading-none self-center" title={value.name}>
+                {value.name}
+              </span>
+            )}
+          </div>
+        );
+
+      case "photo":
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            <button
+              type="button"
+              onClick={() => openPhotoViewer(row)}
+              className="flex justify-center items-center hover:text-[var(--primary)] transition-colors p-1 rounded-md"
+              aria-label="사진 보기"
+            >
+              <Image size={19} />
+            </button>
+          </div>
+        );
+
+      case "manage":
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            <button
+              type="button"
+              onClick={() => onManageClick?.(row)}
+              className="px-3 py-1 text-[13px] rounded-lg bg-[var(--secondary)] text-white hover:opacity-90 whitespace-nowrap transition-opacity flex items-center justify-center h-[30px]"
+            >
+              자세히보기/편집
+            </button>
+          </div>
+        );
+
+      case "resultView":
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            <button
+              type="button"
+              onClick={() => onManageClick?.(row)}
+              className="inline-flex items-center justify-center gap-1 text-[var(--tertiary)] hover:underline"
+            >
+              <Eye size={14} />
+              <span className="leading-none">결과보기</span>
+            </button>
+          </div>
+        );
+
+      case "detail":
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            <button
+              type="button"
+              onClick={() => onDetailClick?.(row)}
+              className="px-3 py-1 text-[13px] rounded-lg bg-[var(--secondary)] text-white hover:opacity-90 whitespace-nowrap transition-opacity flex items-center justify-center h-[30px]"
+            >
+              상세보기
+            </button>
+          </div>
+        );
+
+      case "sign":
+        const signed = value === "done";
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            <button
+              type="button"
+              onClick={() => !signed && onSignClick?.(row)}
+              className={`px-3 py-1 text-[13px] rounded-lg border transition-colors flex items-center justify-center h-[30px] ${
+                signed
+                  ? "border-gray-300 text-gray-400 bg-gray-50 cursor-default"
+                  : "border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white"
+              }`}
+              disabled={signed}
+            >
+              {signed ? "서명완료" : "서명하기"}
+            </button>
+          </div>
+        );
+
+      case "badge":
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            <Badge color={safeBadgeColor(value?.color)}>{value?.text || ""}</Badge>
+          </div>
+        );
+
+      case "stateToggle":
+        const opt = col.stateOptions;
+        if (!opt) return null;
+        const isLeft = value === opt.left.text;
+        const isRight = value === opt.right.text;
+
+        const handleClick = (newValue: string) => {
+          if (value === newValue) return;
+          if (newValue === opt.left.text) {
+            if (
+              !window.confirm(
+                "'채택'으로 변경 시 미처리 사유는 삭제되고 '채택 완료'로 처리됩니다.\n변경하시겠습니까?"
+              )
+            )
+              return;
+          }
+          onStateToggleChange?.(row.id, newValue);
+        };
+
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            <div className="inline-flex select-none gap-1 items-center" role="group">
+              <button
+                type="button"
+                onClick={() => handleClick(opt.left.text)}
+                className={`px-1 py-1 rounded font-semibold cursor-pointer transition-opacity flex items-center justify-center ${
+                  isLeft ? "" : "opacity-30 hover:opacity-70"
+                }`}
+              >
+                <Badge color={opt.left.color}>{opt.left.text}</Badge>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleClick(opt.right.text)}
+                className={`px-1 py-1 rounded font-semibold cursor-pointer transition-opacity flex items-center justify-center ${
+                  isRight ? "" : "opacity-30 hover:opacity-70"
+                }`}
+              >
+                <Badge color={opt.right.color}>{opt.right.text}</Badge>
+              </button>
+            </div>
+          </div>
+        );
+
+      case "input":
+        return (
+          <div className="flex items-center w-full h-full">
+            <EditableCell
+              value={value ?? ""}
+              onChange={(v) => onInputChange?.(row.id, col.key, v)}
+              disabled={false}
+            />
+          </div>
+        );
+
+      case "textarea":
+        return (
+          <div className="flex items-center w-full h-full">
+            <EditableTextArea
+              value={value ?? ""}
+              onChange={(v) => onInputChange?.(row.id, col.key, v)}
+              disabled={false}
+            />
+          </div>
+        );
+
+      case "toggle":
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            <ToggleSwitch
+              checked={!!value}
+              onChange={(v) => onToggleChange?.(row.id, col.key, v)}
+            />
+          </div>
+        );
+
+      case "checkbox":
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            <Checkbox
+              checked={!!value}
+              onChange={() => onToggleChange?.(row.id, col.key, !value)}
+            />
+          </div>
+        );
+
+      case "date":
+        return (
+          <div className="flex justify-center items-center w-full h-full">
+            <input
+              type="date"
+              value={value || ""}
+              onChange={(e) => onInputChange?.(row.id, col.key, e.target.value)}
+              className={`${inputBaseClass} w-32 cursor-pointer h-[30px]`}
+            />
+          </div>
+        );
+
+      case "percent":
+        const rawPercent = value?.toString().replace("%", "") || "";
+        return (
+          <div className="flex justify-end items-center w-full h-full gap-1">
+            <input
+              type="number"
+              value={rawPercent}
+              onChange={(e) =>
+                onInputChange?.(row.id, col.key, e.target.value + "%")
+              }
+              className={`${inputBaseClass} w-16 text-right h-[30px]`}
+            />
+            <span className="leading-none">%</span>
+          </div>
+        );
+
+      default:
+        return (
+          <div className={`flex items-center h-full w-full ${getJustifyClass(resolveAlign(col))}`}>
+            <span className="block truncate">{value}</span>
+          </div>
+        );
+    }
+  };
+
+  return (
+    <>
+      <div
+        className="overflow-x-auto rounded-lg border border-[var(--border)]"
+      >
+        <table className="w-full border-collapse min-w-[450px]">
+          <thead>
+            <tr
+              className="h-[33px] md:h-[45px] bg-white border-b-[2.3px] border-b-[var(--tertiary)]"
+            >
+              <th
+                className={`align-middle w-[60px] pl-[19px] pr-[13px] py-[11px] ${commonHeaderClass}`}
+              >
+                <div className="flex items-center justify-center w-full h-full">
+                  <Checkbox
+                    checked={data.length > 0 && data.every(r => checked.includes(r.id))}
+                    onChange={checkAll}
+                  />
+                </div>
+              </th>
+              {columns.map((col, i) => {
+                const isLast = i === columns.length - 1;
+                const align = resolveAlign(col);
+                const justifyClass = getJustifyClass(align);
+                
+                return (
+                  <th
+                    key={col.key}
+                    className={`text-xs md:text-base align-middle py-[11px] ${
+                      isLast ? "pl-[13px] pr-[19px]" : "px-[13px]"
+                    } ${commonHeaderClass}`}
+                    style={{
+                      minWidth: col.minWidth || 60,
+                      maxWidth: col.maxWidth || 300,
+                      textAlign: align 
+                    }}
+                  >
+                    <div className={`flex items-center h-full w-full ${justifyClass}`}>
+                      {col.label}
+                    </div>
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+
+          <tbody>
+            {data.map((row, rowIdx) => (
+              <tr
+                key={row.id}
+                className={`${
+                  rowIdx % 2 === 0 ? "bg-white" : "bg-[var(--neutral-bg)]"
+                } hover:bg-gray-50 transition-colors`}
+              >
+                <td
+                  className={`align-middle w-[60px] pl-[19px] pr-[13px] py-[11px] ${commonBodyClass}`}
+                >
+                  <div className="flex items-center justify-center w-full h-full">
+                    <Checkbox
+                      checked={checked.includes(row.id)}
+                      onChange={() => checkOne(row.id)}
+                    />
+                  </div>
+                </td>
+                {columns.map((col, i) => {
+                  const isLast = i === columns.length - 1;
+                  const align = resolveAlign(col);
+                  
+                  return (
+                    <td
+                      key={col.key}
+                      className={`text-xs md:text-base align-middle py-[11px] ${
+                        isLast ? "pl-[13px] pr-[19px]" : "px-[13px]"
+                      } ${commonBodyClass}`}
+                      style={{
+                        minWidth: col.minWidth || 60,
+                        maxWidth: col.maxWidth || 300,
+                        textAlign: align
+                      }}
+                    >
+                      {renderCell(col, row, rowIdx)}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <SitePhotoViewer
+        open={viewerOpen}
+        images={viewerImages}
+        index={viewerIndex}
+        onClose={() => setViewerOpen(false)}
+        onPrev={() =>
+          setViewerIndex((prev) => (prev > 0 ? prev - 1 : prev))
+        }
+        onNext={() =>
+          setViewerIndex((prev) =>
+            prev < viewerImages.length - 1 ? prev + 1 : prev
+          )
+        }
+      />
+    </>
+  );
+}
+
+export default DataTable;
