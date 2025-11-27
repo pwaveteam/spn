@@ -17,7 +17,7 @@ const TAB_LABELS=["공지사항","자료실","중대재해처벌법"]
 const TAB_PATHS=["/notice-board/notice","/notice-board/resources","/notice-board/law"]
 
 const columns:Column[]=[
-{key:"id",label:"번호"},
+{key:"index",label:"번호",type:"index"},
 {key:"title",label:"제목"},
 {key:"organization",label:"소관기관"},
 {key:"date",label:"발표일"},

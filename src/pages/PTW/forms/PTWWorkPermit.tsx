@@ -1,6 +1,7 @@
 import{usePTWStore}from"@/stores/ptwStore"
 import{useNavigate}from"react-router-dom"
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useRef } from "react"
+import { useReactToPrint } from "react-to-print"
 import { Printer, Save, Send, FolderOpen, Plus, X } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -13,8 +14,13 @@ import PTWListModal from "./PTWListModal"
 import SignatureSelector from "../SignatureModule/SignatureSelector"
 import { SignatureInfo } from "../SignatureModule/types"
 import { useLoadingStore } from "@/stores/loadingStore"
+import { PTWFile } from "../FilePanel/FilePanel"
 
-type PTWWorkPermitProps = { ptwId?: string }
+
+type PTWWorkPermitProps = {
+    ptwId?: string
+    attachedFiles?: PTWFile[]
+}
 
 interface SafetyRequirement {
 id: number
@@ -64,7 +70,7 @@ const FINAL_CHECK_QUESTIONS = [
 "4. 작업 중에 안전사고, 아차사고 또는 근로자 건강 이벤트가 발생했습니까?",
 ]
 
-export default function PTWWorkPermit({ ptwId }: PTWWorkPermitProps): React.ReactElement {
+export default function PTWWorkPermit({ ptwId, attachedFiles = [] }: PTWWorkPermitProps): React.ReactElement {
 const [formData, setFormData] = useState<PTWFormData>({ workplace: WORKPLACE_NAME, applicantName: "홍길동" })
 const [isListModalOpen, setIsListModalOpen] = useState(false)
 const [safetyRequirements, setSafetyRequirements] = useState({
@@ -94,9 +100,36 @@ height: [
 ]
 })
 
+const printRef = useRef<HTMLDivElement>(null)
 const navigate=useNavigate()
 const{workPermits,addWorkPermit}=usePTWStore()
 const { setLoading } = useLoadingStore()
+
+const handlePrint = useReactToPrint({
+contentRef: printRef,
+documentTitle: "위험작업허가서",
+pageStyle: `
+@page {
+size: A4 portrait;
+margin: 15mm 10mm;
+}
+@media print {
+body {
+-webkit-print-color-adjust: exact;
+print-color-adjust: exact;
+margin: 0;
+padding: 0;
+}
+.no-print { display: none !important; }
+.page-break { page-break-before: always; }
+.print-container {
+width: 190mm;
+max-width: 190mm;
+margin: 0 auto;
+}
+}
+`
+})
 
 const updateFormData = useCallback((updates: Partial<PTWFormData>): void => {
 setFormData((prev: PTWFormData) => ({ ...prev, ...updates }))
@@ -195,7 +228,6 @@ setLoading(false)
 }
 
 const {
-handlePrint,
 handleLoad
 } = useTableActions({
 data: [],
@@ -212,7 +244,7 @@ return (
 <div className="w-full">
 <CardContent className="p-0 flex justify-start">
 <ScrollArea className="w-full">
-<div className="w-[900px] min-w-[900px] bg-white print:shadow-none">
+<div className="w-[900px] min-w-[900px] print:w-full bg-white print:shadow-none">
 <div className="flex justify-between mb-3 no-print">
 <Button variant="action" onClick={handleCancel}>목록으로</Button>
 <div className="flex flex-nowrap gap-1">
@@ -231,7 +263,8 @@ return (
 </div>
 </div>
 
-<div id="ptw-print-area">
+<div ref={printRef}>
+<div className="print-container">
 
 <table className={`w-full border-collapse border ${BORDER_COLOR} ${BODY_TEXT_STYLE}`}>
 <tbody>
@@ -695,6 +728,73 @@ updateFormData({ workTypes: checked ? [...list, type] : list.filter(t => t !== t
 </tbody>
 </table>
 
+{(() => {
+const imageFiles = attachedFiles.filter(f => f.type?.startsWith('image/'))
+const pdfFiles = attachedFiles.filter(f => f.type === 'application/pdf')
+const imageGroups: PTWFile[][] = []
+for (let i = 0; i < imageFiles.length; i += 2) {
+imageGroups.push(imageFiles.slice(i, i + 2))
+}
+return (
+<>
+{imageGroups.map((group, groupIndex) => (
+<div key={`img-group-${groupIndex}`} className="page-break" style={{ pageBreakBefore: 'always', pageBreakAfter: 'auto', pageBreakInside: 'avoid' }}>
+<div style={{ textAlign: 'center', paddingTop: '6px', paddingBottom: '6px', fontSize: '13px', fontWeight: '600', color: '#374151' }}>
+첨부 이미지 페이지 {groupIndex + 1}
+</div>
+<div style={{ width: '100%', border: '1px solid #d1d5db', backgroundColor: '#ffffff', height: '940px', display: 'flex', flexDirection: 'column' }}>
+{group.map((file, fileIndex) => (
+<div
+key={fileIndex}
+style={{
+height: '470px',
+width: '100%',
+display: 'flex',
+alignItems: 'center',
+justifyContent: 'center',
+borderBottom: fileIndex === 0 && group.length === 2 ? '1px solid #d1d5db' : 'none',
+padding: '12px',
+boxSizing: 'border-box',
+overflow: 'hidden'
+}}
+>
+{file.url && (
+<img
+src={file.url}
+alt={file.name}
+style={{
+maxWidth: '100%',
+maxHeight: '100%',
+width: 'auto',
+height: 'auto',
+objectFit: 'contain',
+display: 'block'
+}}
+/>
+)}
+</div>
+))}
+{group.length === 1 && (
+<div style={{ height: '470px', width: '100%', backgroundColor: '#f9fafb', borderTop: '1px solid #d1d5db' }} />
+)}
+</div>
+</div>
+))}
+{pdfFiles.map((file, index) => (
+<div key={`pdf-${index}`} className="page-break" style={{ pageBreakBefore: 'always', pageBreakAfter: 'auto' }}>
+<div style={{ textAlign: 'center', paddingTop: '8px', paddingBottom: '8px', fontSize: '14px', fontWeight: '600', color: '#374151' }}>
+첨부 PDF 페이지 {index + 1}
+</div>
+<div style={{ width: '100%', border: '1px solid #d1d5db', backgroundColor: '#ffffff', height: '980px' }}>
+{file.url && <iframe src={file.url} title={file.name} style={{ width: '100%', height: '100%', border: 'none' }} />}
+</div>
+</div>
+))}
+</>
+)
+})()}
+
+</div>
 </div>
 </div>
 </ScrollArea>

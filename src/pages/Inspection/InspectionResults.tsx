@@ -27,7 +27,7 @@ notes:string
 }
 
 const columns:Column[]=[
-{key:"id",label:"번호"},
+{key:"index",label:"번호",type:"index"},
 {key:"template",label:"점검표명"},
 {key:"workplace",label:"장소"},
 {key:"field",label:"점검분야"},

@@ -18,7 +18,7 @@ const TAB_LABELS=["PTW 그룹","위험작업허가서 목록","작업위험분�
 const TAB_PATHS=["/ptw/list","/ptw/list/work-permit","/ptw/list/jsa","/ptw/list/site-evaluation","/ptw/list/tbm"]
 
 const columns:Column<PTWGroupItem>[]=[
-{key:"id",label:"번호",align:"center"},
+{key:"index",label:"번호",type:"index",align:"center"},
 {key:"ptwName",label:"PTW명"},
 {key:"createdAt",label:"등록일"},
 {key:"registrant",label:"등록인"},
@@ -33,7 +33,8 @@ const{startDate,endDate,searchText,setStartDate,setEndDate,setSearchText}=useFil
 const[data,setData]=useState<PTWGroupItem[]>(ptwGroupMockData)
 const[checkedIds,setCheckedIds]=useState<(number|string)[]>([])
 const{currentPage,totalPages,currentData,onPageChange}=usePagination<PTWGroupItem>(data,30)
-const{handleCreate,handleDelete,handleDownload,handlePrint}=useTableActions({data,checkedIds,onCreate:()=>navigate("/ptw/register"),onDeleteSuccess:ids=>setData(prev=>prev.filter(r=>!ids.includes(r.id)))})
+const{handleCreate,handleDelete,handleDownload}=useTableActions({data,checkedIds,onCreate:()=>navigate("/ptw/register"),onDeleteSuccess:ids=>setData(prev=>prev.filter(r=>!ids.includes(r.id)))})
+const handlePrint=()=>window.print()
 
 return(
 <section className="w-full bg-white">

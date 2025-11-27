@@ -36,7 +36,6 @@ hazard: (
 value={item.hazard}
 onChange={val => handleChangeHazard(idx,val)}
 placeholder="위험요인 입력"
-parentWidth={150}
 />
 ),
 countermeasure: (
@@ -44,7 +43,6 @@ countermeasure: (
 value={item.countermeasure}
 onChange={val => handleChangeCounter(idx,val)}
 placeholder="대책 입력"
-parentWidth={150}
 />
 )
 }))

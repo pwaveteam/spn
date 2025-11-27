@@ -16,7 +16,7 @@ const TAB_LABELS=["안전작업허가서 목록"]
 const TAB_PATHS=["/safety-work-permit"]
 
 const columns:Column[]=[
-{key:"id",label:"번호"},
+{key:"index",label:"번호",type:"index"},
 {key:"workType",label:"작업유형"},
 {key:"workerCount",label:"작업인원"},
 {key:"hazardLevel",label:"위험수준"},

@@ -39,9 +39,41 @@ onClose()
 
 if (!isOpen) return null
 
-const columns: Column[] = [
-{ key: "departmentName", label: "부서", minWidth: 300 },
-{ key: "memberList", label: "구성원", minWidth: 250 },
+const columns: Column<DataRow>[] = [
+{
+key: "departmentName",
+label: "부서",
+minWidth: 300,
+renderCell: (row: DataRow) => {
+const isSelected = localSelected === row.id
+return (
+<span
+onClick={() => onSelect(row.id)}
+className={`block px-2 py-1 cursor-pointer transition-colors duration-200 ${isSelected ? "text-white bg-[#1C56D3] rounded" : "hover:text-[#1C56D3]"}`}
+style={{ fontSize: 15 }}
+>
+{row.departmentName}
+</span>
+)
+}
+},
+{
+key: "memberList",
+label: "구성원",
+minWidth: 250,
+renderCell: (row: DataRow) => {
+const isSelected = localSelected === row.id
+return (
+<span
+onClick={() => onSelect(row.id)}
+className={`block px-2 py-1 cursor-pointer transition-colors duration-200 ${isSelected ? "text-white bg-[#1C56D3] rounded" : "hover:text-[#1C56D3]"}`}
+style={{ fontSize: 15 }}
+>
+{row.memberList}
+</span>
+)
+}
+},
 ]
 
 const data: DataRow[] = items.map(item => ({ id: item.id, departmentName: item.departmentName, memberList: item.memberList }))
@@ -59,19 +91,6 @@ return (
 columns={columns}
 data={data}
 selectable={false}
-renderCell={(row, col) => {
-const cellContent = row[col.key]
-const isSelected = localSelected === row.id
-return (
-<span
-onClick={() => onSelect(row.id)}
-className={`block px-2 py-1 cursor-pointer transition-colors duration-200 ${isSelected ? "text-white bg-[#1C56D3] rounded" : "hover:text-[#1C56D3]"}`}
-style={{ fontSize: 15 }}
->
-{cellContent}
-</span>
-)
-}}
 />
 </div>
 </div>

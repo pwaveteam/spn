@@ -48,9 +48,27 @@ setLocalSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...pr
 
 if (!isOpen) return null
 
-const columns: Column[] = [
-{ key: "id", label: "등록일", minWidth: 150 },
-{ key: "title", label: "제목", minWidth: 400 },
+const columns: Column<DataRow>[] = [
+{
+key: "id",
+label: "등록일",
+minWidth: 150,
+renderCell: (row: DataRow) => (
+<span onClick={() => toggleSelect(row.id)} className="block px-2 py-1 transition-colors duration-200 hover:text-[#1C56D3] cursor-pointer" style={{ fontSize: 15 }}>
+{row.id}
+</span>
+)
+},
+{
+key: "title",
+label: "제목",
+minWidth: 400,
+renderCell: (row: DataRow) => (
+<span onClick={() => toggleSelect(String(row.title))} className="block px-2 py-1 transition-colors duration-200 hover:text-[#1C56D3] cursor-pointer" style={{ fontSize: 15 }}>
+{row.title}
+</span>
+)
+},
 ]
 
 const sampleDates = ["25/05/26 19:45", "25/05/26 19:46", "25/05/26 19:47", "25/05/26 19:48", "25/05/26 19:49"]
@@ -69,11 +87,6 @@ return (
 columns={columns}
 data={data}
 selectable={false}
-renderCell={(row, col) => (
-<span onClick={() => toggleSelect(col.key === "title" ? String(row.title) : row.id)} className="block px-2 py-1 transition-colors duration-200 hover:text-[#1C56D3] cursor-pointer" style={{ fontSize: 15 }}>
-{col.key === "id" ? row.id : row[col.key]}
-</span>
-)}
 />
 </div>
 </div>

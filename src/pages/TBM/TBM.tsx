@@ -17,7 +17,7 @@ const TAB_LABELS=["TBM"]
 const TAB_PATHS=["/tbm"]
 
 const tbmColumns:Column[]=[
-{key:"id",label:"번호"},
+{key:"index",label:"번호",type:"index"},
 {key:"tbm",label:"TBM명"},
 {key:"eduDate",label:"실시일"},
 {key:"eduTime",label:"진행시간"},

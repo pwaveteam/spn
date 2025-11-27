@@ -16,7 +16,7 @@ const TAB_LABELS=["대응매뉴얼 목록"]
 const TAB_PATHS=["/response-manual"]
 
 const columns:Column[]=[
-{key:"id",label:"번호"},
+{key:"index",label:"번호",type:"index"},
 {key:"title",label:"제목",align:"left"},
 {key:"author",label:"작성자"},
 {key:"date",label:"작성일"},

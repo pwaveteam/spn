@@ -17,7 +17,7 @@ const TAB_LABELS=["PTW 그룹","위험작업허가서 목록","작업위험분�
 const TAB_PATHS=["/ptw/list","/ptw/list/work-permit","/ptw/list/jsa","/ptw/list/site-evaluation","/ptw/list/tbm"]
 
 const columns:Column[]=[
-{key:"id",label:"번호"},
+{key:"index",label:"번호",type:"index"},
 {key:"workName",label:"작업명"},
 {key:"workDate",label:"작업일"},
 {key:"workLocation",label:"작업장소"},

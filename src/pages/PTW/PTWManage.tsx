@@ -1,3 +1,5 @@
+// src/pages/PTW/PTWManage.tsx
+
 import React, { useState, useEffect } from "react"
 import { useParams, useLocation } from "react-router-dom"
 import PageTitle from "@/components/common/base/PageTitle"
@@ -7,13 +9,14 @@ import PTWJSA from "./forms/PTWJSA"
 import PTWSiteEvaluation from "./forms/PTWSiteEvaluation"
 import PTWTBM from "./forms/PTWTBM"
 import PTWHeader from "./PTWHeader"
-import FilePanel from "./FilePanel/FilePanel"
+import FilePanel, { PTWFile } from "./FilePanel/FilePanel"
 
 export default function PTWManage(): React.ReactElement {
   const { ptwId } = useParams()
   const location = useLocation()
   const initialTab = location.state?.activeTab || 0
   const [activeTab, setActiveTab] = useState<number>(initialTab)
+  const [attachedFiles, setAttachedFiles] = useState<PTWFile[]>([])
   const tabs = ["위험작업허가서", "작업위험분석(JSA)", "현장 위험성평가(JSA)", "TBM"]
   const [pageTitle, setPageTitle] = useState<string>("PTW 관리")
 
@@ -30,7 +33,6 @@ export default function PTWManage(): React.ReactElement {
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-6">
-      {/* 상단: 전체 폭 */}
       <PageTitle>{pageTitle}</PageTitle>
       <PTWHeader info={ptwInfo} />
       <TabMenu
@@ -40,20 +42,17 @@ export default function PTWManage(): React.ReactElement {
         className="mb-6"
       />
 
-      {/* 하단: 좌우 분할 */}
       <div className="flex gap-6">
-        {/* 좌측: 폼 */}
         <div className="flex-shrink-0">
-          {activeTab === 0 && <PTWWorkPermit ptwId={ptwId} />}
-          {activeTab === 1 && <PTWJSA ptwId={ptwId} />}
-          {activeTab === 2 && <PTWSiteEvaluation ptwId={ptwId} />}
-          {activeTab === 3 && <PTWTBM ptwId={ptwId} />}
+          {activeTab === 0 && <PTWWorkPermit ptwId={ptwId} attachedFiles={attachedFiles} />}
+          {activeTab === 1 && <PTWJSA ptwId={ptwId} attachedFiles={attachedFiles} />}
+          {activeTab === 2 && <PTWSiteEvaluation ptwId={ptwId} attachedFiles={attachedFiles} />}
+          {activeTab === 3 && <PTWTBM ptwId={ptwId} attachedFiles={attachedFiles} />}
         </div>
 
-        {/* 우측: 파일패널 */}
         <div className="hidden lg:block w-[380px] flex-shrink-0">
           <div className="sticky top-6 border border-gray-200 rounded-lg bg-white">
-            <FilePanel ptwId={ptwId} />
+            <FilePanel ptwId={ptwId} onFilesChange={setAttachedFiles} />
           </div>
         </div>
       </div>

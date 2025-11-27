@@ -21,7 +21,6 @@ export interface TableActions {
   handleCreate: () => void
   handleDelete: () => void
   handleDownload: () => void
-  handlePrint: () => void
   handleGenerateQR: () => Promise<void>
   handleFormDownload: () => void
   handleSave: () => void
@@ -83,10 +82,6 @@ export default function useTableActions<T = any>({
     } finally {
       setLoading(false)
     }
-  }
-
-  const handlePrint = () => {
-    window.print()
   }
 
   const handleGenerateQR = async () => {
@@ -201,7 +196,6 @@ export default function useTableActions<T = any>({
     handleCreate,
     handleDelete,
     handleDownload,
-    handlePrint,
     handleGenerateQR,
     handleFormDownload,
     handleSave,

@@ -17,7 +17,7 @@ const TAB_LABELS=["아차사고","안전보이스"]
 const TAB_PATHS=["/nearmiss","/nearmiss/safevoice"]
 
 const safeVoiceColumns:Column[]=[
-  {key:"id",label:"번호"},
+  {key:"index",label:"번호",type:"index"},
   {key:"content",label:"내용"},
   {key:"registrant",label:"작성자"},
   {key:"date",label:"등록일"},

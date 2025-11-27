@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { Upload, FileText, X, Eye } from 'lucide-react'
 
-interface PTWFile {
+export interface PTWFile {
   id: string
   name: string
   size: string
@@ -11,27 +11,33 @@ interface PTWFile {
   type?: string
 }
 
-export default function FilePanel({ ptwId }: { ptwId?: string }) {
+interface FilePanelProps {
+  ptwId?: string
+  onFilesChange?: (files: PTWFile[]) => void
+}
+
+export default function FilePanel({ ptwId, onFilesChange }: FilePanelProps) {
   const [files, setFiles] = useState<PTWFile[]>([])
   const [uploading, setUploading] = useState(false)
   const [previewFile, setPreviewFile] = useState<PTWFile | null>(null)
   const [isDragging, setIsDragging] = useState(false)
 
-  // ptwId 있으면 기존 파일 로드
   useEffect(() => {
     if (ptwId) {
       setFiles([])
     }
   }, [ptwId])
 
-  // 파일 크기 포맷팅
+  useEffect(() => {
+    onFilesChange?.(files)
+  }, [files, onFilesChange])
+
   const formatFileSize = (bytes: number): string => {
     if (bytes < 1024) return bytes + ' B'
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB'
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB'
   }
 
-  // 파일 타입 검증
   const isValidFileType = (file: File): boolean => {
     const validTypes = [
       'image/jpeg',
@@ -45,9 +51,7 @@ export default function FilePanel({ ptwId }: { ptwId?: string }) {
     return validTypes.includes(file.type)
   }
 
-  // 파일 처리 로직 (공통)
   const processFiles = (selectedFiles: FileList) => {
-    // 파일 타입 검증
     const invalidFiles = Array.from(selectedFiles).filter(file => !isValidFileType(file))
     if (invalidFiles.length > 0) {
       alert('이미지 파일(JPG, PNG, GIF, WebP, SVG) 또는 PDF만 업로드 가능합니다.\n동영상 파일은 업로드할 수 없습니다.')
@@ -56,7 +60,6 @@ export default function FilePanel({ ptwId }: { ptwId?: string }) {
 
     setUploading(true)
 
-    // Mock 업로드 (다중 파일 처리)
     const newFiles: PTWFile[] = Array.from(selectedFiles).map(file => ({
       id: Date.now().toString() + Math.random(),
       name: file.name,
@@ -72,7 +75,6 @@ export default function FilePanel({ ptwId }: { ptwId?: string }) {
     }, 500)
   }
 
-  // 파일 업로드 (클릭)
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files
     if (!selectedFiles || selectedFiles.length === 0) return
@@ -81,27 +83,23 @@ export default function FilePanel({ ptwId }: { ptwId?: string }) {
     e.target.value = ''
   }
 
-  // 드래그 시작
   const handleDragEnter = (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
     setIsDragging(true)
   }
 
-  // 드래그 중
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
   }
 
-  // 드래그 종료
   const handleDragLeave = (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
     setIsDragging(false)
   }
 
-  // 드롭
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -113,18 +111,15 @@ export default function FilePanel({ ptwId }: { ptwId?: string }) {
     }
   }
 
-  // 파일 삭제
   const handleDelete = (fileId: string) => {
     if (!window.confirm('정말 삭제하시겠습니까?')) return
     setFiles(prev => prev.filter(f => f.id !== fileId))
   }
 
-  // 미리보기 열기
   const handlePreview = (file: PTWFile) => {
     setPreviewFile(file)
   }
 
-  // 미리보기 닫기
   const closePreview = () => {
     setPreviewFile(null)
   }
@@ -174,14 +169,12 @@ export default function FilePanel({ ptwId }: { ptwId?: string }) {
           />
         </label>
 
-        {/* 업로드된 파일 */}
         <div className="mb-4">
           <h4 className="font-semibold text-base text-gray-600">
             업로드된 파일 ({files.length})
           </h4>
         </div>
 
-        {/* 파일 목록 */}
         <div className="flex-1 overflow-auto">
           {files.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
@@ -225,12 +218,10 @@ export default function FilePanel({ ptwId }: { ptwId?: string }) {
         </div>
       </div>
 
-      {/* 미리보기 모달 */}
       {previewFile && (
         <div role="dialog" aria-modal="true" className="fixed inset-0 z-50">
           <div className="absolute inset-0 flex items-center justify-center p-2">
             <div className="relative">
-              {/* 이미지 또는 PDF */}
               {previewFile.type?.startsWith('image/') ? (
                 <img 
                   src={previewFile.url} 
@@ -250,7 +241,6 @@ export default function FilePanel({ ptwId }: { ptwId?: string }) {
                 </div>
               )}
 
-              {/* 닫기 버튼 */}
               <button 
                 aria-label="닫기" 
                 onClick={closePreview}
@@ -259,7 +249,6 @@ export default function FilePanel({ ptwId }: { ptwId?: string }) {
                 <X size={16} />
               </button>
 
-              {/* 파일명 (하단 우측) */}
               <div className="absolute bottom-2 right-2 text-[11px] text-white/90 bg-black/50 rounded px-2 py-1 max-w-xs truncate">
                 {previewFile.name}
               </div>

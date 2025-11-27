@@ -64,7 +64,7 @@ navigate(`/inspection/plan/${id}/execute`)
 const btnBase={background:"none",border:"none",padding:0,margin:0,cursor:"pointer",font:"inherit",lineHeight:"inherit"}
 
 const columns:Column<PlanRow>[]=[
-{key:"id",label:"번호",align:"center"},
+{key:"index",label:"번호",type:"index",align:"center"},
 {key:"planName",label:"점검표명"},
 {key:"site",label:"장소"},
 {key:"area",label:"점검분야"},

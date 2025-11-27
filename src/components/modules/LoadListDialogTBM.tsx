@@ -42,12 +42,92 @@ onClose()
 
 if (!isOpen) return null
 
-const columns: Column[] = [
-{ key: "registrationDate", label: "등록일", minWidth: 120 },
-{ key: "siteName", label: "현장명", minWidth: 150 },
-{ key: "tbmName", label: "TBM명", minWidth: 150 },
-{ key: "attendeeCount", label: "참석수", minWidth: 80 },
-{ key: "attendeeList", label: "참석자명단", minWidth: 250 },
+const columns: Column<DataRow>[] = [
+{
+key: "registrationDate",
+label: "등록일",
+minWidth: 120,
+renderCell: (row: DataRow) => {
+const isSelected = localSelected === row.id
+return (
+<span
+onClick={() => onSelect(row.id)}
+className={`block px-2 py-1 cursor-pointer transition-colors duration-200 ${isSelected ? "text-white bg-[#1C56D3] rounded" : "hover:text-[#1C56D3]"}`}
+style={{ fontSize: 15 }}
+>
+{row.registrationDate}
+</span>
+)
+}
+},
+{
+key: "siteName",
+label: "현장명",
+minWidth: 150,
+renderCell: (row: DataRow) => {
+const isSelected = localSelected === row.id
+return (
+<span
+onClick={() => onSelect(row.id)}
+className={`block px-2 py-1 cursor-pointer transition-colors duration-200 ${isSelected ? "text-white bg-[#1C56D3] rounded" : "hover:text-[#1C56D3]"}`}
+style={{ fontSize: 15 }}
+>
+{row.siteName}
+</span>
+)
+}
+},
+{
+key: "tbmName",
+label: "TBM명",
+minWidth: 150,
+renderCell: (row: DataRow) => {
+const isSelected = localSelected === row.id
+return (
+<span
+onClick={() => onSelect(row.id)}
+className={`block px-2 py-1 cursor-pointer transition-colors duration-200 ${isSelected ? "text-white bg-[#1C56D3] rounded" : "hover:text-[#1C56D3]"}`}
+style={{ fontSize: 15 }}
+>
+{row.tbmName}
+</span>
+)
+}
+},
+{
+key: "attendeeCount",
+label: "참석수",
+minWidth: 80,
+renderCell: (row: DataRow) => {
+const isSelected = localSelected === row.id
+return (
+<span
+onClick={() => onSelect(row.id)}
+className={`block px-2 py-1 cursor-pointer transition-colors duration-200 ${isSelected ? "text-white bg-[#1C56D3] rounded" : "hover:text-[#1C56D3]"}`}
+style={{ fontSize: 15 }}
+>
+{row.attendeeCount}
+</span>
+)
+}
+},
+{
+key: "attendeeList",
+label: "참석자명단",
+minWidth: 250,
+renderCell: (row: DataRow) => {
+const isSelected = localSelected === row.id
+return (
+<span
+onClick={() => onSelect(row.id)}
+className={`block px-2 py-1 cursor-pointer transition-colors duration-200 ${isSelected ? "text-white bg-[#1C56D3] rounded" : "hover:text-[#1C56D3]"}`}
+style={{ fontSize: 15 }}
+>
+{row.attendeeList}
+</span>
+)
+}
+},
 ]
 
 const data: DataRow[] = items.map(item => ({
@@ -72,19 +152,6 @@ return (
 columns={columns}
 data={data}
 selectable={false}
-renderCell={(row, col) => {
-const cellContent = row[col.key]
-const isSelected = localSelected === row.id
-return (
-<span
-onClick={() => onSelect(row.id)}
-className={`block px-2 py-1 cursor-pointer transition-colors duration-200 ${isSelected ? "text-white bg-[#1C56D3] rounded" : "hover:text-[#1C56D3]"}`}
-style={{ fontSize: 15 }}
->
-{cellContent}
-</span>
-)
-}}
 />
 </div>
 </div>

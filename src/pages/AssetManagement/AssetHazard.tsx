@@ -17,7 +17,7 @@ const TAB_LABELS=["위험기계/기구/설비","유해/위험물질"]
 const TAB_PATHS=["/asset-management/machine","/asset-management/hazard"]
 
 const hazardColumns:Column[]=[
-{key:"id",label:"번호"},
+{key:"index",label:"번호",type:"index"},
 {key:"chemicalName",label:"화학물질명"},
 {key:"casNo",label:"CAS No"},
 {key:"exposureLimit",label:"노출기준"},
