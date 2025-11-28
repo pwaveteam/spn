@@ -178,10 +178,16 @@ const signatureImage = "/images/sample-signature.png"
 updateFormData({ applicantSignature: signatureImage })
 }
 
-const handleSelectPTW = (selectedPTW: any) => {
-setFormData(selectedPTW)
-setIsListModalOpen(false)
-}
+const handleSelectPTW = (data: any) => {
+    setFormData(prev => ({
+      ...prev,
+      ...data,
+      safetyChecks: data.safetyChecks || {},
+      approvers: data.approvers || {},
+      supervisor: data.supervisor
+    }))
+    setIsListModalOpen(false)
+  }
 
 const handleSaveToStore = async () => {
 if(!formData.workType||!formData.workDate){

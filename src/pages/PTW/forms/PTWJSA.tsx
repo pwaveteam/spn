@@ -171,9 +171,14 @@ l === "중" ? "bg-[#CAB359] text-white" :
 l === "하" ? "bg-[#80A16A] text-white" :
 "bg-white text-gray-700"
 
-const handleSelectPTW = (selectedPTW: any) => {
-setFormData(selectedPTW)
-setIsListModalOpen(false)
+const handleSelectPTW = (data: any) => {
+  setFormData(prev => ({ ...prev, ...data }))
+  
+  if (data.riskRows) {
+    setRiskRows(data.riskRows)
+  }
+  
+  setIsListModalOpen(false)
 }
 
 const handleSaveToStore = async () => {

@@ -2,7 +2,7 @@ import React from "react"
 import Button from "@/components/common/base/Button"
 import FilterBar from "@/components/common/base/FilterBar"
 import DataTable,{Column,DataRow}from"@/components/common/tables/DataTable"
-import{CirclePlus,Printer,Trash2,Save}from"lucide-react"
+import{CirclePlus,Trash2,Save}from"lucide-react"
 import TabMenu from"@/components/common/base/TabMenu"
 import PageTitle from"@/components/common/base/PageTitle"
 import NearMissRegisterModal from"@/pages/NearMiss/NearMissRegister"
@@ -59,8 +59,7 @@ export default function NearMiss(){
 
   const{
     handleDelete,
-    handleDownload,
-    handlePrint
+    handleDownload
   }=useTableActions({
     data,
     checkedIds,
@@ -103,7 +102,6 @@ export default function NearMiss(){
         <div className="flex gap-1 justify-end w-full sm:w-auto">
           <Button variant="action"onClick={()=>setModalOpen(true)}className="flex gap-1 items-center"><CirclePlus size={16}/>신규등록</Button>
           <Button variant="action"onClick={handleDownload}className="flex gap-1 items-center"><Save size={16}/>다운로드</Button>
-          <Button variant="action"onClick={handlePrint}className="flex gap-1 items-center"><Printer size={16}/>인쇄</Button>
           <Button variant="action"onClick={handleDelete}className="flex gap-1 items-center"><Trash2 size={16}/>삭제</Button>
         </div>
       </div>

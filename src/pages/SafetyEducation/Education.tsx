@@ -10,7 +10,7 @@ import usePagination from"@/hooks/usePagination"
 import useTabNavigation from"@/hooks/useTabNavigation"
 import useFilterBar from"@/hooks/useFilterBar"
 import useTableActions from"@/hooks/tableActions"
-import{CirclePlus,QrCode,Printer,Trash2,Save}from"lucide-react"
+import{CirclePlus,QrCode,Trash2,Save}from"lucide-react"
 import jsPDF from"jspdf"
 import { safetyEducationMockData } from "@/data/mockData"
 
@@ -54,7 +54,6 @@ new jsPDF().save(`안전보건교육_${dateStr}.pdf`)
 
 const{
 handleDelete,
-handlePrint,
 handleGenerateQR
 }=useTableActions({
 data,
@@ -80,9 +79,6 @@ return(
 <Button variant="action"onClick={()=>navigate("/safety-education/register")}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
 <Button variant="action"onClick={handleGenerateQR}className="flex items-center gap-1"><QrCode size={16}/>QR 생성</Button>
 <Button variant="action"onClick={handleDownloadEducationPdf}className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
-</div>
-<div className="flex gap-1 justify-end">
-<Button variant="action"onClick={handlePrint}className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
@@ -91,7 +87,6 @@ return(
 <Button variant="action"onClick={()=>navigate("/safety-education/register")}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
 <Button variant="action"onClick={handleGenerateQR}className="flex items-center gap-1"><QrCode size={16}/>QR 생성</Button>
 <Button variant="action"onClick={handleDownloadEducationPdf}className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
-<Button variant="action"onClick={handlePrint}className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>

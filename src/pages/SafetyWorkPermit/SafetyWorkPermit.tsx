@@ -9,7 +9,7 @@ import Pagination from"@/components/common/base/Pagination"
 import useFilterBar from"@/hooks/useFilterBar"
 import usePagination from"@/hooks/usePagination"
 import useTableActions from"@/hooks/tableActions"
-import{CirclePlus,Download,Printer,Trash2}from"lucide-react"
+import{CirclePlus,Download,Trash2}from"lucide-react"
 import{safetyWorkPermitMockData}from"@/data/mockData"
 
 const TAB_LABELS=["안전작업허가서 목록"]
@@ -37,8 +37,7 @@ const{currentPage,totalPages,currentData,onPageChange}=usePagination<DataRow>(da
 
 const{
 handleCreate,
-handleDelete,
-handlePrint
+handleDelete
 }=useTableActions({
 data,
 checkedIds,
@@ -81,9 +80,6 @@ onSearch={()=>{}}
 <div className="flex gap-1 justify-end">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
 <Button variant="action"onClick={handlePermitFormDownload}className="flex items-center gap-1"><Download size={16}/>안전작업허가서 양식</Button>
-</div>
-<div className="flex gap-1 justify-end">
-<Button variant="action"onClick={handlePrint}className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
@@ -91,7 +87,6 @@ onSearch={()=>{}}
 <div className="hidden sm:flex flex-nowrap gap-1 w-auto justify-end">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
 <Button variant="action"onClick={handlePermitFormDownload}className="flex items-center gap-1"><Download size={16}/>안전작업허가서 양식</Button>
-<Button variant="action"onClick={handlePrint}className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>

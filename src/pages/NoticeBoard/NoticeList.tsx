@@ -11,7 +11,7 @@ import usePagination from "@/hooks/usePagination"
 import useTabNavigation from "@/hooks/useTabNavigation"
 import useTableActions from "@/hooks/tableActions"
 import NoticeRegister from "./NoticeRegister"
-import { CirclePlus, Save, Printer, Trash2 } from "lucide-react"
+import { CirclePlus, Save, Trash2 } from "lucide-react"
 import { noticeMockData } from "@/data/mockData"
 
 const TAB_LABELS=["공지사항","자료실","중대재해처벌법"]
@@ -43,8 +43,7 @@ const{currentPage,totalPages,currentData,onPageChange}=usePagination<DataRow>(da
 const{
 handleCreate,
 handleDelete,
-handleDownload,
-handlePrint
+handleDownload
 }=useTableActions({
 data,
 checkedIds,
@@ -83,7 +82,6 @@ onSearch={()=>{}}
 <div className="flex flex-nowrap gap-1 w-full justify-end sm:w-auto">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
 <Button variant="action"onClick={handleDownload}className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
-<Button variant="action"onClick={handlePrint}className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>

@@ -10,7 +10,7 @@ import useTableActions from"@/hooks/tableActions"
 import usePagination from"@/hooks/usePagination"
 import useTabNavigation from"@/hooks/useTabNavigation"
 import useFilterBar from"@/hooks/useFilterBar"
-import{CirclePlus,QrCode,Printer,Trash2,Download,Save}from"lucide-react"
+import{CirclePlus,QrCode,Trash2,Download,Save}from"lucide-react"
 import { assetMachineMockData } from "@/data/mockData"
 
 const TAB_LABELS=["위험기계/기구/설비","유해/위험물질"]
@@ -48,7 +48,6 @@ const {
 handleCreate,
 handleDelete,
 handleDownload,
-handlePrint,
 handleGenerateQR,
 handleFormDownload
 } = useTableActions({
@@ -93,7 +92,6 @@ onSearch={()=>{}}
 </div>
 <div className="flex gap-1 justify-end">
 <Button variant="action" onClick={handleDownload} className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
-<Button variant="action" onClick={handlePrint} className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action" onClick={handleDelete} className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
@@ -103,7 +101,6 @@ onSearch={()=>{}}
 <Button variant="action" onClick={handleFormDownload} className="flex items-center gap-1"><Download size={16}/>안전검사신청서 양식</Button>
 <Button variant="action" onClick={handleGenerateQR} className="flex items-center gap-1"><QrCode size={16}/>QR 생성</Button>
 <Button variant="action" onClick={handleDownload} className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
-<Button variant="action" onClick={handlePrint} className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action" onClick={handleDelete} className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>

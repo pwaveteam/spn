@@ -1,22 +1,13 @@
-import React, { useState } from "react"
-import { Download } from "lucide-react"
-import Button from "@/components/common/base/Button"
-import DataTable, { Column, DataRow } from "@/components/common/tables/DataTable"
-import Checkbox from "@/components/common/base/Checkbox"
-import FormScreen, { Field } from "@/components/common/forms/FormScreen"
-import PageTitle from "@/components/common/base/PageTitle"
+import React,{useState}from"react"
+import{Download}from"lucide-react"
+import Button from"@/components/common/base/Button"
+import DataTable,{Column,DataRow}from"@/components/common/tables/DataTable"
+import Checkbox from"@/components/common/base/Checkbox"
+import FormScreen,{Field}from"@/components/common/forms/FormScreen"
+import PageTitle from"@/components/common/base/PageTitle"
+import{checklistMockData}from"@/data/mockRiskAssessmentData"
 
-type Props = { isOpen: boolean; onClose: () => void; onSubmit?: () => void }
-
-type ChecklistSection = { title: string; items?: string[]; type?: "table" | "form"; className?: string; downloadKey?: string }
-
-const checklistData: ChecklistSection[] = [
-{ title: "물질 유해성", downloadKey: "hazardous-substance", items: [ "현재 취급하고 있는 물질보다 독성이 적은 물질(노출 기준 수치가 높은)로 대체 가능한가?", "현재 물질의 물리적 성질을 고려하고 있다면 비발염성 물질로 대체가 가능한가?", "현재 유해물질 취급 공정의 폐쇄가 가능한가?" ] },
-{ title: "물질노출 가능성", downloadKey: "exposure-possibility", items: [ "현재 사용하고 있는 화학물질의 사용량을 줄일 수 있는가?", "물질 또는 교체된 공정의 누출 가능성이 줄어들었는가?", "대상 유해물질을 공정 내 밀폐화가 가능한가?", "유해물질 취급 시점에서의 재질이적이 최소화가 가능한가?", "국소배기장치/후드 설치를 통한 유해물질 노출이 감소가 가능한가?", "기존의 국소배기장치/후드 배출점보다 배출점의 설치위치를 좀 더 가까이 설치 가능한가?", "직업환경 관리자의 정기적인 점검이 잘 이루어지고 있는가?" ] },
-{ title: "작업방법", downloadKey: "work-method", items: [ "유해물질 취급 공정을 인근 공정 및 작업장소와 격리하여 작업할 수 있는가?", "유해물질 취급 공정과 인근 작업장소 사이의 공기 이동을 차단하기 위한 차단벽 설치가 가능한가?", "현재 유해물질 취급 작업을 자동화 또는 반자동화로 공정 변경이 가능한가?", "유해물질 용기를 별도의 저장장소에 보관 가능한가?", "유해물질 취급전 적절히 점검이 되고 있는가?" ] },
-{ title: "관리방안", downloadKey: "management-plan", items: [ "특수건강검진을 정기적으로 실시하고 있는가?", "작업환경측정을 정기적으로 실시하고 있는가?", "해당 화학물질에 대해 근로자 교육을 실시하는가?", "개인보호용품 등을 보호구가 적정하게 지급되는가?", "근로자 작업 중 호흡을 보호구를 착용하고 있는가?" ] },
-{ title: "기타 개선내역", type: "form" }
-]
+type Props={isOpen:boolean;onClose:()=>void;onSubmit?:()=>void}
 
 const etcFields: Field[] = [
 { label: "1. 작업환경 관리실태 평가내용", name: "evaluationDetail", type: "text", placeholder: "내용을 입력하세요" },
@@ -54,7 +45,7 @@ return (
 <div className="w-full max-w-[960px] bg-white rounded-[13px] border border-[#E5E5E5] shadow-md overflow-hidden">
 <PageTitle className="px-6 pt-6">직업환경 관리상태 체크리스트</PageTitle>
 <div className="max-h-[70vh] overflow-y-auto text-[#111] px-6 py-6 space-y-8">
-{checklistData.map((section, sIdx) => {
+{checklistMockData.map((section,sIdx)=>{
 const ActionButton = section.downloadKey && (
 <Button variant="secondaryOutline" className="min-w-[100px] h-[30px] text-xs gap-1" onClick={() => handleDownloadExample(section.downloadKey!)}>
 <Download size={16} /> 평가기준예시
@@ -67,7 +58,7 @@ return (
 <PageTitle className="text-base sm:text-lg">{section.title}</PageTitle>
 </div>
 <div className="mt-1">
-<FormScreen className="text-xs sm:text-sm" fields={etcFields} values={formValues} onChange={e => setFormValues(prev => ({ ...prev, [e.target.name]: e.target.value }))} onClose={onClose} onSave={onSubmit || (() => {})} isModal notifyEnabled={false} />
+<FormScreen fields={etcFields} values={formValues} onChange={e => setFormValues(prev => ({ ...prev, [e.target.name]: e.target.value }))} isModal onClose={()=>{}} onSave={()=>{}} />
 </div>
 </div>
 )

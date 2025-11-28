@@ -11,7 +11,7 @@ import useFilterBar from"@/hooks/useFilterBar"
 import useTableActions from"@/hooks/tableActions"
 import useTabNavigation from"@/hooks/useTabNavigation"
 import TrainingRegister from"./TrainingRegister"
-import{CirclePlus,Save,Printer,Trash2}from"lucide-react"
+import{CirclePlus,Save,Trash2}from"lucide-react"
 import { trainingMockData } from "@/data/mockData"
 
 const TAB_LABELS=["수급업체 관리","안전보건수준 평가","도급안전보건 회의록","안전보건 점검","안전보건 교육/훈련"]
@@ -50,7 +50,7 @@ const[modalOpen,setModalOpen]=useState(false)
 
 const{currentPage,totalPages,currentData,onPageChange}=usePagination<DataRow>(data,30)
 
-const{handleCreate,handleDelete,handleDownload,handlePrint}=useTableActions({
+const{handleCreate,handleDelete,handleDownload}=useTableActions({
 data,
 checkedIds,
 onCreate:()=>setModalOpen(true),
@@ -99,7 +99,6 @@ onSearch={()=>{}}
 <div className="flex flex-nowrap gap-1 w-full justify-end sm:w-auto">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
 <Button variant="action"onClick={handleDownload}className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
-<Button variant="action"onClick={handlePrint}className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>

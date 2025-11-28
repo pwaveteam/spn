@@ -262,9 +262,15 @@ const removeNearMissRow = useCallback((id: number) => {
 setNearMissRows(prev => prev.filter(row => row.id !== id))
 }, [])
 
-const handleSelectPTW = (selectedPTW: any) => {
-setFormData(selectedPTW)
-setIsListModalOpen(false)
+const handleSelectPTW = (data: any) => {
+  setFormData(prev => ({ ...prev, ...data }))
+
+  if (data.attendeeRows) setAttendeeRows(data.attendeeRows)
+  if (data.riskRows) setRiskRows(data.riskRows)
+  if (data.proposalRows) setProposalRows(data.proposalRows)
+  if (data.nearMissRows) setNearMissRows(data.nearMissRows)
+
+  setIsListModalOpen(false)
 }
 
 const handleSaveToStore = async () => {

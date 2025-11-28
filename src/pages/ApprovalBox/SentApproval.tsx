@@ -11,7 +11,7 @@ import useFilterBar from"@/hooks/useFilterBar"
 import usePagination from"@/hooks/usePagination"
 import useTableActions from"@/hooks/tableActions"
 import ApprovalDetailModal,{type SentDetail}from"@/components/modules/ApprovalDetail"
-import{Save,Printer,Trash2}from"lucide-react"
+import{Save,Trash2}from"lucide-react"
 import { sentApprovalMockData } from "@/data/mockData"
 
 const TAB_LABELS=["받은결재함","보낸결재함"]
@@ -38,7 +38,7 @@ const[detail,setDetail]=useState<SentDetail|null>(null)
 
 const{currentPage,totalPages,currentData,onPageChange}=usePagination<DataRow>(data,30)
 
-const{handleDelete,handlePrint,handleDownload}=useTableActions({
+const{handleDelete,handleDownload}=useTableActions({
 data,
 checkedIds,
 onDeleteSuccess:ids=>setData(prev=>prev.filter(r=>!ids.includes(r.id)))
@@ -75,7 +75,6 @@ onSearch={()=>{}}
 <span className="text-sm text-gray-600 leading-none mt-2 sm:mt-0">총 {data.length}건</span>
 <div className="flex gap-1 justify-end w-full sm:w-auto">
 <Button variant="action"onClick={handleDownload}className="flex gap-1 items-center"><Save size={16}/>다운로드</Button>
-<Button variant="action"onClick={handlePrint}className="flex gap-1 items-center"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex gap-1 items-center"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>

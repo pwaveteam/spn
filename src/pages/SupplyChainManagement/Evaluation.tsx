@@ -10,7 +10,7 @@ import usePagination from"@/hooks/usePagination"
 import useTableActions from"@/hooks/tableActions"
 import useTabNavigation from"@/hooks/useTabNavigation"
 import EvaluationRegister from"./EvaluationRegister"
-import{CirclePlus,Download,Printer,Trash2,Save}from"lucide-react"
+import{CirclePlus,Download,Trash2,Save}from"lucide-react"
 import { evaluationMockData } from "@/data/mockData"
 
 const TAB_LABELS=["수급업체 관리","안전보건수준 평가","도급안전보건 회의록","안전보건 점검","안전보건 교육/훈련"]
@@ -48,7 +48,6 @@ const{
 handleCreate,
 handleDelete,
 handleDownload,
-handlePrint,
 handleFormDownload
 }=useTableActions({
 data,
@@ -87,10 +86,7 @@ onSearch={()=>{}}
 <div className="flex gap-1 justify-end">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
 <Button variant="action"onClick={handleFormDownload}className="flex items-center gap-1"><Download size={16}/>평가지 양식</Button>
-</div>
-<div className="flex gap-1 justify-end">
 <Button variant="action"onClick={handleDownload}className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
-<Button variant="action"onClick={handlePrint}className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
@@ -99,7 +95,6 @@ onSearch={()=>{}}
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
 <Button variant="action"onClick={handleFormDownload}className="flex items-center gap-1"><Download size={16}/>평가지 양식</Button>
 <Button variant="action"onClick={handleDownload}className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
-<Button variant="action"onClick={handlePrint}className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>

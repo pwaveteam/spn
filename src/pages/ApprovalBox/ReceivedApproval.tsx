@@ -8,7 +8,7 @@ import PageTitle from"@/components/common/base/PageTitle"
 import FilterBar from"@/components/common/base/FilterBar"
 import Pagination from"@/components/common/base/Pagination"
 import usePagination from"@/hooks/usePagination"
-import{Save,Printer,Trash2}from"lucide-react"
+import{Save,Trash2}from"lucide-react"
 import ApprovalDetailModal,{type ReceivedDetail}from"@/components/modules/ApprovalDetail"
 import { receivedApprovalMockData } from "@/data/mockData"
 
@@ -41,7 +41,6 @@ const{currentPage,totalPages,currentData,onPageChange}=usePagination<DataRow>(da
 
 const handleTabClick=(i:number)=>{navigate(TAB_PATHS[i]);setCheckedIds([])}
 const handleDownload=()=>{}
-const handlePrint=()=>window.print()
 const handleDelete=()=>{if(!checkedIds.length)return alert("삭제할 항목을 선택하세요");if(window.confirm("정말 삭제하시겠습니까?"))setData(p=>p.filter(r=>!checkedIds.includes(r.id)))}
 
 const handleDetailClick=(row:DataRow)=>{
@@ -72,7 +71,6 @@ onSearch={()=>{}}
 <span className="text-sm text-gray-600 leading-none mt-2 sm:mt-0">총 {data.length}건</span>
 <div className="flex gap-1 justify-end w-full sm:w-auto">
 <Button variant="action"onClick={handleDownload}className="flex gap-1 items-center"><Save size={16}/>다운로드</Button>
-<Button variant="action"onClick={handlePrint}className="flex gap-1 items-center"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex gap-1 items-center"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>

@@ -1,8 +1,10 @@
 import React, { useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
+import { useReactToPrint } from "react-to-print"
 import StepBar from "@/components/modules/StepBar"
 import DataTable, { Column } from "@/components/common/tables/DataTable"
 import Button from "@/components/common/base/Button"
+import useTableActions from "@/hooks/tableActions"
 import { Upload, ChevronLeft, Save, Trash2, Printer, FileDown } from "lucide-react"
 import PageTitle from "@/components/common/base/PageTitle"
 import EditableTextArea from "@/components/common/inputs/EditableTextArea"
@@ -51,43 +53,69 @@ const initialData: RiskDataRow[] = [
 { id: 14, work: "여객운송", hazard: "여객선 등 운송수단의 이동 시 틈틈 등에 의해 넘어질 수 있는 위험", action: "틈 보수 및 안전라인 표시", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 2, intensity: 1, afterPhoto: null },
 ]
 
-
 export default function FrequencyStep3() {
 const navigate = useNavigate()
 const afterRefs = useRef<(HTMLInputElement | null)[]>([])
+const printRef = useRef<HTMLDivElement>(null)
 const [data, setData] = useState<RiskDataRow[]>(initialData)
 const [checkedRows, setCheckedRows] = useState<(number | string)[]>([])
 
-const handleDelete = () => {
-if (checkedRows.length === 0) {
-alert("삭제할 항목을 선택하세요")
-return
+const handlePrint = useReactToPrint({
+contentRef: printRef,
+documentTitle: "위험성평가_빈도강도법",
+pageStyle: `
+@page {
+size: A4 landscape;
+margin: 15mm 10mm;
 }
-if (window.confirm("정말 삭제하시겠습니까?")) {
-setData(prev => prev.filter(row => !checkedRows.includes(row.id)))
+@media print {
+body {
+-webkit-print-color-adjust: exact;
+print-color-adjust: exact;
+margin: 0;
+padding: 0;
+}
+.no-print { display: none !important; }
+.page-break { page-break-before: always; }
+.print-container {
+width: 100%;
+max-width: 100%;
+margin: 0 auto;
+}
+}
+`
+})
+
+const { handleDelete, handleSave, handleDownload } = useTableActions({
+data,
+checkedIds: checkedRows,
+onDeleteSuccess: (ids) => {
+setData(prev => prev.filter(row => !ids.includes(row.id)))
 setCheckedRows([])
-}
-}
+},
+onSave: () => {},
+saveMessage: "저장되었습니다"
+})
 
 const columns: Column<RiskDataRow>[] = [
 { key: "id", label: "번호", minWidth: 50, renderCell: row => <div>{row.id}</div> },
 { key: "work", label: "공정(작업)", minWidth: 60, renderCell: row => <span className="text-[#999999]">{row.work}</span> },
 { key: "hazard", label: "유해위험요인", minWidth: 450, renderCell: row => <span className="text-left text-[#999999]">{row.hazard}</span> },
 { key: "action", label: "감소대책", minWidth: 390, renderCell: r => <EditableTextArea value={r.action} onChange={v => setData(prev => prev.map(x => x.id === r.id ? { ...x, action: v } : x))} /> },
-{ key: "plannedDate", label: "개선예정일", minWidth: 90, renderCell: r => <DatePicker selected={r.plannedDate} onChange={d => d && setData(prev => prev.map(x => x.id === r.id ? { ...x, plannedDate: d } : x))} dateFormat="yyyy-MM-dd" className="w-full text-center" /> },
-{ key: "completedDate", label: "개선완료일", minWidth: 90, renderCell: r => <DatePicker selected={r.completedDate} onChange={d => d && setData(prev => prev.map(x => x.id === r.id ? { ...x, completedDate: d } : x))} dateFormat="yyyy-MM-dd" className="w-full text-center" /> },
+{ key: "plannedDate", label: "개선예정일", minWidth: 90, renderCell: r => <DatePicker value={r.plannedDate.toISOString().split('T')[0]} onChange={d => setData(prev => prev.map(x => x.id === r.id ? { ...x, plannedDate: new Date(d) } : x))} /> },
+{ key: "completedDate", label: "개선완료일", minWidth: 90, renderCell: r => <DatePicker value={r.completedDate.toISOString().split('T')[0]} onChange={d => setData(prev => prev.map(x => x.id === r.id ? { ...x, completedDate: new Date(d) } : x))} /> },
 { key: "evaluator", label: "평가담당자", minWidth: 30, maxWidth: 0, renderCell: r => <EditableTextArea value={r.evaluator} onChange={v => setData(prev => prev.map(x => x.id === r.id ? { ...x, evaluator: v } : x))} /> },
 { key: "frequency", label: "빈도", minWidth: 80, renderCell: r => <div className="relative"><select style={selectStyle} value={r.frequency} onChange={e => setData(prev => prev.map(x => x.id === r.id ? { ...x, frequency: Number(e.target.value) } : x))}>{[1, 2, 3].map(v => <option key={v}>{v}</option>)}</select></div> },
 { key: "intensity", label: "강도", minWidth: 80, renderCell: r => <div className="relative"><select style={selectStyle} value={r.intensity} onChange={e => setData(prev => prev.map(x => x.id === r.id ? { ...x, intensity: Number(e.target.value) } : x))}>{[1, 2, 3].map(v => <option key={v}>{v}</option>)}</select></div> },
 { key: "risk", label: "위험성", minWidth: 65, renderCell: r => { const val = r.frequency * r.intensity; const getRiskColor = (v: number) => v >= 7 ? "#FF3939" : v >= 4 ? "#FFE13E" : "#1EED1E"; return <div className="flex justify-center"><span className="px-5 py-1 rounded-lg text-sm font-medium" style={{ backgroundColor: getRiskColor(val) }}>{val}</span></div> } },
-{ key: "afterPhoto", label: "개선후 사진", minWidth: 100, renderCell: (_r, _col, rowIdx) => <><input type="file" accept="image/*" style={{ display: "none" }} ref={(el: HTMLInputElement | null) => { afterRefs.current[rowIdx] = el }} onChange={e => { const file = e.target.files?.[0]; if (!file) return; const url = URL.createObjectURL(file); setData(prev => prev.map((r, i) => i === rowIdx ? { ...r, afterPhoto: url } : r)) }} /><button type="button" onClick={() => afterRefs.current[rowIdx]?.click()}><Upload size={19} /></button></> }
+{ key: "afterPhoto", label: "개선후 사진", minWidth: 100, renderCell: (row: RiskDataRow, rowIdx: number) => <><input type="file" accept="image/*" style={{ display: "none" }} ref={(el: HTMLInputElement | null) => { afterRefs.current[rowIdx] = el }} onChange={e => { const file = e.target.files?.[0]; if (!file) return; const url = URL.createObjectURL(file); setData(prev => prev.map((r, i) => i === rowIdx ? { ...r, afterPhoto: url } : r)) }} /><button type="button" onClick={() => afterRefs.current[rowIdx]?.click()}><Upload size={19} /></button></> }
 ]
 
 return (
 <section className="mypage-content w-full px-3 py-1 bg-[#F8F8F8] flex flex-col min-h-screen">
 <StepBar currentStep={2} setCurrentStep={() => {}} />
 <div className="flex justify-center w-full">
-<div className="border border-[#DDDDDD] bg-white rounded-[13px] p-8 w-full flex flex-col">
+<div className="border border-[#DDDDDD] bg-white rounded-[13px] p-8 w-full flex flex-col" ref={printRef}>
 <PageTitle>위험성평가 실시(빈도·강도법)</PageTitle>
 
 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 gap-y-2">
@@ -100,11 +128,11 @@ return (
 </span>
 </div>
 
-<div className="flex flex-wrap md:flex-nowrap gap-1 w-full md:w-auto justify-end md:justify-start md:ml-4 shrink-0">
+<div className="flex flex-wrap md:flex-nowrap gap-1 w-full md:w-auto justify-end md:justify-start md:ml-4 shrink-0 no-print">
 <Button variant="action" onClick={() => alert("엑셀 다운로드")} className="flex items-center gap-1">
 <FileDown size={16} />엑셀다운로드
 </Button>
-<Button variant="action" onClick={() => alert("인쇄")} className="flex items-center gap-1">
+<Button variant="action" onClick={handlePrint} className="flex items-center gap-1">
 <Printer size={16} />인쇄
 </Button>
 <Button variant="action" onClick={() => alert("임시저장 완료")} className="flex items-center gap-1">
@@ -116,10 +144,10 @@ return (
 </div>
 </div>
 
-<DataTable<RiskDataRow> columns={columns} data={data} onCheckedChange={setCheckedRows} selectable className="min-w-[600px] md:min-w-auto" />
+<DataTable<RiskDataRow> columns={columns} data={data} onCheckedChange={setCheckedRows} selectable />
 </div>
 </div>
-<div className="mt-5 flex justify-between">
+<div className="mt-5 flex justify-between no-print">
 <Button variant="secondary" onClick={() => navigate("/risk-assessment/methods/frequency/step2")}><ChevronLeft size={18} className="mr-2" />이전으로</Button>
 <Button variant="secondary" onClick={() => {
 if (window.confirm("작성한 평가내용을 저장하시겠습니까?")) {

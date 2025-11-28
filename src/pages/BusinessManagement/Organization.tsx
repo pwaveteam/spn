@@ -8,7 +8,7 @@ import OrganizationTree, { OrgNode } from "@/components/modules/OrganizationTree
 import StaffRegisterModal from "./StaffRegister"
 import useTableActions from "@/hooks/tableActions"
 import usePagination from "@/hooks/usePagination"
-import { CirclePlus, Image, Upload, Printer, Trash2, ShieldAlert } from "lucide-react"
+import { CirclePlus, Image, Upload, Trash2, ShieldAlert } from "lucide-react"
 import { organizationMockData } from "@/data/mockData"
 
 const TAB_LABELS = ["전체인력 목록"]
@@ -62,7 +62,7 @@ const fileInputRef = useRef<HTMLInputElement>(null)
 
 const {currentPage, totalPages, currentData, onPageChange} = usePagination<DataRow>(staffs, 30)
 
-const {handleCreate, handleDelete, handlePrint, handleImageSave} = useTableActions({
+const {handleCreate, handleDelete, handleImageSave} = useTableActions({
 data: staffs,
 checkedIds,
 onCreate: () => setModalOpen(true),
@@ -91,7 +91,6 @@ return (
 <span className="text-gray-600 text-sm">총 {staffs.length}건</span>
 <div className="flex gap-1">
 <Button variant="action" onClick={handleCreate} className="flex items-center gap-1"><CirclePlus size={16} />인력추가</Button>
-<Button variant="action" onClick={handlePrint} className="flex items-center gap-1"><Printer size={16} />인쇄</Button>
 <Button variant="action" onClick={handleDelete} className="flex items-center gap-1"><Trash2 size={16} />삭제</Button>
 </div>
 </div>

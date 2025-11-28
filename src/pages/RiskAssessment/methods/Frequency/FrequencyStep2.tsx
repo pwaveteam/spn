@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import StepBar from "@/components/modules/StepBar"
 import DataTable, { Column } from "@/components/common/tables/DataTable"
 import Button from "@/components/common/base/Button"
+import useTableActions from "@/hooks/tableActions"
 import { Upload, ChevronRight, ChevronLeft, Trash2, Save } from "lucide-react"
 import PageTitle from "@/components/common/base/PageTitle"
 import EditableTextArea from "@/components/common/inputs/EditableTextArea"
@@ -85,13 +86,16 @@ afterPhoto: type === "after" ? url : r.afterPhoto,
 )
 }
 
-const onDelete = () => {
-if (checked.length === 0) return alert("삭제할 항목을 선택하세요")
-if (window.confirm("정말 삭제하시겠습니까?")) {
-setData(prev => prev.filter(r => !checked.includes(r.id)))
+const { handleDelete, handleSave } = useTableActions({
+data,
+checkedIds: checked,
+onDeleteSuccess: (ids) => {
+setData(prev => prev.filter(r => !ids.includes(r.id)))
 setChecked([])
-}
-}
+},
+onSave: () => {},
+saveMessage: "임시저장 완료"
+})
 
 const columns: Column<RiskDataRow>[] = [
 { key: "id", label: "번호", minWidth: 50, renderCell: row => <div>{row.id}</div> },
@@ -101,8 +105,8 @@ const columns: Column<RiskDataRow>[] = [
 { key: "frequency", label: "빈도", minWidth: 60, renderCell: row => <div className="relative"><select style={selectStyle} value={row.frequency} onChange={e => setData(prev => prev.map(r => r.id === row.id ? { ...r, frequency: Number(e.target.value) } : r))} className="font-semibold">{[1, 2, 3].map(v => <option key={v}>{v}</option>)}</select></div> },
 { key: "intensity", label: "강도", minWidth: 60, renderCell: row => <div className="relative"><select style={selectStyle} value={row.intensity} onChange={e => setData(prev => prev.map(r => r.id === row.id ? { ...r, intensity: Number(e.target.value) } : r))} className="font-semibold">{[1, 2, 3].map(v => <option key={v}>{v}</option>)}</select></div> },
 { key: "risk", label: "위험성", minWidth: 60, renderCell: row => { const val = calcRisk(row.frequency, row.intensity); return <div className="flex justify-center"><span className="px-5 py-1 rounded-lg font-bold" style={{ backgroundColor: getRiskColor(val) }}>{val}</span></div> } },
-{ key: "afterPhoto", label: "평가현장 사진", minWidth: 100, renderCell: (_r, _col, rowIdx) => <><input type="file" accept="image/*" style={{ display: "none" }} ref={el => { afterFileRefs.current[rowIdx] = el }} onChange={e => handleFileChange(e, rowIdx, "after")} /><button type="button" onClick={() => handleFileClick(rowIdx, "after")}><Upload size={19} /></button></> },
-{ key:"evaluationDate", label:"평가일자", minWidth:110, maxWidth:120, renderCell:row=><DatePicker value={row.evaluationDate} onChange={d=>setData(prev=>prev.map(r=>r.id===row.id?{...r,evaluationDate:d}:r))} /> },
+{ key: "afterPhoto", label: "평가현장 사진", minWidth: 100, renderCell: (row: RiskDataRow, rowIdx: number) => <><input type="file" accept="image/*" style={{ display: "none" }} ref={el => { afterFileRefs.current[rowIdx] = el }} onChange={e => handleFileChange(e, rowIdx, "after")} /><button type="button" onClick={() => handleFileClick(rowIdx, "after")}><Upload size={19} /></button></> },
+{ key:"evaluationDate", label:"평가일자", minWidth:110, maxWidth:120, renderCell:row=><DatePicker value={row.evaluationDate.toISOString().split('T')[0]} onChange={d=>setData(prev=>prev.map(r=>r.id===row.id?{...r,evaluationDate:new Date(d)}:r))} /> },
 ]
 
 return (
@@ -123,16 +127,16 @@ return (
 </div>
 
 <div className="flex flex-wrap md:flex-nowrap gap-1 w-full md:w-auto justify-end md:justify-start md:ml-4 shrink-0">
-<Button variant="action" onClick={() => alert("임시저장 완료")} className="flex items-center gap-1">
+<Button variant="action" onClick={handleSave} className="flex items-center gap-1">
 <Save size={16} />임시저장하기
 </Button>
-<Button variant="action" onClick={onDelete} className="flex items-center gap-1">
+<Button variant="action" onClick={handleDelete} className="flex items-center gap-1">
 <Trash2 size={16} />삭제
 </Button>
 </div>
 </div>
 
-<DataTable<RiskDataRow> columns={columns} data={data} onCheckedChange={setChecked} className="min-w-[600px] md:min-w-auto" />
+<DataTable<RiskDataRow> columns={columns} data={data} onCheckedChange={setChecked} />
 </div>
 </div>
 <div className="mt-5 flex justify-between">

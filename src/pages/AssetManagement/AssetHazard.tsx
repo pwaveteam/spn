@@ -10,7 +10,7 @@ import usePagination from"@/hooks/usePagination"
 import useTabNavigation from"@/hooks/useTabNavigation"
 import useFilterBar from"@/hooks/useFilterBar"
 import useTableActions from"@/hooks/tableActions"
-import{CirclePlus,QrCode,Printer,Trash2}from"lucide-react"
+import{CirclePlus,QrCode,Trash2}from"lucide-react"
 import { assetHazardMockData } from "@/data/mockData"
 
 const TAB_LABELS=["위험기계/기구/설비","유해/위험물질"]
@@ -41,7 +41,6 @@ const{currentPage,totalPages,currentData,onPageChange}=usePagination<DataRow>(da
 const{
 handleCreate,
 handleDelete,
-handlePrint,
 handleGenerateQR,
 }=useTableActions({
 data,
@@ -71,9 +70,6 @@ return(
 <div className="flex gap-1 justify-end">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
 <Button variant="action"onClick={handleGenerateQR}className="flex items-center gap-1"><QrCode size={16}/>QR 생성</Button>
-</div>
-<div className="flex gap-1 justify-end">
-<Button variant="action"onClick={handlePrint}className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
@@ -81,7 +77,6 @@ return(
 <div className="hidden sm:flex flex-nowrap gap-1 w-auto justify-end">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
 <Button variant="action"onClick={handleGenerateQR}className="flex items-center gap-1"><QrCode size={16}/>QR 생성</Button>
-<Button variant="action"onClick={handlePrint}className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>

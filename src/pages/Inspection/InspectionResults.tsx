@@ -8,7 +8,7 @@ import PageTitle from"@/components/common/base/PageTitle"
 import Pagination from"@/components/common/base/Pagination"
 import useTableActions from"@/hooks/tableActions"
 import useTabNavigation from"@/hooks/useTabNavigation"
-import{Save,Printer,Trash2}from"lucide-react"
+import{Save,Trash2}from"lucide-react"
 import{inspectionResultsMockData}from"@/data/mockData"
 
 const TAB_LABELS=["점검일정","점검결과","점검표(체크리스트)"]
@@ -54,7 +54,6 @@ const[currentPage,setCurrentPage]=useState(1)
 
 const{
 handleDownload,
-handlePrint,
 handleDelete
 }=useTableActions({
 data,
@@ -108,14 +107,12 @@ onSearch={()=>{}}
 <div className="flex flex-col gap-1 w-full justify-end sm:hidden">
 <div className="flex gap-1 justify-end">
 <Button variant="action"onClick={handleDownload}className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
-<Button variant="action"onClick={handlePrint}className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
 
 <div className="hidden sm:flex flex-nowrap gap-1 w-auto justify-end">
 <Button variant="action"onClick={handleDownload}className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
-<Button variant="action"onClick={handlePrint}className="flex items-center gap-1"><Printer size={16}/>인쇄</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>

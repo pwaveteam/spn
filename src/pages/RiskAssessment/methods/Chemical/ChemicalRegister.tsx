@@ -62,9 +62,9 @@ return (
 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
 <div className="bg-white rounded-2xl w-[900px] max-w-full p-8 shadow-2xl max-h-[80vh] overflow-y-auto">
 <h2 className="text-2xl font-semibold tracking-wide mb-3">화학물질 등록</h2>
-<div className="mb-6 border-b pb-4"><p className="text-lg font-semibold mb-1">화학물질 추가 및 위험성평가 실시</p><FormScreen fields={upperFields} values={formData} onChange={handleChange} isModal /></div>
-<div className="pt-1"><p className="text-lg font-semibold mb-1">노출수준</p><FormScreen fields={detailFields} values={formData} onChange={handleChange} isModal /></div>
-<div className="border-t pt-6 mt-6"><p className="text-lg font-semibold mb-1">유해성</p><FormScreen fields={hazardFields} values={formData} onChange={handleChange} isModal /></div>
+<div className="mb-6 border-b pb-4"><p className="text-lg font-semibold mb-1">화학물질 추가 및 위험성평가 실시</p><FormScreen fields={upperFields} values={formData as any} onChange={handleChange} isModal onClose={()=>{}} onSave={()=>{}} /></div>
+<div className="pt-1"><p className="text-lg font-semibold mb-1">노출수준</p><FormScreen fields={detailFields} values={formData as any} onChange={handleChange} isModal onClose={()=>{}} onSave={()=>{}} /></div>
+<div className="border-t pt-6 mt-6"><p className="text-lg font-semibold mb-1">유해성</p><FormScreen fields={hazardFields} values={formData as any} onChange={handleChange} isModal onClose={()=>{}} onSave={()=>{}} /></div>
 <div className="mt-6 flex justify-center gap-1"><Button variant="primaryOutline" onClick={onClose}>닫기</Button><Button variant="primary" onClick={() => onSave(formData)}>저장하기</Button></div>
 </div>
 </div>
