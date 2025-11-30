@@ -45,17 +45,13 @@ import FrequencyStep1 from "./pages/RiskAssessment/methods/Frequency/FrequencySt
 import FrequencyStep2 from "./pages/RiskAssessment/methods/Frequency/FrequencyStep2"
 import FrequencyStep3 from "./pages/RiskAssessment/methods/Frequency/FrequencyStep3"
 
-import ChecklistStep1 from "./pages/RiskAssessment/methods/Checklist/ChecklistStep1"
-import ChecklistStep2 from "./pages/RiskAssessment/methods/Checklist/ChecklistStep2"
-import ChecklistStep3 from "./pages/RiskAssessment/methods/Checklist/ChecklistStep3"
+import Checklist from "./pages/RiskAssessment/methods/Checklist/Checklist"
 
 import ThreeStep1 from "./pages/RiskAssessment/methods/ThreeStep/ThreeStep1"
 import ThreeStep2 from "./pages/RiskAssessment/methods/ThreeStep/ThreeStep2"
 import ThreeStep3 from "./pages/RiskAssessment/methods/ThreeStep/ThreeStep3"
 
-import ChemicalStep1 from "./pages/RiskAssessment/methods/Chemical/ChemicalStep1"
-import ChemicalStep2 from "./pages/RiskAssessment/methods/Chemical/ChemicalStep2"
-import ChemicalStep3 from "./pages/RiskAssessment/methods/Chemical/ChemicalStep3"
+import Chemical from "./pages/RiskAssessment/methods/Chemical/Chemical"
 
 import NearMiss from "./pages/NearMiss/NearMiss"
 import SafeVoice from "./pages/NearMiss/SafeVoice"
@@ -181,15 +177,11 @@ const App: React.FC = () => {
             <Route path="/risk-assessment/methods/frequency/step1" element={<FrequencyStep1 />} />
             <Route path="/risk-assessment/methods/frequency/step2" element={<FrequencyStep2 />} />
             <Route path="/risk-assessment/methods/frequency/step3" element={<FrequencyStep3 />} />
-            <Route path="/risk-assessment/methods/checklist/step1" element={<ChecklistStep1 />} />
-            <Route path="/risk-assessment/methods/checklist/step2" element={<ChecklistStep2 />} />
-            <Route path="/risk-assessment/methods/checklist/step3" element={<ChecklistStep3 />} />
+            <Route path="/risk-assessment/methods/checklist" element={<Checklist />} />
             <Route path="/risk-assessment/methods/threestep/step1" element={<ThreeStep1 />} />
             <Route path="/risk-assessment/methods/threestep/step2" element={<ThreeStep2 />} />
             <Route path="/risk-assessment/methods/threestep/step3" element={<ThreeStep3 />} />
-            <Route path="/risk-assessment/methods/chemical/step1" element={<ChemicalStep1 />} />
-            <Route path="/risk-assessment/methods/chemical/step2" element={<ChemicalStep2 />} />
-            <Route path="/risk-assessment/methods/chemical/step3" element={<ChemicalStep3 />} />
+            <Route path="/risk-assessment/methods/chemical" element={<Chemical />} />
           </Route>
         </Routes>
       </BrowserRouter>

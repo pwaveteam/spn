@@ -201,7 +201,7 @@ export const budgetMockData: DataRow[] = [
 ]
 
 export const organizationMockData: DataRow[] = [
-  { id: 7, name: "최반장", safetyPosition: "관리감독자", department: "품질관리팀", position: "반장", phone: "010-5555-6666", entryDate: "2021-03-18", assignDate: "2021-04-01" },
+  { id: 7, name: "이영수", safetyPosition: "관리감독자", department: "품질관리팀", position: "반장", phone: "010-5555-6666", entryDate: "2021-03-18", assignDate: "2021-04-01" },
   { id: 6, name: "조반장", safetyPosition: "관리감독자", department: "생산2팀", position: "반장", phone: "010-3333-4444", entryDate: "2022-06-12", assignDate: "2022-07-01" },
   { id: 5, name: "김반장", safetyPosition: "관리감독자", department: "생산1팀", position: "반장", phone: "010-1111-2222", entryDate: "2023-01-15", assignDate: "2023-02-01" },
   { id: 4, name: "이보건", safetyPosition: "보건관리자", department: "보건팀", position: "주임", phone: "010-5555-4321", entryDate: "2019-11-20", assignDate: "2019-12-10" },

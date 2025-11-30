@@ -22,6 +22,7 @@ const [startMinute, setStartMinute] = useState("")
 const [endHour, setEndHour] = useState("")
 const [endMinute, setEndMinute] = useState("")
 const [assignee, setAssignee] = useState("")
+const [supervisor, setSupervisor] = useState("")
 const [content, setContent] = useState(defaultContent)
 const [remark, setRemark] = useState(defaultRemark)
 const [fileUpload, setFileUpload] = useState("")
@@ -45,6 +46,7 @@ else if (name === "startMinute") setStartMinute(value)
 else if (name === "endHour") setEndHour(value)
 else if (name === "endMinute") setEndMinute(value)
 else if (name === "assignee") setAssignee(value)
+else if (name === "supervisor") setSupervisor(value)
 else if (name === "content") setContent(value)
 else if (name === "remark") setRemark(value)
 else if (name === "sitePhotos") setSitePhotos(value)
@@ -93,52 +95,50 @@ return { ...prev, [proc]: items }
 }
 
 const fields: Field[] = [
-    { label: "TBM 장소", name: "location", type: "text", placeholder: "장소 입력", required: true },
-    { label: "TBM 일자", name: "date", type: "date", required: true },
-    { label: "진행시간", name: "timeRange", type: "timeRange", required: true },
-    { label: "작업명", name: "tbmName", type: "text", placeholder: "작업명 입력", required: true },
-  
-    {
-      label: "위험성평가표",
-      name: "processes",
-      type: "tags",
-      required: false,
-      buttonRender: (
-        <>
-          <Button variant="action" onClick={() => setProcessListOpen(true)}>위험성평가표 불러오기</Button>
-          {processListOpen && (
-            <LoadListDialog
-              isOpen={processListOpen}
-              items={riskEvaluationTemplates.map(p => ({ id: p, name: p }))}
-              selectedId={process}
-              singleSelect
-              onChangeSelected={selected => {
-                if (selected == null) return
-                if (Array.isArray(selected)) {
-                  const v = selected[0]
-                  if (v != null) toggleProcessInList(String(v))
-                } else {
-                  toggleProcessInList(String(selected))
-                }
-              }}
-              onClose={() => setProcessListOpen(false)}
-            />
-          )}
-        </>
-      ),
-    },
-  
-    { label: "작업내용", name: "content", type: "textarea", required: false },
-    { label: "비고", name: "remark", type: "textarea", required: false },
-    { label: "현장사진", name: "sitePhotos", type: "photoUpload", required: false },
-    { label: "첨부파일", name: "fileUpload", type: "fileUpload", required: false },
-  ]
-  
+{ label: "TBM 장소", name: "location", type: "text", placeholder: "장소 입력", required: true },
+{ label: "TBM 일자", name: "date", type: "date", required: true },
+{ label: "진행시간", name: "timeRange", type: "timeRange", required: true },
+{ label: "작업명", name: "tbmName", type: "text", placeholder: "작업명 입력", required: true },
+{
+label: "위험성평가표",
+name: "processes",
+type: "tags",
+required: false,
+buttonRender: (
+<>
+<Button variant="action" onClick={() => setProcessListOpen(true)}>위험성평가표 불러오기</Button>
+{processListOpen && (
+<LoadListDialog
+isOpen={processListOpen}
+items={riskEvaluationTemplates.map(p => ({ id: p, name: p }))}
+selectedId={process}
+singleSelect
+onChangeSelected={selected => {
+if (selected == null) return
+if (Array.isArray(selected)) {
+const v = selected[0]
+if (v != null) toggleProcessInList(String(v))
+} else {
+toggleProcessInList(String(selected))
+}
+}}
+onClose={() => setProcessListOpen(false)}
+/>
+)}
+</>
+),
+},
+{ label: "관리감독자", name: "supervisor", type: "text", placeholder: "관리감독자 입력", required: false },
+{ label: "작업내용", name: "content", type: "textarea", required: false },
+{ label: "비고", name: "remark", type: "textarea", required: false },
+{ label: "현장사진", name: "sitePhotos", type: "photoUpload", required: false },
+{ label: "첨부파일", name: "fileUpload", type: "fileUpload", required: false },
+]
 
-const values = { tbmName, location, date, startHour, startMinute, endHour, endMinute, assignee, content, remark, fileUpload, processes: process, sitePhotos }
+const values = { tbmName, location, date, startHour, startMinute, endHour, endMinute, assignee, supervisor, content, remark, fileUpload, processes: process, sitePhotos }
 
 const handleSubmit = () => {
-console.log({ tbmName, location, date, startHour, startMinute, endHour, endMinute, assignee, content, remark, processes: process, attendeesList, processDetails, checkedItems, sitePhotos, fileUpload })
+console.log({ tbmName, location, date, startHour, startMinute, endHour, endMinute, assignee, supervisor, content, remark, processes: process, attendeesList, processDetails, checkedItems, sitePhotos, fileUpload })
 }
 
 const handleAddAttendee = (att: Attendee) => setAttendeesList(prev => [...prev, att])

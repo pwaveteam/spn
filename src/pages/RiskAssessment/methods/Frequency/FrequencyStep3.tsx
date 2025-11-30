@@ -5,23 +5,11 @@ import StepBar from "@/components/modules/StepBar"
 import DataTable, { Column } from "@/components/common/tables/DataTable"
 import Button from "@/components/common/base/Button"
 import useTableActions from "@/hooks/tableActions"
-import { Upload, ChevronLeft, Save, Trash2, Printer, FileDown } from "lucide-react"
+import { useRiskAssessmentSave } from "@/hooks/useRiskAssessmentSave"
+import { ChevronLeft, Save, Trash2, Printer, FileDown } from "lucide-react"
 import PageTitle from "@/components/common/base/PageTitle"
-import EditableTextArea from "@/components/common/inputs/EditableTextArea"
-import DatePicker from "@/components/common/inputs/DatePicker"
-
-type RiskDataRow = {
-id: number
-work: string
-hazard: string
-action: string
-plannedDate: Date
-completedDate: Date
-evaluator: string
-frequency: number
-intensity: number
-afterPhoto: string | null
-}
+import { FrequencyStep3Row } from "@/types/riskAssessment"
+import { frequencyStep3MockData } from "@/data/mockRiskAssessmentData"
 
 const selectStyle: React.CSSProperties = {
 appearance: "none",
@@ -36,29 +24,12 @@ cursor: "pointer",
 width: "100%",
 }
 
-const initialData: RiskDataRow[] = [
-{ id: 1, work: "운송준비", hazard: "내부 청소 작업 시 바닥면의 분진이 재비산되면서 흡입 위험", action: "청소 시 방진마스크 착용 및 습식 청소 시행", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 3, intensity: 2, afterPhoto: null },
-{ id: 2, work: "운송준비", hazard: "청소 작업 시 청소 장비 등의 가동음에 의한 소음에 노출되어 난청 발생 위험", action: "청소작업 시 귀마개 착용 의무화", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 2, intensity: 2, afterPhoto: null },
-{ id: 3, work: "운송준비", hazard: "운행 전 청소 작업 시 반복해서 청소 작업을 수행하여 근골격계질환 위험", action: "작업 전 스트레칭 교육 및 작업대 높이 조정", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 2, intensity: 3, afterPhoto: null },
-{ id: 4, work: "운송준비", hazard: "청소 작업 시 청소 장비 등에 의한 걸림으로 넘어짐 위험", action: "청소 장비 정리정돈 및 작업장 바닥 정비", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 1, intensity: 1, afterPhoto: null },
-{ id: 5, work: "운송준비", hazard: "협소한 장소 및 구성된 곳 등 제한된 공간의 점검 시 충돌 사고 위험", action: "점검 전 작업구간 사전 정리 및 위험표시 부착", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 1, intensity: 2, afterPhoto: null },
-{ id: 6, work: "여객운송", hazard: "승·하선 및 이동 시 틈틈이 의한 넘어짐 위험", action: "승선 시 안전유도선 표시 및 조도 확보", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 2, intensity: 1, afterPhoto: null },
-{ id: 7, work: "여객운송", hazard: "운송수단의 운행 시 제한적인 작업공간 이동 및 점검 시 떨어지는 사고 위험", action: "이동 경로 안전난간 설치 및 안전모 착용", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 2, intensity: 2, afterPhoto: null },
-{ id: 8, work: "여객운송", hazard: "운송수단의 운행 시 제한적인 작업공간의 이동 및 점검 시 아래로 떨어지는 사고 위험", action: "이동 시 추락방지장치 착용 및 2인 1조 작업", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 3, intensity: 3, afterPhoto: null },
-{ id: 9, work: "여객운송", hazard: "여객석의 운행 시 기계실 등의 점검에 따른 기계 가동음에 노출되어 난청 발생 위험", action: "점검 시 귀마개 착용 및 소음 측정 실시", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 2, intensity: 2, afterPhoto: null },
-{ id: 10, work: "여객운송", hazard: "운송수단의 운행 시 틈틈이로 전신 진동 등으로 근무자 스트레스, 피로도 증가 위험", action: "작업시간 조정 및 휴게시설 마련", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 2, intensity: 1, afterPhoto: null },
-{ id: 11, work: "여객운송", hazard: "승객의 안전을 위하여 운행 시 정기적인 점검 등으로 기후(한랭/고온)에 영향을 받아 안", action: "계절별 적정 복장 및 기상 상황에 맞춘 점검시간 조정", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 2, intensity: 2, afterPhoto: null },
-{ id: 12, work: "여객운송", hazard: "승객의 안전을 위하여 운행 시 정기적인 점검 등으로 기후(한랭/고온)에 영향을 받아 안", action: "작업복 보급 및 기후 영향 예보에 따른 작업계획 수립", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 1, intensity: 1, afterPhoto: null },
-{ id: 13, work: "여객운송", hazard: "승객의 이동 통로가 어두울 경우 안전사고 발생 위험", action: "비상등 및 보조등 점검 및 설치", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 2, intensity: 2, afterPhoto: null },
-{ id: 14, work: "여객운송", hazard: "여객선 등 운송수단의 이동 시 틈틈 등에 의해 넘어질 수 있는 위험", action: "틈 보수 및 안전라인 표시", plannedDate: new Date(), completedDate: new Date(), evaluator: "최담당", frequency: 2, intensity: 1, afterPhoto: null },
-]
-
 export default function FrequencyStep3() {
 const navigate = useNavigate()
-const afterRefs = useRef<(HTMLInputElement | null)[]>([])
 const printRef = useRef<HTMLDivElement>(null)
-const [data, setData] = useState<RiskDataRow[]>(initialData)
+const [data, setData] = useState<FrequencyStep3Row[]>(frequencyStep3MockData)
 const [checkedRows, setCheckedRows] = useState<(number | string)[]>([])
+const { handleSaveComplete } = useRiskAssessmentSave()
 
 const handlePrint = useReactToPrint({
 contentRef: printRef,
@@ -86,29 +57,79 @@ margin: 0 auto;
 `
 })
 
-const { handleDelete, handleSave, handleDownload } = useTableActions({
+const handleInputChange = (id: number | string, key: string, value: string) => {
+setData(prev => prev.map(x => x.id === id ? { ...x, [key]: value } : x))
+}
+
+const handleUploadChange = (id: number | string, key: string, file: File) => {
+const url = URL.createObjectURL(file)
+setData(prev => prev.map(x => x.id === id ? { ...x, [key]: url } : x))
+}
+
+const { handleDelete } = useTableActions({
 data,
 checkedIds: checkedRows,
 onDeleteSuccess: (ids) => {
 setData(prev => prev.filter(row => !ids.includes(row.id)))
 setCheckedRows([])
 },
-onSave: () => {},
 saveMessage: "저장되었습니다"
 })
 
-const columns: Column<RiskDataRow>[] = [
-{ key: "id", label: "번호", minWidth: 50, renderCell: row => <div>{row.id}</div> },
-{ key: "work", label: "공정(작업)", minWidth: 60, renderCell: row => <span className="text-[#999999]">{row.work}</span> },
-{ key: "hazard", label: "유해위험요인", minWidth: 450, renderCell: row => <span className="text-left text-[#999999]">{row.hazard}</span> },
-{ key: "action", label: "감소대책", minWidth: 390, renderCell: r => <EditableTextArea value={r.action} onChange={v => setData(prev => prev.map(x => x.id === r.id ? { ...x, action: v } : x))} /> },
-{ key: "plannedDate", label: "개선예정일", minWidth: 90, renderCell: r => <DatePicker value={r.plannedDate.toISOString().split('T')[0]} onChange={d => setData(prev => prev.map(x => x.id === r.id ? { ...x, plannedDate: new Date(d) } : x))} /> },
-{ key: "completedDate", label: "개선완료일", minWidth: 90, renderCell: r => <DatePicker value={r.completedDate.toISOString().split('T')[0]} onChange={d => setData(prev => prev.map(x => x.id === r.id ? { ...x, completedDate: new Date(d) } : x))} /> },
-{ key: "evaluator", label: "평가담당자", minWidth: 30, maxWidth: 0, renderCell: r => <EditableTextArea value={r.evaluator} onChange={v => setData(prev => prev.map(x => x.id === r.id ? { ...x, evaluator: v } : x))} /> },
-{ key: "frequency", label: "빈도", minWidth: 80, renderCell: r => <div className="relative"><select style={selectStyle} value={r.frequency} onChange={e => setData(prev => prev.map(x => x.id === r.id ? { ...x, frequency: Number(e.target.value) } : x))}>{[1, 2, 3].map(v => <option key={v}>{v}</option>)}</select></div> },
-{ key: "intensity", label: "강도", minWidth: 80, renderCell: r => <div className="relative"><select style={selectStyle} value={r.intensity} onChange={e => setData(prev => prev.map(x => x.id === r.id ? { ...x, intensity: Number(e.target.value) } : x))}>{[1, 2, 3].map(v => <option key={v}>{v}</option>)}</select></div> },
-{ key: "risk", label: "위험성", minWidth: 65, renderCell: r => { const val = r.frequency * r.intensity; const getRiskColor = (v: number) => v >= 7 ? "#FF3939" : v >= 4 ? "#FFE13E" : "#1EED1E"; return <div className="flex justify-center"><span className="px-5 py-1 rounded-lg text-sm font-medium" style={{ backgroundColor: getRiskColor(val) }}>{val}</span></div> } },
-{ key: "afterPhoto", label: "개선후 사진", minWidth: 100, renderCell: (row: RiskDataRow, rowIdx: number) => <><input type="file" accept="image/*" style={{ display: "none" }} ref={(el: HTMLInputElement | null) => { afterRefs.current[rowIdx] = el }} onChange={e => { const file = e.target.files?.[0]; if (!file) return; const url = URL.createObjectURL(file); setData(prev => prev.map((r, i) => i === rowIdx ? { ...r, afterPhoto: url } : r)) }} /><button type="button" onClick={() => afterRefs.current[rowIdx]?.click()}><Upload size={19} /></button></> }
+const columns: Column<FrequencyStep3Row>[] = [
+{ key: "id", label: "번호", type: "index" },
+{ key: "work", label: "공정(작업)" },
+{ key: "hazard", label: "유해위험요인", align: "left" },
+{ key: "action", label: "감소대책", type: "textarea", align: "left" },
+{ key: "plannedDate", label: "개선예정일", type: "date" },
+{ key: "completedDate", label: "개선완료일", type: "date" },
+{ key: "evaluator", label: "평가담당자", type: "input" },
+{
+key: "frequency",
+label: "빈도",
+renderCell: r => (
+<div className="relative">
+<select
+style={selectStyle}
+value={r.frequency}
+onChange={e => setData(prev => prev.map(x => x.id === r.id ? { ...x, frequency: Number(e.target.value) } : x))}
+>
+{[1, 2, 3].map(v => <option key={v}>{v}</option>)}
+</select>
+</div>
+)
+},
+{
+key: "intensity",
+label: "강도",
+renderCell: r => (
+<div className="relative">
+<select
+style={selectStyle}
+value={r.intensity}
+onChange={e => setData(prev => prev.map(x => x.id === r.id ? { ...x, intensity: Number(e.target.value) } : x))}
+>
+{[1, 2, 3].map(v => <option key={v}>{v}</option>)}
+</select>
+</div>
+)
+},
+{
+key: "risk",
+label: "위험성",
+renderCell: r => {
+const val = r.frequency * r.intensity
+const getRiskColor = (v: number) => v >= 7 ? "#FF3939" : v >= 4 ? "#FFE13E" : "#1EED1E"
+return (
+<div className="flex justify-center">
+<span className="px-5 py-1 rounded-lg text-sm font-medium" style={{ backgroundColor: getRiskColor(val) }}>
+  {val}
+</span>
+</div>
+)
+}
+},
+{ key: "afterPhoto", label: "개선후 사진", type: "upload" }
 ]
 
 return (
@@ -120,43 +141,43 @@ return (
 
 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 gap-y-2">
 <div className="text-xs sm:text-sm md:text-base md:whitespace-nowrap md:flex-1">
-<span className="font-medium">산재업종분류: </span>
-<span className="font-normal">
-제조업&nbsp;&gt;&nbsp;전기기계기구ㆍ정밀기구ㆍ전자제품제조업&nbsp;&gt;&nbsp;
-<span className="inline md:hidden"><br /></span>
-기타전기기계기구제조업
-</span>
+  <span className="font-medium">산재업종분류: </span>
+  <span className="font-normal">
+    제조업&nbsp;&gt;&nbsp;전기기계기구ㆍ정밀기구ㆍ전자제품제조업&nbsp;&gt;&nbsp;
+    <span className="inline md:hidden"><br /></span>
+    기타전기기계기구제조업
+  </span>
 </div>
 
 <div className="flex flex-wrap md:flex-nowrap gap-1 w-full md:w-auto justify-end md:justify-start md:ml-4 shrink-0 no-print">
-<Button variant="action" onClick={() => alert("엑셀 다운로드")} className="flex items-center gap-1">
-<FileDown size={16} />엑셀다운로드
-</Button>
-<Button variant="action" onClick={handlePrint} className="flex items-center gap-1">
-<Printer size={16} />인쇄
-</Button>
-<Button variant="action" onClick={() => alert("임시저장 완료")} className="flex items-center gap-1">
-<Save size={16} />임시저장하기
-</Button>
-<Button variant="action" onClick={handleDelete} className="flex items-center gap-1">
-<Trash2 size={16} />삭제
-</Button>
+  <Button variant="action" onClick={() => alert("엑셀 다운로드")} className="flex items-center gap-1">
+    <FileDown size={16} />엑셀다운로드
+  </Button>
+  <Button variant="action" onClick={handlePrint} className="flex items-center gap-1">
+    <Printer size={16} />인쇄
+  </Button>
+  <Button variant="action" onClick={() => alert("임시저장 완료")} className="flex items-center gap-1">
+    <Save size={16} />임시저장하기
+  </Button>
+  <Button variant="action" onClick={handleDelete} className="flex items-center gap-1">
+    <Trash2 size={16} />삭제
+  </Button>
 </div>
 </div>
 
-<DataTable<RiskDataRow> columns={columns} data={data} onCheckedChange={setCheckedRows} selectable />
+<DataTable<FrequencyStep3Row>
+columns={columns}
+data={data}
+onCheckedChange={setCheckedRows}
+onInputChange={handleInputChange}
+onUploadChange={handleUploadChange}
+selectable
+/>
 </div>
 </div>
 <div className="mt-5 flex justify-between no-print">
 <Button variant="secondary" onClick={() => navigate("/risk-assessment/methods/frequency/step2")}><ChevronLeft size={18} className="mr-2" />이전으로</Button>
-<Button variant="secondary" onClick={() => {
-if (window.confirm("작성한 평가내용을 저장하시겠습니까?")) {
-alert("저장되었습니다")
-setTimeout(() => {
-navigate("/risk-assessment/list")
-}, 1000)
-}
-}}>
+<Button variant="secondary" onClick={handleSaveComplete}>
 <Save size={18} className="mr-1" />
 저장완료
 </Button>

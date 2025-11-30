@@ -1,4 +1,3 @@
-// FormScreen.tsx
 import React, { useState, useEffect } from "react"
 import Button from "@/components/common/base/Button"
 import { X, Search } from "lucide-react"
@@ -66,35 +65,26 @@ onSave,
 isModal = false,
 notifyEnabled = true,
 }: FormScreenProps) {
-// ============================================
-// 스타일 상수 - 최상단 분리
-// ============================================
-// Border & Radius
 const BORDER_RADIUS = "8px"
 const BORDER_RADIUS_SM = "3px"
 const BORDER_STYLE = { borderWidth: "1px", borderStyle: "solid" as const, borderColor: "var(--border)" }
 
-// Font Size
 const FONT_SM = "text-sm"
 const FONT_BASE = "text-[15px]"
 const FONT_SM_MD = "text-sm md:text-[15px]"
 const FONT_BASE_MD = "text-sm md:text-base"
 
-// Font Style Objects
 const headerFont = { fontWeight: 600, color: "var(--tertiary)" }
 const bodyFont = { fontWeight: 400, color: "#666" }
 
-// Background
 const BG_WHITE = "bg-white"
 const BG_READONLY = "bg-gray-100"
 const BG_PASSWORD = "bg-gray-50"
 
-// Text Colors
 const TEXT_PRIMARY = "text-gray-800"
 const TEXT_SECONDARY = "text-gray-600"
 const TEXT_DISABLED = "text-gray-500"
 
-// 공통 스타일 조합
 const BORDER_CLASS = `rounded-[${BORDER_RADIUS}]`
 const PLACEHOLDER_CLASS = `placeholder:font-normal placeholder:${TEXT_SECONDARY} placeholder:${FONT_SM_MD}`
 const TEXT_BASE_CLASS = `${FONT_SM_MD} font-medium`
@@ -116,9 +106,6 @@ const TAG_PLACEHOLDER_CLASS = `${FONT_SM_MD} font-normal ${TEXT_SECONDARY} selec
 
 const SELECT_PADDING = "pr-8"
 
-// ============================================
-// 상태 및 로직
-// ============================================
 const [tagItems, setTagItems] = useState<{ value: string; label: string }[]>([])
 const [tagsOpen, setTagsOpen] = useState(false)
 
@@ -138,9 +125,17 @@ target: { name, value: next.join(",") },
 } as React.ChangeEvent<HTMLInputElement>)
 }
 
-// ============================================
-// 입력 요소 렌더링
-// ============================================
+const addOneDay = (fieldName: string) => {
+const currentDate = values[fieldName]
+if (!currentDate) return
+const date = new Date(currentDate)
+date.setDate(date.getDate() + 1)
+const newDate = date.toISOString().split('T')[0]
+onChange({
+target: { name: fieldName, value: newDate },
+} as React.ChangeEvent<HTMLInputElement>)
+}
+
 const renderInput = (field: Field) => {
 const isRO = field.type === "readonly"
 const isPW = field.name === "currentPassword"
@@ -249,8 +244,8 @@ style={BORDER_STYLE}
 {...(required ? { required: true } : {})}
 >
 <option value="">{type === 'hour' ? '시' : '분'}</option>
-{type === 'hour' 
-? [...Array(24).keys()].map(h => <option key={h} value={h}>{h}시</option>)
+{type === 'hour'
+? [...Array(24).keys()].map(h => <option key={h} value={String(h)}>{h}시</option>)
 : ["00", "10", "20", "30", "40", "50"].map(m => <option key={m} value={m}>{m}분</option>)
 }
 </select>
@@ -262,7 +257,7 @@ return (
 <div className="flex flex-wrap items-center gap-2">
 {renderDateInput(field.name, values[field.name], field.required !== false, field.disabled)}
 {field.showPlusOne !== false && (
-<Button variant="action" onClick={() => {}} className="h-[36px] px-3 shrink-0">
+<Button variant="action" onClick={() => addOneDay(field.name)} className="h-[36px] px-3 shrink-0">
 +1일
 </Button>
 )}
@@ -289,7 +284,6 @@ if (field.type === "timeRange") {
 return (
 <div className="flex flex-col gap-2 w-full">
 <div className="flex flex-col md:flex-row items-start md:items-center gap-2 w-full">
-{/* 시작 시간 */}
 <div className="flex items-center gap-1">
 <div className="relative w-[80px] md:w-[80px] shrink-0">
 <select
@@ -303,7 +297,7 @@ style={BORDER_STYLE}
 {[...Array(19).keys()].map(h => {
 const hour = h + 6
 return (
-<option key={hour} value={hour}>
+<option key={hour} value={String(hour)}>
 {hour}시
 </option>
 )
@@ -331,7 +325,6 @@ style={BORDER_STYLE}
 
 <span className={`${FONT_SM_MD} ${TEXT_PRIMARY} shrink-0 self-start md:self-center`}>~</span>
 
-{/* 종료 시간 */}
 <div className="flex items-center gap-1">
 <div className="relative w-[80px] md:w-[80px] shrink-0">
 <select
@@ -345,7 +338,7 @@ style={BORDER_STYLE}
 {[...Array(19).keys()].map(h => {
 const hour = h + 6
 return (
-<option key={hour} value={hour}>
+<option key={hour} value={String(hour)}>
 {hour}시
 </option>
 )
@@ -376,12 +369,12 @@ style={BORDER_STYLE}
 <span className="text-xs md:text-sm font-medium text-gray-600">
 진행시간:&nbsp;
 {(() => {
-const sh = values.startHour !== "" ? Number(values.startHour) : null
-const sm = values.startMinute !== "" ? Number(values.startMinute) : null
-const eh = values.endHour !== "" ? Number(values.endHour) : null
-const em = values.endMinute !== "" ? Number(values.endMinute) : null
+const sh = values.startHour && values.startHour !== "" ? parseInt(values.startHour) : null
+const sm = values.startMinute && values.startMinute !== "" ? parseInt(values.startMinute) : null
+const eh = values.endHour && values.endHour !== "" ? parseInt(values.endHour) : null
+const em = values.endMinute && values.endMinute !== "" ? parseInt(values.endMinute) : null
 
-if (sh === null || sm === null || eh === null || em === null) {
+if (sh === null || sm === null || eh === null || em === null || isNaN(sh) || isNaN(sm) || isNaN(eh) || isNaN(em)) {
 return "-"
 }
 
@@ -390,7 +383,7 @@ const endTotal = eh * 60 + em
 const diff = endTotal - startTotal
 
 if (diff < 0) {
-return <span className="text-red-600">⚠ 종료시간이 시작시간보다 이릅니다</span>
+return <span className="text-red-600">⚠ 종료시간이 시작시간보다 빠릅니다</span>
 }
 
 if (diff === 0) {

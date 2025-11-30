@@ -22,7 +22,7 @@ regulation:string
 registered:string
 modified:string
 completed:string
-status:string
+status:{text:string,color:string}
 }
 
 export type FrequencyStep1Row={

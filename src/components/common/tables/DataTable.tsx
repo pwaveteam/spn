@@ -25,7 +25,9 @@ export type ColumnType =
   | "percent"
   | "upload"
   | "checkbox"
-  | "index";
+  | "index"
+  | "riskRadio"
+  | "reduction";
 
 export type Column<T = DataRow> = {
   key: string;
@@ -57,6 +59,8 @@ export interface DataTableProps<T = DataRow> {
   onDetailClick?: (row: T) => void;
   onSignClick?: (row: T) => void;
   onUploadChange?: (id: number | string, key: string, file: File) => void;
+  onRiskChange?: (id: number | string, key: string, value: number) => void;
+  onReductionClick?: (row: T) => void;
 }
 
 const commonHeaderClass = "font-semibold text-[var(--tertiary)] whitespace-nowrap overflow-hidden text-ellipsis";
@@ -76,6 +80,8 @@ function DataTable<T extends DataRow = DataRow>({
   onDetailClick,
   onSignClick,
   onUploadChange,
+  onRiskChange,
+  onReductionClick
 }: DataTableProps<T>) {
   const [checked, setChecked] = React.useState<(number | string)[]>([]);
   const [viewerOpen, setViewerOpen] = React.useState(false);
@@ -155,6 +161,8 @@ function DataTable<T extends DataRow = DataRow>({
       "detail",
       "sign",
       "checkbox",
+      "riskRadio",
+      "reduction"
     ];
     if (centerTypes.includes(col.type || "text")) return "center";
     if (col.type === "percent") return "right";
@@ -416,6 +424,61 @@ function DataTable<T extends DataRow = DataRow>({
           </div>
         );
 
+        case "riskRadio":
+        return (
+          <div className="flex justify-center gap-3 w-full h-full items-center">
+            {[3, 2, 1].map((level) => {
+              const color = level === 3 ? "#FF3939" : level === 2 ? "#FFE13E" : "#1EED1E";
+              const text = level === 3 ? "상" : level === 2 ? "중" : "하";
+              const isSelected = value === level;
+              
+              return (
+                <div
+                  key={level}
+                  className="flex items-center gap-1 cursor-pointer select-none"
+                  onClick={() => onRiskChange?.(row.id, col.key, level)}
+                >
+                  <div
+                    className="w-3.5 h-3.5 rounded-full flex items-center justify-center transition-all"
+                    style={{ border: `1px solid ${color}` }}
+                  >
+                    {isSelected && (
+                      <div
+                        className="w-2 h-2 rounded-full"
+                        style={{ backgroundColor: color }}
+                      />
+                    )}
+                  </div>
+                  <span className="text-xs md:text-[13px] font-medium text-[#333639]">
+                    {text}({level})
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        );
+
+        case "reduction":
+          const hasAction = !!value;
+          return (
+            <div className="flex justify-center items-center w-full h-full">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onReductionClick?.(row);
+                }}
+                className={`h-[30px] px-3 rounded-lg text-[12px] font-medium border transition-colors ${
+                  hasAction
+                    ? "bg-[#F3F4F6] text-[#6B7280] border-[#D1D5DB] hover:bg-gray-200"
+                    : "bg-[#D0E3F8] text-[#1A4FA3] border-[#B7CCE3] hover:bg-[#C0D8F0]"
+                }`}
+              >
+                {hasAction ? "감소대책 보기" : "감소대책 수립"}
+              </button>
+            </div>
+          );
+
       case "percent":
         const rawPercent = value?.toString().replace("%", "") || "";
         return (
@@ -493,7 +556,7 @@ function DataTable<T extends DataRow = DataRow>({
                 key={row.id}
                 className={`${
                   rowIdx % 2 === 0 ? "bg-white" : "bg-[var(--neutral-bg)]"
-                } hover:bg-gray-50 transition-colors`}
+                }`}
               >
                 <td
                   className={`align-middle w-[60px] pl-[19px] pr-[13px] py-[11px] ${commonBodyClass}`}

@@ -6,16 +6,23 @@ import FormScreen, { Field } from "@/components/common/forms/FormScreen"
 import ToggleSwitch from "@/components/common/base/ToggleSwitch"
 import PageTitle from "@/components/common/base/PageTitle"
 import CertificatePanel from "@/components/modules/CertificatePanel"
+import LoadListDialog from "@/components/modules/LoadListDialog"
+import { X } from "lucide-react"
 
 interface Attendee { name: string; phone: string; signature?: string }
+
+const riskEvaluationTemplates = ["건설기계_2025-03-30", "물리적인자_2025-03-30", "터널 공사_2025-03-30", "기타_2025-03-30", "크레인 작업_2025-03-30"]
 
 export default function EducationRegister() {
 const navigate = useNavigate()
 const [attendees, setAttendees] = useState<Attendee[]>([])
 const [notify, setNotify] = useState(true)
+const [riskModalOpen, setRiskModalOpen] = useState(false)
+
 const [formData, setFormData] = useState({
 category: "", course: "", eduName: "", startDate: "", endDate: "", startHour: "", startMinute: "", endHour: "", endMinute: "",
-educationMethod: "", assigner: "", trainer: "", eduMaterial: "", sitePhotos: "", fileUpload: "", note: "", notifyWhen: "1주일 전"
+educationMethod: "", assigner: "", trainer: "", eduMaterial: "", sitePhotos: "", fileUpload: "", note: "", notifyWhen: "1주일 전",
+linkedRiskAssessment: "" 
 })
 
 const categoryOptions = ["근로자 교육", "관리자 교육", "기타 교육"]
@@ -50,6 +57,22 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HT
 const { name, value, type } = e.target
 const checked = (e.target as HTMLInputElement).checked
 setFormData(prev => ({ ...prev, [name]: type === "checkbox" ? checked : value, ...(name === "category" ? { course: "" } : {}) }))
+}
+
+const handleRiskSelect = (selected: string | number | (string | number)[] | null) => {
+if (selected === null) return
+
+let value = ""
+if (Array.isArray(selected)) {
+if (selected.length > 0) value = String(selected[0])
+} else {
+value = String(selected)
+}
+
+if (value) {
+setFormData(prev => ({ ...prev, linkedRiskAssessment: value }))
+}
+setRiskModalOpen(false)
 }
 
 const NotifyToggle = (
@@ -89,11 +112,48 @@ customRender: (
 { label: "교육방식", name: "educationMethod", type: "select", options: [
 { value: "자체교육", label: "자체교육" },
 { value: "온라인·집체교육", label: "온라인·집체교육" }
-], required: false
+], required: false 
 },
 { label: "교육담당자", name: "assigner", type: "text", required: false },
-{ label: "강사", name: "trainer", type: "text", required: false },
-{ label: "교육자료", name: "eduMaterial", type: "fileUpload", required: false },
+{ label: "외부강사", name: "trainer", type: "text", required: false },
+{
+label: "교육자료",
+name: "eduMaterial",
+type: "fileUpload",
+required: false,
+buttonRender: (
+<div className="flex items-center gap-2 w-full">
+{!formData.linkedRiskAssessment ? (
+<Button variant="action" onClick={() => setRiskModalOpen(true)} className="shrink-0 h-[30px] text-xs px-2">
+위험성평가 불러오기
+</Button>
+) : (
+// FormScreen의 태그 스타일과 동일하게 적용 (회색 배경, 둥근 모서리)
+<div className="flex items-center gap-1 px-[9px] py-[3px] bg-[#F9F9F9] border border-[#E5E7EB] rounded-[8px] text-[13px] text-gray-800">
+<span className="truncate max-w-[200px]">{formData.linkedRiskAssessment}</span>
+<button 
+onClick={() => setFormData(prev => ({ ...prev, linkedRiskAssessment: "" }))}
+className="ml-1 text-gray-500 hover:text-gray-700"
+title="삭제"
+>
+<X size={12} />
+</button>
+</div>
+)}
+
+{riskModalOpen && (
+<LoadListDialog
+isOpen={riskModalOpen}
+items={riskEvaluationTemplates.map(p => ({ id: p, name: p }))}
+selectedId={formData.linkedRiskAssessment}
+singleSelect
+onChangeSelected={handleRiskSelect}
+onClose={() => setRiskModalOpen(false)}
+/>
+)}
+</div>
+)
+},
 { label: "현장사진", name: "sitePhotos", type: "photoUpload", required: false },
 { label: "첨부파일", name: "fileUpload", type: "fileUpload", required: false },
 { label: "비고", name: "note", type: "textarea", required: false },
@@ -102,7 +162,7 @@ customRender: (
 { value: "1일 전", label: "1일 전" },
 { value: "1주일 전", label: "1주일 전" },
 { value: "1개월 전", label: "1개월 전" }
-], disabled: !notify, required: false
+], disabled: !notify, required: false 
 }
 ]
 

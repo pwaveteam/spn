@@ -20,23 +20,18 @@ const columns: Column[] = [
 { key: "department", label: "부서" },
 { key: "position", label: "직급" },
 { key: "phone", label: "연락처" },
-{ key: "entryDate", label: "입사일", type: "date" },
-{ key: "assignDate", label: "안전직위 지정일", type: "date" },
+{ key: "entryDate", label: "입사일" },
+{ key: "assignDate", label: "안전직위 지정일" },
+{ key: "appointmentCertificate", label: "선임(신고서)", type: "download" },
 { key: "manage", label: "관리", type: "manage" }
 ]
 
 const orgTreeData: OrgNode[] = [
 {
-id: "1",
-title: "경영책임자",
-name: "박대표",
-position: "대표이사",
+id: "1", title: "경영책임자", name: "박대표", position: "대표이사",
 children: [
 {
-id: "2",
-title: "안전보건관리책임자",
-name: "최책임",
-position: "부장",
+id: "2", title: "안전보건관리책임자", name: "최책임", position: "부장",
 children: [
 { id: "3", title: "안전관리자", name: "박안전", position: "과장" },
 { id: "4", title: "보건관리자", name: "이보건", position: "주임" }
@@ -47,9 +42,9 @@ children: [
 ]
 
 const supervisorNodes: OrgNode[] = [
-{id:"5",title:"관리감독자",name:"김반장",position:"반장"},
-{id:"6",title:"관리감독자",name:"조반장",position:"반장"},
-{id:"7",title:"관리감독자",name:"최반장",position:"반장"}
+{ id: "5", title: "관리감독자", name: "김반장", position: "반장" },
+{ id: "6", title: "관리감독자", name: "조반장", position: "반장" },
+{ id: "7", title: "관리감독자", name: "최반장", position: "반장" }
 ]
 
 export default function Organization() {
@@ -60,9 +55,9 @@ const [orgChartTab, setOrgChartTab] = useState(0)
 const [uploadedOrgChart, setUploadedOrgChart] = useState<string>("")
 const fileInputRef = useRef<HTMLInputElement>(null)
 
-const {currentPage, totalPages, currentData, onPageChange} = usePagination<DataRow>(staffs, 30)
+const { currentPage, totalPages, currentData, onPageChange } = usePagination<DataRow>(staffs, 30)
 
-const {handleCreate, handleDelete, handleImageSave} = useTableActions({
+const { handleCreate, handleDelete, handleImageSave } = useTableActions({
 data: staffs,
 checkedIds,
 onCreate: () => setModalOpen(true),
@@ -72,14 +67,21 @@ onDeleteSuccess: (ids) => setStaffs(prev => prev.filter(row => !ids.includes(row
 const handleOrgChartFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 if (e.target.files && e.target.files.length > 0) {
 const file = e.target.files[0]
-const fileUrl = URL.createObjectURL(file)
-setUploadedOrgChart(fileUrl)
+setUploadedOrgChart(URL.createObjectURL(file))
 }
 }
 
 const handleSaveStaff = (staff: Partial<DataRow>) => {
 setStaffs(prev => [{ id: Date.now(), ...staff }, ...prev])
 setModalOpen(false)
+}
+
+const handleDownload = (row: DataRow) => {
+if (row.appointmentCertificate) {
+alert(`파일 다운로드: ${row.appointmentCertificate}`)
+} else {
+alert("등록된 파일이 없습니다.")
+}
 }
 
 return (
@@ -96,13 +98,12 @@ return (
 </div>
 
 <div className="overflow-x-auto bg-white">
-<DataTable columns={columns} data={currentData} onCheckedChange={setCheckedIds} />
+<DataTable columns={columns} data={currentData} onCheckedChange={setCheckedIds} onDownloadClick={handleDownload} />
 </div>
 
 <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
 
 <PageTitle>안전조직도</PageTitle>
-
 <TabMenu tabs={ORG_CHART_TABS} activeIndex={orgChartTab} onTabClick={setOrgChartTab} className="mb-3" />
 
 {orgChartTab === 0 ? (
@@ -119,18 +120,18 @@ return (
 ) : (
 <div>
 <div className="w-full bg-white rounded-[8px] p-6 flex justify-center min-h-[200px]">
-{uploadedOrgChart?(
+{uploadedOrgChart ? (
 <div className="w-full flex justify-center">
 <img src={uploadedOrgChart} alt="조직도이미지" className="max-w-[800px] max-h-[600px] object-contain rounded" />
 </div>
-):(
+) : (
 <div className="flex flex-col items-center text-center text-gray-600 mt-16 mb-16">
 <div className="mb-4 w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gray-100 flex items-center justify-center">
 <ShieldAlert size={24} className="sm:w-8 sm:h-8 w-6 h-6 text-gray-500" />
 </div>
 <h3 className="text-sm sm:text-lg font-semibold mb-1">사업장 조직도가 등록되지 않았습니다.</h3>
 <p className="text-xs sm:text-sm text-gray-500 mb-5">조직도 이미지를 업로드한 후 조직관리를 시작해보세요</p>
-<Button variant="action" onClick={()=>fileInputRef.current?.click()} className="flex items-center justify-center gap-1 px-6">
+<Button variant="action" onClick={() => fileInputRef.current?.click()} className="flex items-center justify-center gap-1 px-6">
 <Upload size={16} className="text-gray-500" />
 조직도 이미지 업로드
 </Button>
@@ -139,9 +140,7 @@ return (
 )}
 </div>
 </div>
-
 )}
-
 <StaffRegisterModal isOpen={modalOpen} onClose={() => setModalOpen(false)} onSave={handleSaveStaff} />
 </section>
 )

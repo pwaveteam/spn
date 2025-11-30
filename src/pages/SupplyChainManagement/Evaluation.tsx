@@ -13,7 +13,7 @@ import EvaluationRegister from"./EvaluationRegister"
 import{CirclePlus,Download,Trash2,Save}from"lucide-react"
 import { evaluationMockData } from "@/data/mockData"
 
-const TAB_LABELS=["수급업체 관리","안전보건수준 평가","도급안전보건 회의록","안전보건 점검","안전보건 교육/훈련"]
+const TAB_LABELS=["수급업체 관리","안전보건수준 평가","안전보건협의체 회의록","협동 안전보건점검","안전보건 교육/훈련"]
 const TAB_PATHS=["/supply-chain-management/partners","/supply-chain-management/evaluation","/supply-chain-management/committee","/supply-chain-management/siteaudit","/supply-chain-management/training"]
 
 const columns:Column[]=[

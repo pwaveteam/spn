@@ -10,6 +10,7 @@ position: string
 phone: string
 entryDate: string
 assignDate: string
+appointmentCertificate?: string
 }
 
 type StaffRegisterModalProps = {
@@ -37,16 +38,15 @@ phonePrefix: "010",
 phoneMiddle: "",
 phoneLast: "",
 entryDate: "",
-assignDate: ""
+assignDate: "",
+appointmentCertificate: ""
 }
 
 export default function StaffRegisterModal({ isOpen, onClose, onSave }: StaffRegisterModalProps) {
 const [formData, setFormData] = useState<{ [key: string]: string }>(initialFormData)
 
 useEffect(() => {
-if (isOpen) {
-setFormData(initialFormData)
-}
+if (isOpen) setFormData(initialFormData)
 }, [isOpen])
 
 const isAssignDateDisabled = formData.safetyPosition === "해당없음"
@@ -57,6 +57,7 @@ const fields: Field[] = [
 { label: "연락처", name: "phone", type: "phone", placeholder: "연락처 입력", required: true },
 { label: "안전직위", name: "safetyPosition", type: "select", options: safetyPositionOptions, required: true },
 { label: "안전직위 지정일", name: "assignDate", type: "date", required: false, disabled: isAssignDateDisabled },
+{ label: "선임(신고서)", name: "appointmentCertificate", type: "fileUpload", required: false, disabled: isAssignDateDisabled },
 { label: "부서", name: "department", type: "text", placeholder: "부서 입력", required: false },
 { label: "직급", name: "position", type: "text", placeholder: "직급 입력", required: false },
 { label: "입사일", name: "entryDate", type: "date", required: false, disabled: isEntryDateDisabled }
@@ -66,7 +67,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
 const { name, value } = e.target
 if (name === "safetyPosition") {
 if (value === "해당없음") {
-setFormData(prev => ({ ...prev, [name]: value, assignDate: "" }))
+setFormData(prev => ({ ...prev, [name]: value, assignDate: "", appointmentCertificate: "" }))
 } else if (value === "경영책임자") {
 setFormData(prev => ({ ...prev, [name]: value, entryDate: "" }))
 } else {
@@ -83,14 +84,7 @@ return (
 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
 <div className="bg-white rounded-2xl w-[800px] max-w-full p-8 shadow-2xl max-h-[80vh] overflow-y-auto transform transition duration-300 ease-in-out scale-100 opacity-100">
 <h2 className="text-2xl font-semibold tracking-wide mb-3">인력 추가</h2>
-<FormScreen 
-fields={fields} 
-values={formData} 
-onChange={handleChange} 
-onClose={onClose}
-onSave={() => onSave(formData as Staff)}
-isModal={true} 
-/>
+<FormScreen fields={fields} values={formData} onChange={handleChange} onClose={onClose} onSave={() => onSave(formData as Staff)} isModal={true} />
 <div className="mt-6 flex justify-center gap-1">
 <Button variant="primaryOutline" onClick={onClose}>닫기</Button>
 <Button variant="primary" onClick={() => onSave(formData as Staff)}>저장하기</Button>

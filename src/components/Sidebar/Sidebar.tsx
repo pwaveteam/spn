@@ -15,15 +15,15 @@ onClose?:()=>void
 }
 
 const safetySubMenu:MenuItem[]=[
-{label:"PTW",path:"/ptw",Icon:ClipboardDocumentIcon},
-{label:"안전점검",path:"/inspection",Icon:ListBulletIcon},
-{label:"TBM",path:"/tbm",Icon:DocumentTextIcon},
-{label:"아차사고",path:"/nearmiss",Icon:ClipboardDocumentListIcon},
-{label:"안전교육",path:"/safety-education",Icon:BookOpenIcon},
+{label:"위험성평가",path:"/risk-assessment",Icon:ShieldCheckIcon},
+{label:"안전작업허가",path:"/ptw",Icon:ClipboardDocumentIcon},
+{label:"안전교육관리",path:"/safety-education",Icon:BookOpenIcon},
+{label:"안전점검관리",path:"/inspection",Icon:ListBulletIcon},
 {label:"자산관리",path:"/asset-management",Icon:ArchiveBoxIcon},
-{label:"안전작업허가서",path:"/safety-work-permit",Icon:ClipboardDocumentCheckIcon},
 {label:"도급협의체관리",path:"/supply-chain-management",Icon:UserGroupIcon},
-{label:"위험성평가",path:"/risk-assessment",Icon:ShieldCheckIcon}
+{label:"안전보이스",path:"/nearmiss",Icon:ClipboardDocumentListIcon},
+{label:"TBM",path:"/tbm",Icon:DocumentTextIcon},
+{label:"작업중지권요청",path:"/safety-work-permit",Icon:ClipboardDocumentCheckIcon},
 ]
 
 const infoSubMenu:MenuItem[]=[
