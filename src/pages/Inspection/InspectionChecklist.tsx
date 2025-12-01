@@ -39,10 +39,8 @@ const columns:Column[]=[
 export default function InspectionChecklist(){
 const navigate=useNavigate()
 const{currentIndex,handleTabClick}=useTabNavigation(TAB_PATHS)
-
 const[data,setData]=useState<ChecklistRow[]>(inspectionChecklistMockData as ChecklistRow[])
 const[checkedIds,setCheckedIds]=useState<(number|string)[]>([])
-
 const{searchText,setSearchText}=useFilterBar()
 const[inspectionField,setInspectionField]=useState("")
 const[inspectionKind,setInspectionKind]=useState("")
@@ -61,15 +59,14 @@ handleDownload
 }=useTableActions({
 data,
 checkedIds,
-onCreate:()=>navigate("/inspection/checklist/register"),
-onDeleteSuccess:(ids)=>setData(p=>p.filter(r=>!ids.includes(r.id)))
+onCreate:()=>navigate("/inspection/checklist/register",{state:{mode:"create"}}),
+onDeleteSuccess:ids=>setData(p=>p.filter(r=>!ids.includes(r.id)))
 })
 
 return(
 <section className="inspection-checklist w-full bg-white">
 <PageTitle>{TAB_LABELS[currentIndex]}</PageTitle>
 <TabMenu tabs={TAB_LABELS}activeIndex={currentIndex}onTabClick={handleTabClick}className="mb-6"/>
-
 <div className="mb-3">
 <FilterBar
 inspectionField={inspectionField}
@@ -82,10 +79,8 @@ onSearch={()=>{}}
 showDateRange={false}
 />
 </div>
-
 <div className="flex flex-col-reverse sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
 <span className="text-gray-600 text-sm leading-none pt-[3px] mt-2 sm:mt-0">총 {data.length}건</span>
-
 <div className="flex flex-col gap-1 w-full justify-end sm:hidden">
 <div className="flex gap-1 justify-end">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
@@ -93,23 +88,20 @@ showDateRange={false}
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
-
 <div className="hidden sm:flex flex-nowrap gap-1 w-auto justify-end">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
 <Button variant="action"onClick={handleDownload}className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
-
 <div className="overflow-x-auto bg-white">
 <DataTable
 columns={columns}
 data={currentData}
 onCheckedChange={setCheckedIds}
-onManageClick={row=>navigate(`/inspection/checklist/${row.id}`)}
+onManageClick={()=>navigate("/inspection/checklist/register",{state:{mode:"edit"}})}
 />
 </div>
-
 <Pagination currentPage={currentPage}totalPages={totalPages}onPageChange={onPageChange}/>
 </section>
 )

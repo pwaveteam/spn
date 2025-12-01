@@ -12,7 +12,7 @@ import useTableActions from"@/hooks/tableActions"
 import useTabNavigation from"@/hooks/useTabNavigation"
 import CommitteeRegister from"./CommitteeRegister"
 import{CirclePlus,Download,Trash2,Save,Upload,ShieldAlert}from"lucide-react"
-import { committeeMockData } from "@/data/mockData"
+import{committeeMockData}from"@/data/mockData"
 
 const TAB_LABELS=["수급업체 관리","안전보건수준 평가","안전보건협의체 회의록","협동 안전보건점검","안전보건 교육/훈련"]
 const TAB_PATHS=["/supply-chain-management/partners","/supply-chain-management/evaluation","/supply-chain-management/committee","/supply-chain-management/siteaudit","/supply-chain-management/training"]
@@ -33,6 +33,7 @@ const{startDate,endDate,searchText,setStartDate,setEndDate,setSearchText}=useFil
 const[data,setData]=useState<DataRow[]>(committeeMockData)
 const[checkedIds,setCheckedIds]=useState<(number|string)[]>([])
 const[modalOpen,setModalOpen]=useState(false)
+const[isEditMode,setIsEditMode]=useState(false)
 
 const{
 currentPage,
@@ -49,7 +50,10 @@ handleFormDownload
 }=useTableActions({
 data,
 checkedIds,
-onCreate:()=>setModalOpen(true),
+onCreate:()=>{
+setIsEditMode(false)
+setModalOpen(true)
+},
 onDeleteSuccess:(ids)=>setData(prev=>prev.filter(row=>!ids.includes(row.id)))
 })
 
@@ -59,6 +63,7 @@ setData(prev=>[
 ...prev
 ])
 setModalOpen(false)
+setIsEditMode(false)
 }
 
 const hasOrganization=false
@@ -92,7 +97,15 @@ onSearch={()=>{}}
 </div>
 
 <div className="overflow-x-auto bg-white">
-<DataTable columns={columns}data={currentData}onCheckedChange={setCheckedIds}/>
+<DataTable
+columns={columns}
+data={currentData}
+onCheckedChange={setCheckedIds}
+onManageClick={()=>{
+setIsEditMode(true)
+setModalOpen(true)
+}}
+/>
 </div>
 
 <Pagination currentPage={currentPage}totalPages={totalPages}onPageChange={onPageChange}/>
@@ -106,8 +119,8 @@ onSearch={()=>{}}
 </div>
 <h3 className="text-sm sm:text-lg font-semibold mb-1">도급협의체 조직도가 등록되지 않았습니다.</h3>
 <p className="text-xs sm:text-sm text-gray-500 mb-5">조직도 이미지를 업로드한 후 조직관리를 시작해보세요</p>
-<Button variant="action" className="flex items-center justify-center gap-1 px-6">
-<Upload size={16} className="text-gray-500"/>
+<Button variant="action"className="flex items-center justify-center gap-1 px-6">
+<Upload size={16}className="text-gray-500"/>
 조직도 이미지 업로드
 </Button>
 </div>
@@ -116,7 +129,15 @@ onSearch={()=>{}}
 )}
 
 {modalOpen&&(
-<CommitteeRegister isOpen={modalOpen}onClose={()=>setModalOpen(false)}onSave={handleSave}/>
+<CommitteeRegister
+isOpen={modalOpen}
+onClose={()=>{
+setModalOpen(false)
+setIsEditMode(false)
+}}
+onSave={handleSave}
+isEdit={isEditMode}
+/>
 )}
 </section>
 )

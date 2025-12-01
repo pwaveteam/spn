@@ -1,5 +1,4 @@
 import React,{useState}from"react"
-import{useNavigate,useLocation}from"react-router-dom"
 import Button from"@/components/common/base/Button"
 import FilterBar from"@/components/common/base/FilterBar"
 import DataTable,{Column,DataRow}from"@/components/common/tables/DataTable"
@@ -11,8 +10,8 @@ import useFilterBar from"@/hooks/useFilterBar"
 import useTableActions from"@/hooks/tableActions"
 import useTabNavigation from"@/hooks/useTabNavigation"
 import SiteAuditRegister from"@/pages/SupplyChainManagement/SiteAuditRegister"
-import {CirclePlus,Download,Trash2,Save}from"lucide-react"
-import { siteAuditMockData } from "@/data/mockData"
+import{CirclePlus,Download,Trash2,Save}from"lucide-react"
+import{siteAuditMockData}from"@/data/mockData"
 
 const TAB_LABELS=["수급업체 관리","안전보건수준 평가","안전보건협의체 회의록","협동 안전보건점검","안전보건 교육/훈련"]
 const TAB_PATHS=["/supply-chain-management/partners","/supply-chain-management/evaluation","/supply-chain-management/committee","/supply-chain-management/siteaudit","/supply-chain-management/training"]
@@ -36,7 +35,8 @@ const{startDate,endDate,searchText,setStartDate,setEndDate,setSearchText}=useFil
 
 const[data,setData]=useState<DataRow[]>(siteAuditMockData)
 const[checkedIds,setCheckedIds]=useState<(number|string)[]>([])
-const[modalOpen,setModalOpen]=useState(false)
+const[isModalOpen,setIsModalOpen]=useState(false)
+const[isEditMode,setIsEditMode]=useState(false)
 
 const{
 currentPage,
@@ -53,13 +53,17 @@ handleFormDownload
 }=useTableActions({
 data,
 checkedIds,
-onCreate:()=>setModalOpen(true),
+onCreate:()=>{
+setIsEditMode(false)
+setIsModalOpen(true)
+},
 onDeleteSuccess:(ids)=>setData(prev=>prev.filter(r=>!ids.includes(r.id)))
 })
 
 const handleSave=(item:Partial<DataRow>)=>{
 setData(prev=>[{id:prev.length+1,...item},...prev])
-setModalOpen(false)
+setIsModalOpen(false)
+setIsEditMode(false)
 }
 
 return(
@@ -69,7 +73,15 @@ return(
 <TabMenu tabs={TAB_LABELS}activeIndex={currentIndex}onTabClick={handleTabClick}className="mb-6"/>
 
 <div className="mb-3">
-<FilterBar startDate={startDate}endDate={endDate}onStartDate={setStartDate}onEndDate={setEndDate}searchText={searchText}onSearchText={setSearchText}onSearch={()=>{}}/>
+<FilterBar
+startDate={startDate}
+endDate={endDate}
+onStartDate={setStartDate}
+onEndDate={setEndDate}
+searchText={searchText}
+onSearchText={setSearchText}
+onSearch={()=>{}}
+/>
 </div>
 
 <div className="flex flex-col-reverse sm:flex-row justify-between items-start sm:items-center mb-3 gap-1">
@@ -84,13 +96,29 @@ return(
 </div>
 
 <div className="overflow-x-auto bg-white">
-<DataTable columns={columns}data={currentData}onCheckedChange={setCheckedIds}/>
+<DataTable
+columns={columns}
+data={currentData}
+onCheckedChange={setCheckedIds}
+onManageClick={()=>{
+setIsEditMode(true)
+setIsModalOpen(true)
+}}
+/>
 </div>
 
 <Pagination currentPage={currentPage}totalPages={totalPages}onPageChange={onPageChange}/>
 
-{modalOpen&&(
-<SiteAuditRegister isOpen={modalOpen}onClose={()=>setModalOpen(false)}onSave={handleSave}/>
+{isModalOpen&&(
+<SiteAuditRegister
+isOpen={isModalOpen}
+onClose={()=>{
+setIsModalOpen(false)
+setIsEditMode(false)
+}}
+onSave={handleSave}
+isEdit={isEditMode}
+/>
 )}
 </section>
 )

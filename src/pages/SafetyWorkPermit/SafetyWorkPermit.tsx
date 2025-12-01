@@ -31,6 +31,7 @@ export default function SafetyWorkPermit(){
 const[data,setData]=useState<DataRow[]>(safetyWorkPermitMockData)
 const[checkedIds,setCheckedIds]=useState<(number|string)[]>([])
 const[isModalOpen,setIsModalOpen]=useState(false)
+const[isEditMode,setIsEditMode]=useState(false)
 
 const{startDate,endDate,searchText,setStartDate,setEndDate,setSearchText}=useFilterBar()
 const{currentPage,totalPages,currentData,onPageChange}=usePagination<DataRow>(data,30)
@@ -41,11 +42,14 @@ handleDelete
 }=useTableActions({
 data,
 checkedIds,
-onCreate:()=>setIsModalOpen(true),
+onCreate:()=>{
+setIsEditMode(false)
+setIsModalOpen(true)
+},
 onDeleteSuccess:ids=>setData(prev=>prev.filter(row=>!ids.includes(row.id)))
 })
 
-const handlePermitFormDownload=useCallback(()=>alert("안전작업허가서 양식 다운로드"),[])
+const handlePermitFormDownload=useCallback(()=>{alert("안전작업허가서 양식 다운로드")},[])
 
 const handleSave=useCallback((newItem:Partial<DataRow>)=>{
 setData(prev=>[
@@ -53,6 +57,7 @@ setData(prev=>[
 ...prev
 ])
 setIsModalOpen(false)
+setIsEditMode(false)
 },[])
 
 return(
@@ -92,7 +97,15 @@ onSearch={()=>{}}
 </div>
 
 <div className="overflow-x-auto bg-white">
-<DataTable columns={columns}data={currentData}onCheckedChange={setCheckedIds}/>
+<DataTable
+columns={columns}
+data={currentData}
+onCheckedChange={setCheckedIds}
+onManageClick={()=>{
+setIsEditMode(true)
+setIsModalOpen(true)
+}}
+/>
 </div>
 
 <Pagination currentPage={currentPage}totalPages={totalPages}onPageChange={onPageChange}/>
@@ -100,8 +113,12 @@ onSearch={()=>{}}
 {isModalOpen&&(
 <SafetyWorkPermitRegister
 isOpen={isModalOpen}
-onClose={()=>setIsModalOpen(false)}
+onClose={()=>{
+setIsModalOpen(false)
+setIsEditMode(false)
+}}
 onSave={handleSave}
+isEdit={isEditMode}
 />
 )}
 </section>

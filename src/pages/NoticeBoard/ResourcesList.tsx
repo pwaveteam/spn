@@ -1,18 +1,18 @@
-import { useState } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
-import Button from "@/components/common/base/Button"
-import DataTable, { Column, DataRow } from "@/components/common/tables/DataTable"
-import TabMenu from "@/components/common/base/TabMenu"
-import PageTitle from "@/components/common/base/PageTitle"
-import FilterBar from "@/components/common/base/FilterBar"
-import Pagination from "@/components/common/base/Pagination"
-import useFilterBar from "@/hooks/useFilterBar"
-import usePagination from "@/hooks/usePagination"
-import useTabNavigation from "@/hooks/useTabNavigation"
-import useTableActions from "@/hooks/tableActions"
-import ResourcesListRegister from "./ResourcesListRegister"
-import { CirclePlus, Save, Trash2 } from "lucide-react"
-import { resourcesMockData } from "@/data/mockData"
+import { useState } from"react"
+import{useNavigate,useLocation}from"react-router-dom"
+import Button from"@/components/common/base/Button"
+import DataTable,{Column,DataRow}from"@/components/common/tables/DataTable"
+import TabMenu from"@/components/common/base/TabMenu"
+import PageTitle from"@/components/common/base/PageTitle"
+import FilterBar from"@/components/common/base/FilterBar"
+import Pagination from"@/components/common/base/Pagination"
+import useFilterBar from"@/hooks/useFilterBar"
+import usePagination from"@/hooks/usePagination"
+import useTabNavigation from"@/hooks/useTabNavigation"
+import useTableActions from"@/hooks/tableActions"
+import ResourcesListRegister from"./ResourcesListRegister"
+import{CirclePlus,Save,Trash2}from"lucide-react"
+import{resourcesMockData}from"@/data/mockData"
 
 const TAB_LABELS=["공지사항","자료실","중대재해처벌법"]
 const TAB_PATHS=["/notice-board/notice","/notice-board/resources","/notice-board/law"]
@@ -36,6 +36,7 @@ const{currentIndex,handleTabClick}=useTabNavigation(TAB_PATHS)
 const[data,setData]=useState<DataRow[]>(resourcesMockData)
 const[checkedIds,setCheckedIds]=useState<(number|string)[]>([])
 const[modalOpen,setModalOpen]=useState(false)
+const[isEditMode,setIsEditMode]=useState(false)
 
 const{currentPage,totalPages,currentData,onPageChange}=usePagination<DataRow>(data,30)
 
@@ -46,8 +47,11 @@ handleDownload
 }=useTableActions({
 data,
 checkedIds,
-onCreate:()=>setModalOpen(true),
-onDeleteSuccess:(ids)=>setData(prev=>prev.filter(r=>!ids.includes(r.id)))
+onCreate:()=>{
+setIsEditMode(false)
+setModalOpen(true)
+},
+onDeleteSuccess:ids=>setData(prev=>prev.filter(r=>!ids.includes(r.id)))
 })
 
 const handleSave=(item:{title:string;author:string;date:string;fileAttach:boolean})=>{
@@ -55,6 +59,7 @@ const newId=data.length>0?Math.max(...data.map(d=>Number(d.id)))+1:1
 const newRow:DataRow={id:newId,title:item.title,author:item.author,date:item.date,fileAttach:item.fileAttach}
 setData(prev=>[newRow,...prev])
 setModalOpen(false)
+setIsEditMode(false)
 }
 
 return(
@@ -86,13 +91,30 @@ onSearch={()=>{}}
 </div>
 
 <div className="overflow-x-auto bg-white">
-<DataTable columns={columns}data={currentData}onCheckedChange={setCheckedIds}/>
+<DataTable
+columns={columns}
+data={currentData}
+onCheckedChange={setCheckedIds}
+onManageClick={()=>{
+setIsEditMode(true)
+setModalOpen(true)
+}}
+/>
 </div>
 
 <Pagination currentPage={currentPage}totalPages={totalPages}onPageChange={onPageChange}/>
 
 {modalOpen&&(
-<ResourcesListRegister isOpen onClose={()=>setModalOpen(false)}onSave={handleSave}userName="관리자"/>
+<ResourcesListRegister
+isOpen={modalOpen}
+onClose={()=>{
+setModalOpen(false)
+setIsEditMode(false)
+}}
+onSave={handleSave}
+userName="관리자"
+isEdit={isEditMode}
+/>
 )}
 </section>
 )

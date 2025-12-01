@@ -19,7 +19,7 @@ const selectStyle: React.CSSProperties = {
   outline: "none",
   fontSize: 15,
   cursor: "pointer",
-  width: "100%",
+  width: "100%"
 }
 
 export default function FrequencyStep2() {
@@ -29,25 +29,30 @@ export default function FrequencyStep2() {
   const [data, setData] = useState<FrequencyRiskDataRow[]>(frequencyStep2MockData)
 
   const calcRisk = (f: number, i: number) => f * i
-  const getRiskColor = (v: number) => v >= 7 ? "#FF3939" : v >= 4 ? "#FFE13E" : "#1EED1E"
+  const getRiskColor = (v: number) => (v >= 7 ? "#FF3939" : v >= 4 ? "#FFE13E" : "#1EED1E")
 
   const handleInputChange = (id: number | string, key: string, value: string) => {
-    setData(prev => prev.map(r => r.id === id ? { ...r, [key]: value } : r))
+    setData(prev => prev.map(r => (r.id === id ? { ...r, [key]: value } : r)))
   }
 
   const handleUploadChange = (id: number | string, key: string, file: File) => {
     const url = URL.createObjectURL(file)
-    setData(prev => prev.map(r => r.id === id ? { ...r, [key]: url } : r))
+    setData(prev => prev.map(r => (r.id === id ? { ...r, [key]: url } : r)))
   }
 
-  const { handleDelete, handleSave } = useTableActions({
+  const { handleDelete, handleSave, handleSaveAndNext } = useTableActions<FrequencyRiskDataRow>({
     data,
     checkedIds: checked,
     onDeleteSuccess: (ids) => {
       setData(prev => prev.filter(r => !ids.includes(r.id)))
       setChecked([])
     },
-    onSave: () => {},
+    onSave: () => {
+      // 실제 저장 로직
+    },
+    onNextStep: () => {
+      navigate("/risk-assessment/methods/frequency/step3")
+    },
     saveMessage: "임시저장 완료"
   })
 
@@ -64,7 +69,7 @@ export default function FrequencyStep2() {
           <select
             style={selectStyle}
             value={row.frequency}
-            onChange={e => setData(prev => prev.map(r => r.id === row.id ? { ...r, frequency: Number(e.target.value) } : r))}
+            onChange={e => setData(prev => prev.map(r => (r.id === row.id ? { ...r, frequency: Number(e.target.value) } : r)))}
             className="font-semibold"
           >
             {[1, 2, 3].map(v => <option key={v}>{v}</option>)}
@@ -80,7 +85,7 @@ export default function FrequencyStep2() {
           <select
             style={selectStyle}
             value={row.intensity}
-            onChange={e => setData(prev => prev.map(r => r.id === row.id ? { ...r, intensity: Number(e.target.value) } : r))}
+            onChange={e => setData(prev => prev.map(r => (r.id === row.id ? { ...r, intensity: Number(e.target.value) } : r)))}
             className="font-semibold"
           >
             {[1, 2, 3].map(v => <option key={v}>{v}</option>)}
@@ -95,15 +100,13 @@ export default function FrequencyStep2() {
         const val = calcRisk(row.frequency, row.intensity)
         return (
           <div className="flex justify-center">
-            <span className="px-5 py-1 rounded-lg font-bold" style={{ backgroundColor: getRiskColor(val) }}>
-              {val}
-            </span>
+            <span className="px-5 py-1 rounded-lg font-bold" style={{ backgroundColor: getRiskColor(val) }}>{val}</span>
           </div>
         )
       }
     },
     { key: "afterPhoto", label: "평가현장 사진", type: "upload" },
-    { key: "evaluationDate", label: "평가일자", type: "date" },
+    { key: "evaluationDate", label: "평가일자", type: "date" }
   ]
 
   return (
@@ -112,7 +115,6 @@ export default function FrequencyStep2() {
       <div className="flex justify-center w-full">
         <div className="border border-[#DDDDDD] bg-white rounded-[13px] p-8 w-full flex flex-col">
           <PageTitle>위험성평가 실시(빈도·강도법)</PageTitle>
-
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-3 gap-y-2">
             <div className="text-xs sm:text-sm md:text-base md:whitespace-nowrap md:flex-1">
               <span className="font-medium">산재업종분류: </span>
@@ -122,17 +124,11 @@ export default function FrequencyStep2() {
                 기타전기기계기구제조업
               </span>
             </div>
-
             <div className="flex flex-wrap md:flex-nowrap gap-1 w-full md:w-auto justify-end md:justify-start md:ml-4 shrink-0">
-              <Button variant="action" onClick={handleSave} className="flex items-center gap-1">
-                <Save size={16} />임시저장하기
-              </Button>
-              <Button variant="action" onClick={handleDelete} className="flex items-center gap-1">
-                <Trash2 size={16} />삭제
-              </Button>
+              <Button variant="action" onClick={handleSave} className="flex items-center gap-1"><Save size={16} />임시저장하기</Button>
+              <Button variant="action" onClick={handleDelete} className="flex items-center gap-1"><Trash2 size={16} />삭제</Button>
             </div>
           </div>
-
           <DataTable<FrequencyRiskDataRow>
             columns={columns}
             data={data}
@@ -144,8 +140,8 @@ export default function FrequencyStep2() {
         </div>
       </div>
       <div className="mt-5 flex justify-between">
-        <Button variant="secondary" onClick={() => navigate("/risk-assessment/methods/frequency/step1")}><ChevronLeft size={18} className="mr-2" />이전으로</Button>
-        <Button variant="secondary" onClick={() => navigate("/risk-assessment/methods/frequency/step3")}>저장 후 다음으로<ChevronRight size={18} className="ml-2" /></Button>
+        <Button variant="secondary" onClick={() => navigate("/risk-assessment/methods/frequency/step1")} className="py-3"><ChevronLeft size={18} className="mr-2" />이전으로</Button>
+        <Button variant="secondary" onClick={handleSaveAndNext} className="py-3">저장 후 다음으로<ChevronRight size={18} className="ml-2" /></Button>
       </div>
     </section>
   )

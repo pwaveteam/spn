@@ -1,21 +1,26 @@
 import React,{useEffect,useMemo,useRef,useState,useCallback}from"react"
-import{useNavigate}from"react-router-dom"
-import PageTitle from "@/components/common/base/PageTitle"
-import Button from "@/components/common/base/Button"
+import{useNavigate,useLocation}from"react-router-dom"
+import PageTitle from"@/components/common/base/PageTitle"
+import Button from"@/components/common/base/Button"
 import DataTable,{Column,DataRow}from"@/components/common/tables/DataTable"
-import TemplateSelectDialog from "@/pages/Inspection/TemplateSelectDialog"
+import TemplateSelectDialog from"@/pages/Inspection/TemplateSelectDialog"
 import{CirclePlus,Trash2,GripVertical,Check,X}from"lucide-react"
 import Sortable from"sortablejs"
 import ToggleSwitch from"@/components/common/base/ToggleSwitch"
 import{inspectionFieldOptions,inspectionKindOptions}from"@/components/common/base/FilterBar"
 
 type ItemRow=DataRow&{id:number;content:string;isEditing?:boolean;draft?:string;__no?:number}
+type LocationState={mode?:"create"|"edit"}|null
 
 const INPUT_CLASS="h-[36px] border border-[#AAAAAA] rounded-[8px] px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#B9D0F6] text-sm font-normal text-[#333639] placeholder:text-[#AAAAAA]"
 const LABEL_CLASS="text-sm font-medium text-[#333639] whitespace-nowrap"
 
 const InspectionChecklistRegister:React.FC=()=>{
 const navigate=useNavigate()
+const location=useLocation()
+const state=location.state as LocationState
+const isEdit=state?.mode==="edit"
+
 const[field,setField]=useState<string>("")
 const[kind,setKind]=useState<string>("")
 const[useYn,setUseYn]=useState<boolean>(false)
@@ -40,7 +45,7 @@ const columns=useMemo<Column<ItemRow>[]>(
 {key:"__no",label:"번호",minWidth:50},
 {key:"content",label:"점검세부내용",minWidth:500,renderCell:(row:ItemRow)=>{
 if(row.isEditing){
-const isNew=(row.content==="")
+const isNew=row.content===""
 return(
 <div className="flex items-center gap-2 min-h-[40px]" data-row-id={row.id}>
 <span className="drag-handle inline-flex items-center justify-center cursor-grab text-[#9AA4B2] hover:text-[#6B7485] active:cursor-grabbing select-none" title="드래그하여 순서 변경" aria-label="드래그 핸들"><GripVertical size={16}/></span>
@@ -89,28 +94,32 @@ const addItem=useCallback(()=>{const newId=nextIdRef.current++;setRows(prev=>[{i
 const deleteSelected=useCallback(()=>{if(checkedIds.length===0){alert("삭제할 항목을 선택하세요");return}if(window.confirm("선택한 항목을 삭제하시겠습니까?")){setRows(prev=>prev.filter(r=>!checkedIds.includes(r.id)));setCheckedIds([]);alert("삭제되었습니다.")}},[checkedIds])
 const addFromTemplate=useCallback(()=>setIsTemplateOpen(true),[])
 const handleTemplateConfirm=useCallback((items:string[])=>{setIsTemplateOpen(false);if(!items.length)return;setRows(prev=>{const newRows:ItemRow[]=items.map(content=>({id:nextIdRef.current++,content}));return[...newRows,...prev]})},[])
-const handleSave=useCallback(()=>{if(!field||!kind){alert("점검분야/점검종류를 선택하세요.");return}if(!templateName.trim()){alert("점검표명을 입력하세요.");return}if(rows.length===0){alert("최소 1개 이상의 점검세부내용을 추가하세요.");return}if(rows.some(r=>r.isEditing)){alert("편집 중인 항목을 먼저 저장하거나 취소하세요.");return}const useYnValue=useYn?"사용":"미사용";console.log({field,kind,useYn:useYnValue,templateName,rows});alert("저장되었습니다.");navigate("/inspection/checklist")},[field,kind,useYn,templateName,rows,navigate])
+const handleSave=useCallback(()=>{if(!field||!kind){alert("점검분야/점검종류를 선택하세요.");return}if(!templateName.trim()){alert("점검표명을 입력하세요.");return}if(rows.length===0){alert("최소 1개 이상의 점검세부내용을 추가하세요.");return}if(rows.some(r=>r.isEditing)){alert("편집 중인 항목을 먼저 저장하거나 취소하세요.");return}const useYnValue=useYn?"사용":"미사용";console.log({field,kind,useYn:useYnValue,templateName,rows});alert(isEdit?"수정되었습니다.":"저장되었습니다.");navigate("/inspection/checklist")},[field,kind,useYn,templateName,rows,isEdit,navigate])
 
 return(
 <section className="w-full bg-white">
-<PageTitle>점검표(체크리스트) 등록</PageTitle>
+<PageTitle>점검표(체크리스트) {isEdit?"편집":"등록"}</PageTitle>
 <div className="w-full px-3 py-3 mb-4 bg-[#F8F8F8] border border-[#E5E5E5] rounded-[10px]">
 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
 <div className="flex items-center gap-3 min-w-0">
 <span className={LABEL_CLASS}>점검분야 <span className="text-[#FF3C0B]">*</span></span>
 <select className={`${INPUT_CLASS} w-full`} value={field} onChange={e=>setField(e.target.value)}>
-{inspectionFieldOptions.map(opt=>(<option key={opt.value} value={opt.value}>{opt.label}</option>))}
+{inspectionFieldOptions.map(opt=>(
+<option key={opt.value}value={opt.value}>{opt.label}</option>
+))}
 </select>
 </div>
 <div className="flex items-center gap-3 min-w-0">
 <span className={LABEL_CLASS}>점검종류 <span className="text-[#FF3C0B]">*</span></span>
 <select className={`${INPUT_CLASS} w-full`} value={kind} onChange={e=>setKind(e.target.value)}>
-{inspectionKindOptions.map(opt=>(<option key={opt.value} value={opt.value}>{opt.label}</option>))}
+{inspectionKindOptions.map(opt=>(
+<option key={opt.value}value={opt.value}>{opt.label}</option>
+))}
 </select>
 </div>
 <div className="flex items-center gap-3 min-w-0">
 <span className={LABEL_CLASS}>사용여부</span>
-<ToggleSwitch checked={useYn} onChange={setUseYn}/>
+<ToggleSwitch checked={useYn}onChange={setUseYn}/>
 <span className="text-sm">{useYn?"사용":"미사용"}</span>
 </div>
 </div>
@@ -124,20 +133,27 @@ return(
 <div className="flex items-center justify-between mb-2">
 <span className="text-gray-600 text-sm leading-none pt-[3px] mt-2 sm:mt-0">총 {rows.length}건</span>
 <div className="flex gap-1">
-<Button variant="action" onClick={addFromTemplate}>템플릿으로 추가</Button>
-<Button variant="action" onClick={addItem} className="flex items-center gap-1"><CirclePlus size={16}/>직접추가</Button>
-<Button variant="action" onClick={deleteSelected} className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
+<Button variant="action"onClick={addFromTemplate}>템플릿으로 추가</Button>
+<Button variant="action"onClick={addItem}className="flex items-center gap-1"><CirclePlus size={16}/>직접추가</Button>
+<Button variant="action"onClick={deleteSelected}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
 <div className="overflow-x-auto bg-white mb-6" ref={tableWrapRef}>
 <DataTable<ItemRow> columns={columns} data={tableData} onCheckedChange={setCheckedIds}/>
-{rows.length===0&&(<div className="py-16 text-center text-sm text-gray-500">등록된 항목이 없습니다.</div>)}
+{rows.length===0&&(
+<div className="py-16 text-center text-sm text-gray-500">등록된 항목이 없습니다.</div>
+)}
 </div>
 <div className="absolute right-4 bottom-4 md:static md:mt-8 flex justify-end">
-<Button variant="primary" onClick={handleSave} className="flex items-center">저장하기</Button>
+<Button variant="primary" onClick={handleSave} className="flex items-center">
+  저장하기
+</Button>
 </div>
-{isTemplateOpen&&(<TemplateSelectDialog onClose={()=>setIsTemplateOpen(false)} onConfirm={handleTemplateConfirm}/>)}
+{isTemplateOpen&&(
+<TemplateSelectDialog onClose={()=>setIsTemplateOpen(false)} onConfirm={handleTemplateConfirm}/>
+)}
 </section>
 )
 }
+
 export default InspectionChecklistRegister

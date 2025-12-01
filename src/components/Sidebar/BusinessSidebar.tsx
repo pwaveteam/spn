@@ -54,7 +54,7 @@ return()=>clearInterval(i)
 },[updateDateTime])
 
 const STYLES={
-layout:{sidebarBg:"bg-[#041620]",border:"border-slate-700"},
+layout:{sidebarBg:"bg-[var(--frame-bg)]",border:"border-slate-700"},
 text:{base:"text-slate-300",hover:"hover:text-[var(--secondary)]",active:"text-[var(--secondary)]",supportNormal:"text-[#EDEDED]"},
 category:{business:"text-[#DEEBF3]",iconBusiness:"text-[#B1B1B1]"},
 item:{text:"text-[#EDEDED]",icon:"text-[#B1B1B1]"},
@@ -72,14 +72,17 @@ const handleNavClick=()=>setIsOpen(false)
 
 return(
 <>
-{isOpen&&<div onClick={()=>setIsOpen(false)} className="fixed inset-0 bg-black/40 z-[100] md:hidden"/>}
+{isOpen&&<div onClick={()=>setIsOpen(false)}className="fixed inset-0 bg-black/40 z-[100] md:hidden"/>}
 
-<aside className={`fixed top-[60px] left-0 ${STYLES.layout.sidebarBg} text-white border-r ${STYLES.layout.border} z-[101] transition-all duration-300 ${isOpen?"translate-x-0":"-translate-x-full"} md:translate-x-0 w-full overflow-visible`} style={{height:"calc(100vh - 60px)","--secondary":"#3363AB"} as React.CSSProperties}>
+<aside
+className={`fixed top-[60px] left-0 ${STYLES.layout.sidebarBg} text-white border-r ${STYLES.layout.border} z-[101] transition-all duration-300 ${isOpen?"translate-x-0":"-translate-x-full"} md:translate-x-0 w-full overflow-visible`}
+style={{height:"calc(100vh - 60px)","--secondary":"#3363AB"}as React.CSSProperties}
+>
 <style>{`@media (min-width: 768px){aside{width:${isDesktopOpen?DESKTOP_W_OPEN:DESKTOP_W_CLOSED}px !important;}}`}</style>
 
 <div className="hidden md:block absolute top-0 -right-4 z-10 group">
-<button onClick={()=>setIsDesktopOpen(!isDesktopOpen)} className="w-9 h-9 rounded-lg bg-[#333333] flex items-center justify-center hover:bg-[#444444] transition-colors relative">
-<PanelRightClose className={`w-4 h-4 text-white transition-transform duration-300 ${isDesktopOpen?"rotate-0":"rotate-180"}`} strokeWidth={2}/>
+<button onClick={()=>setIsDesktopOpen(!isDesktopOpen)}className="w-9 h-9 rounded-lg bg-[#333333] flex items-center justify-center hover:bg-[#444444] transition-colors relative">
+<PanelRightClose className={`w-4 h-4 text-white transition-transform duration-300 ${isDesktopOpen?"rotate-0":"rotate-180"}`}strokeWidth={2}/>
 <div className="absolute left-full ml-1 px-1.5 py-1 bg-black/80 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
 {isDesktopOpen?"사이드바 닫기":"사이드바 열기"}
 </div>
@@ -89,22 +92,22 @@ return(
 <div className="h-full flex flex-col overflow-hidden">
 
 <div className={`md:hidden ${STYLES.layout.sidebarBg}`}>
-<div className="flex items-start justify-between px-5 py-4 border-t" style={{borderColor:BLUE_BORDER}}>
+<div className="flex items-start justify-between px-5 py-4 border-t"style={{borderColor:BLUE_BORDER}}>
 <div className="flex-shrink-0">
 <strong className="block text-white font-semibold text-base leading-tight mb-2">가디언AI 통합관제 플랫폼</strong>
 <p className="text-xs text-[#B1B1B1]">{date} <span className="ml-1 text-white font-bold">{time}</span></p>
 </div>
 <div className="flex flex-col items-end gap-2 text-right">
 <p className="text-[#CBCBCB] text-xs leading-tight max-w-[180px]">{factoryName}</p>
-<div onClick={()=>{navigate("/mypage");handleNavClick()}} className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-<img src="/ico/ico-avatar.svg" alt="avatar" style={{width:AVATAR_SIZE,height:AVATAR_SIZE,borderRadius:"50%"}}/>
+<div onClick={()=>{navigate("/mypage");handleNavClick()}}className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+<img src="/ico/ico-avatar.svg"alt="avatar"style={{width:AVATAR_SIZE,height:AVATAR_SIZE,borderRadius:"50%"}}/>
 <span className="text-xs font-semibold text-[#B1B1B1]">{userName} 님</span>
 </div>
 <div className="flex gap-2 mt-1">
-<button onClick={()=>{navigate("/dashboard");handleNavClick()}} className="flex items-center justify-center gap-1 px-3 py-1.5 rounded-full border border-white bg-transparent text-white text-xs font-semibold whitespace-nowrap">
+<button onClick={()=>{navigate("/dashboard");handleNavClick()}}className="flex items-center justify-center gap-1 px-3 py-1.5 rounded-full border border-white bg-transparent text-white text-xs font-semibold whitespace-nowrap">
 <HomeIcon className="w-3.5 h-3.5"/>메인으로
 </button>
-<button onClick={handleLogout} className="px-3 py-1.5 rounded-full bg-[#717171] text-white text-xs font-semibold whitespace-nowrap">로그아웃</button>
+<button onClick={handleLogout}className="px-3 py-1.5 rounded-full bg-[#717171] text-white text-xs font-semibold whitespace-nowrap">로그아웃</button>
 </div>
 </div>
 </div>
@@ -112,12 +115,15 @@ return(
 </div>
 
 <div className="flex-1 overflow-y-auto py-6 px-3">
-
 <section className="mb-6">
 <ul className="list-none p-0 m-0">
 {businessSubMenu.map(item=>(
-<li key={item.path} className="mb-0.5">
-<NavLink to={item.path} onClick={handleNavClick} className={({isActive})=>`group flex items-center gap-3 py-2 px-3 rounded-lg transition-colors overflow-hidden ${isActive?STYLES.text.active:`${STYLES.item.text} ${STYLES.text.hover}`}`}>
+<li key={item.path}className="mb-0.5">
+<NavLink
+to={item.path}
+onClick={handleNavClick}
+className={({isActive})=>`group flex items-center gap-3 py-2 px-3 rounded-lg transition-colors overflow-hidden ${isActive?STYLES.text.active:`${STYLES.item.text} ${STYLES.text.hover}`}`}
+>
 {({isActive})=>NavItem(item,isActive)}
 </NavLink>
 </li>
@@ -128,7 +134,7 @@ return(
 </div>
 </aside>
 
-<div aria-hidden className="hidden md:block shrink-0 transition-[width] duration-300" style={{width:isDesktopOpen?DESKTOP_W_OPEN:DESKTOP_W_CLOSED}}/>
+<div aria-hidden className="hidden md:block shrink-0 transition-[width] duration-300"style={{width:isDesktopOpen?DESKTOP_W_OPEN:DESKTOP_W_CLOSED}}/>
 </>
 )
 }

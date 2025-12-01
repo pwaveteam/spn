@@ -1,5 +1,4 @@
 import React,{useState}from"react"
-import{useNavigate,useLocation}from"react-router-dom"
 import Button from"@/components/common/base/Button"
 import FilterBar from"@/components/common/base/FilterBar"
 import DataTable,{Column,DataRow}from"@/components/common/tables/DataTable"
@@ -12,7 +11,7 @@ import useTableActions from"@/hooks/tableActions"
 import useTabNavigation from"@/hooks/useTabNavigation"
 import PartnerRegister from"./PartnersRegister"
 import{CirclePlus,Trash2,Save}from"lucide-react"
-import { partnersMockData } from "@/data/mockData"
+import{partnersMockData}from"@/data/mockData"
 
 const TAB_LABELS=["수급업체 관리","안전보건수준 평가","안전보건협의체 회의록","협동 안전보건점검","안전보건 교육/훈련"]
 const TAB_PATHS=["/supply-chain-management/partners","/supply-chain-management/evaluation","/supply-chain-management/committee","/supply-chain-management/siteaudit","/supply-chain-management/training"]
@@ -30,33 +29,28 @@ const columns:Column[]=[
 
 export default function Partners(){
 const{currentIndex,handleTabClick}=useTabNavigation(TAB_PATHS)
-
 const[data,setData]=useState<DataRow[]>(partnersMockData)
 const[checkedIds,setCheckedIds]=useState<(number|string)[]>([])
 const[modalOpen,setModalOpen]=useState(false)
+const[isEditMode,setIsEditMode]=useState(false)
 
 const{startDate,endDate,searchText,setStartDate,setEndDate,setSearchText}=useFilterBar()
-const{
-currentPage,
-totalPages,
-currentData,
-onPageChange
-}=usePagination<DataRow>(data,30)
+const{currentPage,totalPages,currentData,onPageChange}=usePagination<DataRow>(data,30)
 
-const{
-handleCreate,
-handleDelete,
-handleDownload
-}=useTableActions({
+const{handleCreate,handleDelete,handleDownload}=useTableActions({
 data,
 checkedIds,
-onCreate:()=>setModalOpen(true),
+onCreate:()=>{
+setIsEditMode(false)
+setModalOpen(true)
+},
 onDeleteSuccess:(ids)=>setData(prev=>prev.filter(row=>!ids.includes(row.id)))
 })
 
 const handleSave=(item:Partial<DataRow>)=>{
 setData(prev=>[{id:prev.length+1,...item},...prev])
 setModalOpen(false)
+setIsEditMode(false)
 }
 
 return(
@@ -95,13 +89,29 @@ onSearch={()=>{}}
 </div>
 
 <div className="overflow-x-auto bg-white">
-<DataTable columns={columns} data={currentData} onCheckedChange={setCheckedIds}/>
+<DataTable
+columns={columns}
+data={currentData}
+onCheckedChange={setCheckedIds}
+onManageClick={()=>{
+setIsEditMode(true)
+setModalOpen(true)
+}}
+/>
 </div>
 
 <Pagination currentPage={currentPage}totalPages={totalPages}onPageChange={onPageChange}/>
 
 {modalOpen&&(
-<PartnerRegister isOpen={modalOpen}onClose={()=>setModalOpen(false)}onSave={handleSave}/>
+<PartnerRegister
+isOpen={modalOpen}
+onClose={()=>{
+setModalOpen(false)
+setIsEditMode(false)
+}}
+onSave={handleSave}
+isEdit={isEditMode}
+/>
 )}
 </section>
 )

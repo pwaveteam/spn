@@ -17,7 +17,7 @@ import{tbmMockData}from"@/data/mockData"
 const TAB_LABELS=["PTW 그룹","위험작업허가서 목록","작업위험분석(JSA) 목록","현장 위험성평가 목록","TBM 목록"]
 const TAB_PATHS=["/ptw/list","/ptw/list/work-permit","/ptw/list/jsa","/ptw/list/site-evaluation","/ptw/list/tbm"]
 
-const columns:Column[]=[
+const columns:Column<TBMItem>[]=[
 {key:"index",label:"번호",type:"index"},
 {key:"processName",label:"공정명"},
 {key:"meetingDate",label:"일자"},
@@ -43,7 +43,15 @@ return(
 <PageTitle>TBM 목록</PageTitle>
 <TabMenu tabs={TAB_LABELS}activeIndex={currentIndex}onTabClick={handleTabClick}className="mb-6"/>
 <div className="mb-3">
-<FilterBar startDate={startDate}endDate={endDate}onStartDate={setStartDate}onEndDate={setEndDate}searchText={searchText}onSearchText={setSearchText}onSearch={()=>{}}/>
+<FilterBar
+startDate={startDate}
+endDate={endDate}
+onStartDate={setStartDate}
+onEndDate={setEndDate}
+searchText={searchText}
+onSearchText={setSearchText}
+onSearch={()=>{}}
+/>
 </div>
 <div className="flex flex-col-reverse sm:flex-row justify-between items-start sm:items-center mb-3 gap-1">
 <span className="text-gray-600 text-sm leading-none pt-[3px] mt-2 sm:mt-0">총 {data.length}건</span>
@@ -52,7 +60,12 @@ return(
 </div>
 </div>
 <div className="overflow-x-auto bg-white">
-<DataTable columns={columns} data={currentData} onCheckedChange={setCheckedIds}/>
+<DataTable<TBMItem>
+columns={columns}
+data={currentData}
+onCheckedChange={setCheckedIds}
+onManageClick={()=>navigate("/ptw/manage",{state:{activeTab:3}})}
+/>
 </div>
 <Pagination currentPage={currentPage}totalPages={totalPages}onPageChange={onPageChange}/>
 </section>

@@ -11,7 +11,7 @@ import useTabNavigation from"@/hooks/useTabNavigation"
 import useFilterBar from"@/hooks/useFilterBar"
 import useTableActions from"@/hooks/tableActions"
 import{CirclePlus,QrCode,Trash2}from"lucide-react"
-import { assetHazardMockData } from "@/data/mockData"
+import{assetHazardMockData}from"@/data/mockData"
 
 const TAB_LABELS=["위험기계/기구/설비","유해/위험물질"]
 const TAB_PATHS=["/asset-management/machine","/asset-management/hazard"]
@@ -32,6 +32,7 @@ export default function AssetHazard(){
 const[data,setData]=useState<DataRow[]>(assetHazardMockData)
 const[checkedIds,setCheckedIds]=useState<(number|string)[]>([])
 const[isModalOpen,setIsModalOpen]=useState(false)
+const[isEditMode,setIsEditMode]=useState(false)
 
 const{startDate,endDate,searchText,setStartDate,setEndDate,setSearchText}=useFilterBar()
 const{currentIndex,handleTabClick}=useTabNavigation(TAB_PATHS)
@@ -41,31 +42,40 @@ const{currentPage,totalPages,currentData,onPageChange}=usePagination<DataRow>(da
 const{
 handleCreate,
 handleDelete,
-handleGenerateQR,
+handleGenerateQR
 }=useTableActions({
 data,
 checkedIds,
-onCreate:()=>setIsModalOpen(true),
+onCreate:()=>{
+setIsEditMode(false)
+setIsModalOpen(true)
+},
 onDeleteSuccess:(ids)=>setData(prev=>prev.filter(row=>!ids.includes(row.id)))
 })
 
 const handleSave=(newItem:Partial<DataRow>)=>{
 setData(prev=>[{id:prev.length+1,...newItem,msds:"",manage:""},...prev])
 setIsModalOpen(false)
+setIsEditMode(false)
 }
 
 return(
 <section className="asset-management-content w-full bg-white">
 <PageTitle>{TAB_LABELS[currentIndex]}</PageTitle>
 <TabMenu tabs={TAB_LABELS}activeIndex={currentIndex}onTabClick={handleTabClick}className="mb-6"/>
-
 <div className="mb-3">
-<FilterBar startDate={startDate}endDate={endDate}onStartDate={setStartDate}onEndDate={setEndDate}searchText={searchText}onSearchText={setSearchText}onSearch={()=>{}}/>
+<FilterBar
+startDate={startDate}
+endDate={endDate}
+onStartDate={setStartDate}
+onEndDate={setEndDate}
+searchText={searchText}
+onSearchText={setSearchText}
+onSearch={()=>{}}
+/>
 </div>
-
 <div className="flex flex-col-reverse sm:flex-row justify-between items-start sm:items-center mb-3 gap-2">
 <span className="text-gray-600 text-sm leading-none pt-[3px] mt-2 sm:mt-0">총 {data.length}건</span>
-
 <div className="flex flex-col gap-1 w-full justify-end sm:hidden">
 <div className="flex gap-1 justify-end">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
@@ -73,21 +83,35 @@ return(
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
-
 <div className="hidden sm:flex flex-nowrap gap-1 w-auto justify-end">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
 <Button variant="action"onClick={handleGenerateQR}className="flex items-center gap-1"><QrCode size={16}/>QR 생성</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
-
 <div className="overflow-x-auto bg-white">
-<DataTable columns={hazardColumns}data={currentData}onCheckedChange={setCheckedIds}/>
+<DataTable
+columns={hazardColumns}
+data={currentData}
+onCheckedChange={setCheckedIds}
+onManageClick={()=>{
+setIsEditMode(true)
+setIsModalOpen(true)
+}}
+/>
 </div>
-
 <Pagination currentPage={currentPage}totalPages={totalPages}onPageChange={onPageChange}/>
-
-{isModalOpen&&(<AssetHazardRegister isOpen={isModalOpen}onClose={()=>setIsModalOpen(false)}onSave={handleSave}/>)}
+{isModalOpen&&(
+<AssetHazardRegister
+isOpen={isModalOpen}
+onClose={()=>{
+setIsModalOpen(false)
+setIsEditMode(false)
+}}
+onSave={handleSave}
+isEdit={isEditMode}
+/>
+)}
 </section>
 )
 }

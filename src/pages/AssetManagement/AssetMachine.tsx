@@ -11,7 +11,7 @@ import usePagination from"@/hooks/usePagination"
 import useTabNavigation from"@/hooks/useTabNavigation"
 import useFilterBar from"@/hooks/useFilterBar"
 import{CirclePlus,QrCode,Trash2,Download,Save}from"lucide-react"
-import { assetMachineMockData } from "@/data/mockData"
+import{assetMachineMockData}from"@/data/mockData"
 
 const TAB_LABELS=["위험기계/기구/설비","유해/위험물질"]
 const TAB_PATHS=["/asset-management/machine","/asset-management/hazard"]
@@ -33,34 +33,33 @@ export default function AssetManagement(){
 const[machineData,setMachineData]=useState<DataRow[]>(assetMachineMockData)
 const[checkedIds,setCheckedIds]=useState<(number|string)[]>([])
 const[isModalOpen,setIsModalOpen]=useState(false)
+const[isEditMode,setIsEditMode]=useState(false)
 
 const{startDate,endDate,searchText,setStartDate,setEndDate,setSearchText}=useFilterBar()
 const{currentIndex,handleTabClick}=useTabNavigation(TAB_PATHS)
 
-const{
-currentPage,
-totalPages,
-currentData,
-onPageChange
-}=usePagination<DataRow>(machineData,30)
+const{currentPage,totalPages,currentData,onPageChange}=usePagination<DataRow>(machineData,30)
 
-const {
+const{
 handleCreate,
 handleDelete,
 handleDownload,
 handleGenerateQR,
 handleFormDownload
-} = useTableActions({
-data: machineData,
+}=useTableActions({
+data:machineData,
 checkedIds,
-onCreate: () => setIsModalOpen(true),
-onDeleteSuccess: (ids) => setMachineData(prev => prev.filter(row => !ids.includes(row.id)))
+onCreate:()=>{
+setIsEditMode(false)
+setIsModalOpen(true)
+},
+onDeleteSuccess:(ids)=>setMachineData(prev=>prev.filter(row=>!ids.includes(row.id)))
 })
-
 
 const handleSave=(newItem:Partial<DataRow>)=>{
 setMachineData(prev=>[{id:prev.length+1,...newItem},...prev])
 setIsModalOpen(false)
+setIsEditMode(false)
 }
 
 return(
@@ -86,34 +85,38 @@ onSearch={()=>{}}
 
 <div className="flex flex-col gap-1 w-full justify-end sm:hidden">
 <div className="flex gap-1 justify-end">
-<Button variant="action" onClick={handleCreate} className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
-<Button variant="action" onClick={handleFormDownload} className="flex items-center gap-1"><Download size={16}/>안전검사신청서 양식</Button>
-<Button variant="action" onClick={handleGenerateQR} className="flex items-center gap-1"><QrCode size={16}/>QR 생성</Button>
+<Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
+<Button variant="action"onClick={handleFormDownload}className="flex items-center gap-1"><Download size={16}/>안전검사신청서 양식</Button>
+<Button variant="action"onClick={handleGenerateQR}className="flex items-center gap-1"><QrCode size={16}/>QR 생성</Button>
 </div>
 <div className="flex gap-1 justify-end">
-<Button variant="action" onClick={handleDownload} className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
-<Button variant="action" onClick={handleDelete} className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
+<Button variant="action"onClick={handleDownload}className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
+<Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
 
 <div className="hidden sm:flex flex-nowrap gap-1 w-auto justify-end">
-<Button variant="action" onClick={handleCreate} className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
-<Button variant="action" onClick={handleFormDownload} className="flex items-center gap-1"><Download size={16}/>안전검사신청서 양식</Button>
-<Button variant="action" onClick={handleGenerateQR} className="flex items-center gap-1"><QrCode size={16}/>QR 생성</Button>
-<Button variant="action" onClick={handleDownload} className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
-<Button variant="action" onClick={handleDelete} className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
+<Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
+<Button variant="action"onClick={handleFormDownload}className="flex items-center gap-1"><Download size={16}/>안전검사신청서 양식</Button>
+<Button variant="action"onClick={handleGenerateQR}className="flex items-center gap-1"><QrCode size={16}/>QR 생성</Button>
+<Button variant="action"onClick={handleDownload}className="flex items-center gap-1"><Save size={16}/>다운로드</Button>
+<Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
-
 
 <div className="overflow-x-auto bg-white">
-<DataTable columns={machineColumns}data={currentData}onCheckedChange={setCheckedIds}/>
+<DataTable columns={machineColumns}data={currentData}onCheckedChange={setCheckedIds}onManageClick={()=>{setIsEditMode(true);setIsModalOpen(true)}}/>
 </div>
 
 <Pagination currentPage={currentPage}totalPages={totalPages}onPageChange={onPageChange}/>
 
 {isModalOpen&&(
-<AssetMachineRegister isOpen={isModalOpen}onClose={()=>setIsModalOpen(false)}onSave={handleSave}/>
+<AssetMachineRegister
+isOpen={isModalOpen}
+onClose={()=>{setIsModalOpen(false);setIsEditMode(false)}}
+onSave={handleSave}
+isEdit={isEditMode}
+/>
 )}
 </section>
 )
