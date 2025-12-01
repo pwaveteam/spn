@@ -6,6 +6,8 @@ type ButtonVariant=
 "secondary"|
 "secondaryOutline"|
 "action"|
+"actionPrimary"|
+"support"|
 "warning"|
 "rowAdd"|
 "delete"|
@@ -26,6 +28,8 @@ primaryOutline:null,
 secondary:null,
 secondaryOutline:null,
 action:null,
+actionPrimary:null,
+support:null,
 warning:null,
 rowAdd:"+ 새항목 추가",
 delete:null,
@@ -63,6 +67,12 @@ break
 case "action":
 colors="bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100"
 break
+case "actionPrimary":
+colors="bg-[var(--tertiary)] text-white"
+break
+case "support":
+colors="bg-gray-100 text-gray-700 border border-gray-300 hover:bg-gray-200"
+break
 case "warning":
 colors="bg-[#FDEDED] text-[#901C1C] border border-[#D19EA3]"
 break
@@ -70,10 +80,10 @@ case "rowAdd":
 colors="bg-white text-[#161616] border border-[#161616]"
 break
 case "mutedGray":
-  colors="border-gray-300 text-gray-400 bg-gray-50 cursor-default"
+colors="border-gray-300 text-gray-400 bg-gray-50 cursor-default"
 break
 case "mutedBlue":
-  colors="border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--neutral-bg)]"
+colors="border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--neutral-bg)]"
 break
 default:
 colors="bg-[var(--primary)] text-white"

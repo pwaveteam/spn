@@ -159,6 +159,7 @@ proposer: ""
 }))
 )
 const [isListModalOpen, setIsListModalOpen] = useState(false)
+const [mobileAttendeeOpen, setMobileAttendeeOpen] = useState(false)
 const printRef = useRef<HTMLDivElement>(null)
 
 const navigate=useNavigate()
@@ -262,6 +263,12 @@ const removeNearMissRow = useCallback((id: number) => {
 setNearMissRows(prev => prev.filter(row => row.id !== id))
 }, [])
 
+const getRiskBadgeColor = (l: string): string =>
+l === "상" ? "bg-[#B65E5D] text-white" :
+l === "중" ? "bg-[#CAB359] text-white" :
+l === "하" ? "bg-[#80A16A] text-white" :
+"bg-gray-200 text-gray-600"
+
 const handleSelectPTW = (data: any) => {
   setFormData(prev => ({ ...prev, ...data }))
 
@@ -320,15 +327,192 @@ window.location.href = "/ptw/list"
 
 return (
 <>
-<div className="w-full">
+{/* Mobile */}
+<div className="md:hidden w-full bg-white">
+<div className="flex justify-between items-center px-2 py-2 border-b border-gray-200 sticky top-0 bg-white z-10">
+<Button variant="support" onClick={handleCancel} className="text-xs px-2 py-1">목록으로</Button>
+<div className="flex gap-1">
+<Button variant="action" onClick={handleLoad} className="text-xs px-2 py-1 flex items-center gap-1"><FolderOpen size={12}/>불러오기</Button>
+<Button variant="action" onClick={handleSaveToStore} className="text-xs px-2 py-1 flex items-center gap-1"><Save size={12}/>저장</Button>
+</div>
+</div>
+
+<div className="px-2 py-3 space-y-3 pb-20">
+{/* 기본정보 */}
+<div className="border border-gray-300 rounded p-2 space-y-2">
+<p className="text-xs font-semibold text-gray-700">기본정보</p>
+<div className="grid grid-cols-2 gap-2">
+<div>
+<label className="text-[10px] text-gray-500">회사명</label>
+<Input value={formData.companyName || ""} onChange={e => updateFormData({ companyName: e.target.value })} className="w-full h-7 text-xs" placeholder="회사명"/>
+</div>
+<div>
+<label className="text-[10px] text-gray-500">사업장명</label>
+<Input value={WORKPLACE_NAME} readOnly className="w-full h-7 text-xs bg-gray-50"/>
+</div>
+</div>
+<div className="grid grid-cols-2 gap-2">
+<div>
+<label className="text-[10px] text-gray-500">일자</label>
+<Input type="date" value={formData.date || ""} onChange={e => updateFormData({ date: e.target.value })} className="w-full h-7 text-xs"/>
+</div>
+<div>
+<label className="text-[10px] text-gray-500">시간</label>
+<Input type="time" value={formData.time || ""} onChange={e => updateFormData({ time: e.target.value })} className="w-full h-7 text-xs"/>
+</div>
+</div>
+<div className="grid grid-cols-2 gap-2">
+<div>
+<label className="text-[10px] text-gray-500">공정명</label>
+<Input value={formData.processName || ""} onChange={e => updateFormData({ processName: e.target.value })} className="w-full h-7 text-xs" placeholder="공정명"/>
+</div>
+<div>
+<label className="text-[10px] text-gray-500">관리담당자</label>
+<Input value={formData.manager || ""} onChange={e => updateFormData({ manager: e.target.value })} className="w-full h-7 text-xs" placeholder="담당자"/>
+</div>
+</div>
+</div>
+
+{/* 위험성평가 */}
+<div className="border border-gray-300 rounded p-2">
+<div className="flex items-center justify-between mb-2">
+<p className="text-xs font-semibold text-gray-700">작업 전 위험성 평가 공유</p>
+<button onClick={addRiskRow} disabled={riskRows.length >= 10} className={`text-[10px] text-blue-600 flex items-center ${riskRows.length >= 10 ? 'opacity-50' : ''}`}><Plus size={10}/>추가</button>
+</div>
+<div className="space-y-2">
+{riskRows.map((row, idx) => (
+<div key={row.id} className="border border-gray-200 rounded p-2 bg-gray-50">
+<div className="flex items-center justify-between gap-1 mb-1">
+<span className="text-[10px] text-gray-500">#{idx + 1}</span>
+<div className="flex items-center gap-1">
+{RISK_LEVELS.map(level => (
+<button key={level} onClick={() => updateRiskRow(row.id, "currentRisk", row.currentRisk === level ? "" : level)} className={`text-[9px] px-2 py-0.5 rounded ${row.currentRisk === level ? getRiskBadgeColor(level) : 'bg-gray-100 text-gray-500'}`}>{level}</button>
+))}
+{riskRows.length > 1 && <button onClick={() => removeRiskRow(row.id)} className="ml-1"><X size={12} className="text-gray-400"/></button>}
+</div>
+</div>
+<div className="grid grid-cols-2 gap-1">
+<Input value={row.hazard} onChange={e => updateRiskRow(row.id, "hazard", e.target.value)} className="h-7 text-[10px]" placeholder="위험요인"/>
+<Input value={row.measure} onChange={e => updateRiskRow(row.id, "measure", e.target.value)} className="h-7 text-[10px]" placeholder="방호대책"/>
+</div>
+</div>
+))}
+</div>
+</div>
+
+{/* 안전제안 */}
+<div className="border border-gray-300 rounded p-2">
+<div className="flex items-center justify-between mb-2">
+<p className="text-xs font-semibold text-gray-700">안전제안 내용</p>
+<button onClick={addProposalRow} disabled={proposalRows.length >= 10} className={`text-[10px] text-blue-600 flex items-center ${proposalRows.length >= 10 ? 'opacity-50' : ''}`}><Plus size={10}/>추가</button>
+</div>
+<div className="space-y-2">
+{proposalRows.map((row, idx) => (
+<div key={row.id} className="border border-gray-200 rounded p-2 bg-gray-50">
+<div className="flex items-center justify-between gap-1 mb-1">
+<span className="text-[10px] text-gray-500">#{idx + 1}</span>
+{proposalRows.length > 1 && <button onClick={() => removeProposalRow(row.id)}><X size={12} className="text-gray-400"/></button>}
+</div>
+<div className="grid grid-cols-3 gap-1">
+<Input value={row.hazard} onChange={e => updateProposalRow(row.id, "hazard", e.target.value)} className="h-7 text-[10px]" placeholder="위험요인"/>
+<Input value={row.solution} onChange={e => updateProposalRow(row.id, "solution", e.target.value)} className="h-7 text-[10px]" placeholder="개선대책"/>
+<Input value={row.proposer} onChange={e => updateProposalRow(row.id, "proposer", e.target.value)} className="h-7 text-[10px]" placeholder="제안자"/>
+</div>
+</div>
+))}
+</div>
+</div>
+
+{/* 아차사고 */}
+<div className="border border-gray-300 rounded p-2">
+<div className="flex items-center justify-between mb-2">
+<p className="text-xs font-semibold text-gray-700">아차사고</p>
+<button onClick={addNearMissRow} disabled={nearMissRows.length >= 10} className={`text-[10px] text-blue-600 flex items-center ${nearMissRows.length >= 10 ? 'opacity-50' : ''}`}><Plus size={10}/>추가</button>
+</div>
+<div className="space-y-2">
+{nearMissRows.map((row, idx) => (
+<div key={row.id} className="border border-gray-200 rounded p-2 bg-gray-50">
+<div className="flex items-center justify-between gap-1 mb-1">
+<span className="text-[10px] text-gray-500">#{idx + 1}</span>
+{nearMissRows.length > 1 && <button onClick={() => removeNearMissRow(row.id)}><X size={12} className="text-gray-400"/></button>}
+</div>
+<div className="grid grid-cols-3 gap-1">
+<Input value={row.content} onChange={e => updateNearMissRow(row.id, "content", e.target.value)} className="h-7 text-[10px]" placeholder="내용"/>
+<Input value={row.prevention} onChange={e => updateNearMissRow(row.id, "prevention", e.target.value)} className="h-7 text-[10px]" placeholder="개선대책"/>
+<Input value={row.proposer} onChange={e => updateNearMissRow(row.id, "proposer", e.target.value)} className="h-7 text-[10px]" placeholder="제안자"/>
+</div>
+</div>
+))}
+</div>
+</div>
+</div>
+
+{/* 참석자 서명 바텀시트 */}
+{mobileAttendeeOpen && (
+<div className="fixed inset-0 z-50 md:hidden">
+<div className="absolute inset-0 bg-black/40" onClick={() => setMobileAttendeeOpen(false)}/>
+<div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-xl p-4 max-h-[80vh] overflow-y-auto">
+<div className="flex justify-between items-center mb-3">
+<span className="font-semibold text-sm">참석자 서명{attendeeRows.filter(a => a.name).length > 0 ? ` (${attendeeRows.filter(a => a.name).length})` : ""}</span>
+<button onClick={() => setMobileAttendeeOpen(false)}><X size={18} className="text-gray-500"/></button>
+</div>
+<div className="flex justify-end mb-2">
+<button onClick={addAttendeeRow} disabled={attendeeRows.length >= 30} className={`text-[10px] text-blue-600 flex items-center ${attendeeRows.length >= 30 ? 'opacity-50' : ''}`}><Plus size={10}/>참석자 추가</button>
+</div>
+<div className="space-y-2">
+{attendeeRows.map((attendee, idx) => (
+<div key={attendee.id} className="border border-gray-200 rounded p-2 bg-gray-50">
+<div className="flex items-center justify-between gap-1 mb-2">
+<span className="text-[10px] text-gray-500">#{idx + 1}</span>
+<div className="flex items-center gap-2">
+<label className="flex items-center gap-1 text-[10px]">
+<Checkbox checked={attendee.isNew} onCheckedChange={v => updateAttendeeRow(attendee.id, "isNew", Boolean(v))}/>신규
+</label>
+{attendeeRows.length > 1 && <button onClick={() => removeAttendeeRow(attendee.id)}><X size={12} className="text-gray-400"/></button>}
+</div>
+</div>
+<div className="grid grid-cols-2 gap-2 mb-2">
+<div>
+<label className="text-[10px] text-gray-500">이름</label>
+<Input value={attendee.name} onChange={e => updateAttendeeRow(attendee.id, "name", e.target.value)} className="w-full h-7 text-xs" placeholder="이름"/>
+</div>
+<div>
+<label className="text-[10px] text-gray-500">건강상태</label>
+<Input value={attendee.health} onChange={e => updateAttendeeRow(attendee.id, "health", e.target.value)} className="w-full h-7 text-xs" placeholder="양호, 피로 등"/>
+</div>
+</div>
+<div>
+<label className="text-[10px] text-gray-500">서명</label>
+<div className="mt-1">
+<SignatureSelector value={attendee.signature} onChange={(person) => updateAttendeeRow(attendee.id, "signature", person)} type="participant"/>
+</div>
+</div>
+</div>
+))}
+</div>
+<Button variant="actionPrimary" onClick={() => setMobileAttendeeOpen(false)} className="w-full mt-4 text-sm">확인</Button>
+</div>
+</div>
+)}
+
+<div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-2 flex gap-2 md:hidden">
+<Button variant="action" onClick={() => setMobileAttendeeOpen(true)} className="flex-1 flex items-center justify-center gap-1 text-xs">
+  참석자 서명{attendeeRows.filter(a => a.name).length > 0 ? ` (${attendeeRows.filter(a => a.name).length})` : ""}
+</Button>
+<Button variant="actionPrimary" onClick={handleSubmitForm} className="flex-1 flex items-center justify-center gap-1 text-xs"><Send size={12}/>전송</Button>
+</div>
+</div>
+
+{/* Desktop */}
+<div className="hidden md:block w-full">
 <CardContent className="p-0 flex justify-start">
 <ScrollArea className="w-full">
 <div className="w-[900px] min-w-[900px] print:w-full bg-white print:shadow-none">
 
 <div className="flex justify-between mb-3 no-print">
-<Button variant="action" onClick={handleCancel}>목록으로</Button>
+<Button variant="support" onClick={handleCancel}>목록으로</Button>
 <div className="flex flex-nowrap gap-1">
-<Button variant="action" onClick={handleSubmitForm} className="flex items-center gap-1">
+<Button variant="actionPrimary" onClick={handleSubmitForm} className="flex items-center gap-1">
 <Send size={16}/>전송
 </Button>
 <Button variant="action" onClick={handleLoad} className="flex items-center gap-1">

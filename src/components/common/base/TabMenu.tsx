@@ -19,7 +19,7 @@ key={tab}
 type="button"
 aria-current={isActive?"page":undefined}
 onClick={()=>onTabClick(idx)}
-className={`whitespace-nowrap py-3 px-3 text-sm font-medium ${isActive?"border-b-2 border-[var(--secondary)] text-[var(--secondary)]":"border-b-2 border-transparent text-gray-500 hover:text-gray-900"} focus:outline-none`}
+className={`whitespace-nowrap py-2 md:py-3 px-2 md:px-3 text-xs md:text-sm font-medium ${isActive?"border-b-2 border-[var(--secondary)] text-[var(--secondary)]":"border-b-2 border-transparent text-gray-500 hover:text-gray-900"} focus:outline-none`}
 >
 {tab}
 </button>

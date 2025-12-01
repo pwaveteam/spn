@@ -2,7 +2,7 @@ import{usePTWStore}from"@/stores/ptwStore"
 import{useNavigate}from"react-router-dom"
 import React, { useState, useCallback, useRef } from "react"
 import { useReactToPrint } from "react-to-print"
-import { Printer, Save, Send, FolderOpen, Plus, X } from "lucide-react"
+import { Printer, Save, Send, FolderOpen, Plus, X, ChevronLeft, ChevronRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -16,10 +16,9 @@ import { SignatureInfo } from "../SignatureModule/types"
 import { useLoadingStore } from "@/stores/loadingStore"
 import { PTWFile } from "../FilePanel/FilePanel"
 
-
 type PTWWorkPermitProps = {
-    ptwId?: string
-    attachedFiles?: PTWFile[]
+  ptwId?: string
+  attachedFiles?: PTWFile[]
 }
 
 interface SafetyRequirement {
@@ -70,9 +69,17 @@ const FINAL_CHECK_QUESTIONS = [
 "4. 작업 중에 안전사고, 아차사고 또는 근로자 건강 이벤트가 발생했습니까?",
 ]
 
+const MOBILE_TABS = [
+{ id: "basic", label: "기본정보" },
+{ id: "safety", label: "안전조치" },
+{ id: "approval", label: "결재" },
+{ id: "final", label: "최종확인" },
+]
+
 export default function PTWWorkPermit({ ptwId, attachedFiles = [] }: PTWWorkPermitProps): React.ReactElement {
 const [formData, setFormData] = useState<PTWFormData>({ workplace: WORKPLACE_NAME, applicantName: "홍길동" })
 const [isListModalOpen, setIsListModalOpen] = useState(false)
+const [mobileTab, setMobileTab] = useState("basic")
 const [safetyRequirements, setSafetyRequirements] = useState({
 prework: [
 { id: 1, text: "개인보호구 : 4대 보호구 외", hasInput: true },
@@ -149,6 +156,8 @@ approvers: { ...(prev.approvers || {}), [key]: person },
 }))
 }, [])
 
+const [mobileApprovalOpen, setMobileApprovalOpen] = useState(false)
+
 const addRequirementRow = useCallback((category: keyof typeof safetyRequirements) => {
 setSafetyRequirements(prev => {
 if (prev[category].length >= 10) return prev
@@ -179,15 +188,15 @@ updateFormData({ applicantSignature: signatureImage })
 }
 
 const handleSelectPTW = (data: any) => {
-    setFormData(prev => ({
-      ...prev,
-      ...data,
-      safetyChecks: data.safetyChecks || {},
-      approvers: data.approvers || {},
-      supervisor: data.supervisor
-    }))
-    setIsListModalOpen(false)
-  }
+  setFormData(prev => ({
+    ...prev,
+    ...data,
+    safetyChecks: data.safetyChecks || {},
+    approvers: data.approvers || {},
+    supervisor: data.supervisor
+  }))
+  setIsListModalOpen(false)
+}
 
 const handleSaveToStore = async () => {
 if(!formData.workType||!formData.workDate){
@@ -245,16 +254,212 @@ const handleCancel = () => {
 if (window.confirm("목록으로 이동하시겠습니까?\n저장하지 않은 내용은 사라집니다."))
 window.location.href = "/ptw/list"
 }
+
 return (
-<>
-<div className="w-full">
+<>{/* Mobile */}
+<div className="md:hidden w-full bg-white">
+<div className="flex justify-between items-center px-2 py-2 border-b border-gray-200 sticky top-0 bg-white z-10">
+<Button variant="support" onClick={handleCancel} className="text-xs px-2 py-1">목록으로</Button>
+<div className="flex gap-1">
+<Button variant="action" onClick={handleLoad} className="text-xs px-2 py-1 flex items-center gap-1"><FolderOpen size={12}/>불러오기</Button>
+<Button variant="action" onClick={handleSaveToStore} className="text-xs px-2 py-1 flex items-center gap-1"><Save size={12}/>저장</Button>
+</div>
+</div>
+
+<div className="px-2 py-3 space-y-3 pb-20">
+{/* 기본정보 */}
+<div className="border border-gray-300 rounded p-2 space-y-2">
+<p className="text-xs font-semibold text-gray-700">기본정보</p>
+<div>
+<label className="text-[10px] text-gray-500">사업장</label>
+<Input value={WORKPLACE_NAME} readOnly className="w-full h-7 text-xs bg-gray-50"/>
+</div>
+<div className="grid grid-cols-2 gap-2">
+<div>
+<label className="text-[10px] text-gray-500">신청일자</label>
+<Input type="date" value={formData.applicationDate || ""} onChange={e => updateFormData({ applicationDate: e.target.value })} className="w-full h-7 text-xs"/>
+</div>
+<div>
+<label className="text-[10px] text-gray-500">작업일</label>
+<Input type="datetime-local" value={formData.workDate || ""} onChange={e => updateFormData({ workDate: e.target.value })} className="w-full h-7 text-xs"/>
+</div>
+</div>
+<div className="grid grid-cols-2 gap-2">
+<div>
+<label className="text-[10px] text-gray-500">작업요청부서</label>
+<Input value={formData.requestDept || ""} onChange={e => updateFormData({ requestDept: e.target.value })} className="w-full h-7 text-xs" placeholder="부서명"/>
+</div>
+<div>
+<label className="text-[10px] text-gray-500">작업인원</label>
+<div className="flex items-center gap-1">
+<Input type="number" value={formData.workerCount || ""} onChange={e => updateFormData({ workerCount: e.target.value ? Number(e.target.value) : undefined })} className="w-full h-7 text-xs"/>
+<span className="text-xs shrink-0">명</span>
+</div>
+</div>
+</div>
+<div className="grid grid-cols-2 gap-2">
+<div>
+<label className="text-[10px] text-gray-500">작업장소</label>
+<Input value={formData.workLocation || ""} onChange={e => updateFormData({ workLocation: e.target.value })} className="w-full h-7 text-xs" placeholder="작업장소"/>
+</div>
+<div>
+<label className="text-[10px] text-gray-500">작업명</label>
+<Input value={formData.workType || ""} onChange={e => updateFormData({ workType: e.target.value })} className="w-full h-7 text-xs" placeholder="작업명"/>
+</div>
+</div>
+<div>
+<label className="text-[10px] text-gray-500">신청자</label>
+<div className="flex items-center gap-2">
+<Input value={formData.applicantName || ""} onChange={e => updateFormData({ applicantName: e.target.value })} className="flex-1 h-7 text-xs" placeholder="이름"/>
+{formData.applicantSignature ? (
+<button onClick={handleLoadMySignature} className="border border-gray-300 rounded px-1">
+<img src={formData.applicantSignature} alt="서명" className="h-6"/>
+</button>
+) : (
+<Button variant="action" onClick={handleLoadMySignature} className="text-[10px] px-2 py-1">서명</Button>
+)}
+</div>
+</div>
+<div>
+<label className="text-[10px] text-gray-500">작업구분</label>
+<div className="flex flex-wrap gap-x-3 gap-y-1 mt-1">
+{WORK_TYPES.map(type => (
+<label key={type} className="flex items-center gap-1 text-xs">
+<Checkbox checked={(formData.workTypes || []).includes(type)} onCheckedChange={checked => {
+const list = formData.workTypes || []
+updateFormData({ workTypes: checked ? [...list, type] : list.filter(t => t !== type) })
+}}/>
+<span>{type}</span>
+</label>
+))}
+</div>
+{(formData.workTypes || []).includes("기타 위험작업") && (
+<Input value={formData.safetyChecks?.etcWork as string || ""} onChange={e => updateSafetyCheck("etcWork", e.target.value)} className="w-full h-7 text-xs mt-1" placeholder="기타 작업 입력"/>
+)}
+</div>
+</div>
+
+{/* 안전조치 요구사항 */}
+{[
+{ key: "prework" as const, title: "작업 전 안전조치 (공통)" },
+{ key: "fire" as const, title: "화기작업" },
+{ key: "heavy" as const, title: "중장비 작업" },
+{ key: "lototo" as const, title: "LOTOTO" },
+{ key: "height" as const, title: "고소작업 (2M 이상)" },
+].map(section => (
+<div key={section.key} className="border border-gray-300 rounded p-2">
+<div className="flex items-center justify-between mb-1">
+<p className="text-xs font-semibold text-gray-700">■ {section.title}</p>
+<button onClick={() => addRequirementRow(section.key)} className="text-[10px] text-blue-600 flex items-center"><Plus size={10}/>추가</button>
+</div>
+{safetyRequirements[section.key].map((item, idx) => (
+<div key={item.id} className="flex items-center gap-2 py-1 border-b border-gray-100 last:border-0">
+<div className="flex-1 min-w-0">
+{item.hasInput && idx === 0 ? (
+<div className="flex items-center gap-1">
+<span className="text-[10px] whitespace-nowrap shrink-0">{section.key === "prework" ? "4대 보호구 외" : "화재감시자"}</span>
+<Input value={formData.safetyChecks?.[section.key === "prework" ? "prework_ppe_extra" : "fire_monitor_name"] as string || ""} onChange={e => updateSafetyCheck(section.key === "prework" ? "prework_ppe_extra" : "fire_monitor_name", e.target.value)} className="flex-1 h-6 text-xs min-w-0"/>
+</div>
+) : (
+<Input value={item.text} onChange={e => updateRequirementRow(section.key, item.id, e.target.value)} className="w-full h-6 text-xs"/>
+)}
+</div>
+<div className="flex items-center gap-2 shrink-0">
+<div className="flex items-center gap-1"><span className="text-[8px] text-gray-400">1</span><Checkbox checked={formData.safetyChecks?.[`${section.key}_${idx}_1`] as boolean} onCheckedChange={checked => updateSafetyCheck(`${section.key}_${idx}_1`, checked)}/></div>
+<div className="flex items-center gap-1"><span className="text-[8px] text-gray-400">2</span><Checkbox checked={formData.safetyChecks?.[`${section.key}_${idx}_2`] as boolean} onCheckedChange={checked => updateSafetyCheck(`${section.key}_${idx}_2`, checked)}/></div>
+{safetyRequirements[section.key].length > 1 && <button onClick={() => removeRequirementRow(section.key, item.id)}><X size={12} className="text-gray-400"/></button>}
+</div>
+</div>
+))}
+</div>
+))}
+
+{/* 기타 안전조치 */}
+<div className="border border-gray-300 rounded p-2">
+<p className="text-xs font-semibold text-gray-700 mb-1">■ 기타 안전조치 사항</p>
+<Textarea value={formData.otherSafety || ""} onChange={e => updateFormData({ otherSafety: e.target.value })} className="w-full h-16 text-xs" placeholder="기타 안전조치 사항"/>
+<div className="flex items-center gap-4 mt-1">
+<label className="flex items-center gap-1 text-[10px]"><Checkbox checked={formData.safetyChecks?.other_check1 as boolean} onCheckedChange={checked => updateSafetyCheck("other_check1", checked)}/>확인1</label>
+<label className="flex items-center gap-1 text-[10px]"><Checkbox checked={formData.safetyChecks?.other_check2 as boolean} onCheckedChange={checked => updateSafetyCheck("other_check2", checked)}/>확인2</label>
+</div>
+</div>
+
+{/* 최종확인 */}
+<div className="border border-gray-300 rounded p-2">
+<p className="text-xs font-semibold text-gray-700 mb-2">작업 완료 시 최종 확인</p>
+{FINAL_CHECK_QUESTIONS.map((q, i) => (
+<div key={i} className="flex items-start justify-between gap-2 py-1 border-b border-gray-100 last:border-0">
+<p className="text-[10px] text-gray-700 flex-1">{q}</p>
+<div className="flex items-center gap-3 shrink-0">
+<label className="flex items-center gap-1 text-[10px]"><Checkbox checked={formData.safetyChecks?.[`final_check_${i+1}_y`] as boolean} onCheckedChange={checked => updateSafetyCheck(`final_check_${i+1}_y`, checked)}/>Y</label>
+<label className="flex items-center gap-1 text-[10px]"><Checkbox checked={formData.safetyChecks?.[`final_check_${i+1}_n`] as boolean} onCheckedChange={checked => updateSafetyCheck(`final_check_${i+1}_n`, checked)}/>N</label>
+</div>
+</div>
+))}
+<div className="mt-2">
+<label className="text-[10px] text-gray-500">조치/의견</label>
+<Textarea value={formData.safetyChecks?.final_comment as string || ""} onChange={e => updateSafetyCheck("final_comment", e.target.value)} className="w-full h-16 text-xs" placeholder="내용 입력"/>
+</div>
+</div>
+
+{/* 작업종료 */}
+<div className="border border-gray-300 rounded p-2">
+<div className="grid grid-cols-2 gap-2">
+<div>
+<label className="text-[10px] text-gray-500">작업 종료 일시</label>
+<Input type="datetime-local" value={formData.safetyChecks?.work_end_time as string || ""} onChange={e => updateSafetyCheck("work_end_time", e.target.value)} className="w-full h-7 text-xs"/>
+</div>
+<div>
+<label className="text-[10px] text-gray-500">관리감독자</label>
+<div className="flex justify-center mt-1"><SignatureSelector value={formData.supervisor} onChange={person => updateFormData({ supervisor: person })}/></div>
+</div>
+</div>
+</div>
+</div>
+
+{/* 결재선 바텀시트 */}
+{mobileApprovalOpen && (
+<div className="fixed inset-0 z-50 md:hidden">
+<div className="absolute inset-0 bg-black/40" onClick={() => setMobileApprovalOpen(false)}/>
+<div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-xl p-4 max-h-[70vh] overflow-y-auto">
+<div className="flex justify-between items-center mb-3">
+<span className="font-semibold text-sm">결재선 지정</span>
+<button onClick={() => setMobileApprovalOpen(false)}><X size={18} className="text-gray-500"/></button>
+</div>
+<div className="space-y-3">
+{APPROVAL_STEPS.map(step => (
+<div key={step.key} className="flex items-center justify-between py-2 border-b border-gray-100">
+<div>
+<p className="text-sm font-medium">{step.title}</p>
+<p className="text-xs text-gray-500">{step.subtitle}</p>
+</div>
+<div className="w-24">
+<SignatureSelector value={formData.approvers?.[step.key]} onChange={person => updateApprover(step.key, person)}/>
+</div>
+</div>
+))}
+</div>
+<Button variant="actionPrimary" onClick={() => setMobileApprovalOpen(false)} className="w-full mt-4 text-sm">확인</Button>
+</div>
+</div>
+)}
+
+<div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-2 flex gap-2 md:hidden">
+<Button variant="action" onClick={() => setMobileApprovalOpen(true)} className="flex-1 flex items-center justify-center gap-1 text-xs">
+결재선 지정 ({Object.keys(formData.approvers || {}).length}/4)
+</Button>
+<Button variant="actionPrimary" onClick={handleSubmitForm} className="flex-1 flex items-center justify-center gap-1 text-xs"><Send size={12}/>전송</Button>
+</div>
+</div>
+{/* Desktop View */}
+<div className="hidden md:block w-full">
 <CardContent className="p-0 flex justify-start">
 <ScrollArea className="w-full">
 <div className="w-[900px] min-w-[900px] print:w-full bg-white print:shadow-none">
 <div className="flex justify-between mb-3 no-print">
-<Button variant="action" onClick={handleCancel}>목록으로</Button>
+<Button variant="support" onClick={handleCancel}>목록으로</Button>
 <div className="flex flex-nowrap gap-1">
-<Button variant="action" onClick={handleSubmitForm} className="flex items-center gap-1">
+<Button variant="actionPrimary" onClick={handleSubmitForm} className="flex items-center gap-1">
 <Send size={16}/>전송
 </Button>
 <Button variant="action" onClick={handleLoad} className="flex items-center gap-1">

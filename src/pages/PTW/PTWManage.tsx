@@ -9,25 +9,43 @@ import PTWTBM from"./forms/PTWTBM"
 import FilePanel,{PTWFile}from"./FilePanel/FilePanel"
 import{Input}from"@/components/ui/input"
 
+const tabs:string[]=["위험작업허가서","작업위험분석(JSA)","현장 위험성평가(JSA)","TBM"]
+
 export default function PTWManage():React.ReactElement{
 const location=useLocation()
 const initialTab=(location.state as{activeTab?:number}|undefined)?.activeTab??0
 const[activeTab,setActiveTab]=useState<number>(initialTab)
 const[attachedFiles,setAttachedFiles]=useState<PTWFile[]>([])
 const[ptwName,setPtwName]=useState<string>("11월 용접 작업")
-const tabs=["위험작업허가서","작업위험분석(JSA)","현장 위험성평가(JSA)","TBM"]
 const[pageTitle,setPageTitle]=useState<string>("PTW 관리")
 const ptwId="TEMP_ID"
 
 useEffect(()=>{
-setPageTitle(tabs[activeTab])
+setPageTitle(`PTW 관리 · ${tabs[activeTab]}`)
 },[activeTab])
 
 return(
-<div className="bg-white rounded-lg shadow-sm p-6">
-<PageTitle>{pageTitle}</PageTitle>
+<div className="bg-white rounded-lg shadow-sm p-0 md:p-6">
+{/* Mobile Header */}
+<div className="md:hidden px-2 pt-2">
+<div className="flex items-center gap-2 mb-2">
+<span className="text-[10px] text-gray-500 shrink-0">PTW명</span>
+<Input
+value={ptwName}
+onChange={e=>setPtwName(e.target.value)}
+className="h-7 text-xs bg-white flex-1 border-gray-300"
+placeholder="예: 11월 4주차 일지"
+/>
+</div>
+<TabMenu tabs={tabs} activeIndex={activeTab} onTabClick={setActiveTab} className="mb-2"/>
+</div>
 
-<div className="flex flex-wrap items-center justify-between bg-[#F9FAFB] rounded-lg px-4 py-3 mb-4 text-sm text-gray-700">
+{/* Desktop Header */}
+<div className="hidden md:block">
+<PageTitle>{pageTitle}</PageTitle>
+</div>
+
+<div className="hidden md:flex flex-wrap items-center justify-between bg-[#F9FAFB] rounded-lg px-4 py-3 mb-4 text-sm text-gray-700">
 <div className="flex items-center gap-3 w-full">
 <span className="whitespace-nowrap"><strong>PTW명:</strong></span>
 <Input
@@ -39,19 +57,29 @@ placeholder="예: 11월 4주차 일지"
 </div>
 </div>
 
-<TabMenu tabs={tabs}activeIndex={activeTab}onTabClick={setActiveTab}className="mb-6"/>
+<div className="hidden md:block">
+<TabMenu tabs={tabs} activeIndex={activeTab} onTabClick={setActiveTab} className="mb-6"/>
+</div>
 
 <div className="flex gap-6">
-<div className="flex-shrink-0">
+<div className="w-full md:flex-shrink-0 md:w-auto">
 {activeTab===0&&<PTWWorkPermit ptwId={ptwId}attachedFiles={attachedFiles}/>}
 {activeTab===1&&<PTWJSA ptwId={ptwId}attachedFiles={attachedFiles}/>}
 {activeTab===2&&<PTWSiteEvaluation ptwId={ptwId}attachedFiles={attachedFiles}/>}
 {activeTab===3&&<PTWTBM ptwId={ptwId}attachedFiles={attachedFiles}/>}
+
+{/* Mobile FilePanel */}
+<div className="lg:hidden mt-3 mb-20 px-2">
+<div className="border border-gray-200 rounded-lg bg-white">
+<FilePanel ptwId={ptwId} onFilesChange={setAttachedFiles}/>
+</div>
+</div>
 </div>
 
+{/* Desktop FilePanel */}
 <div className="hidden lg:block w-[380px] flex-shrink-0">
 <div className="sticky top-6 border border-gray-200 rounded-lg bg-white">
-<FilePanel ptwId={ptwId}onFilesChange={setAttachedFiles}/>
+<FilePanel ptwId={ptwId} onFilesChange={setAttachedFiles}/>
 </div>
 </div>
 </div>

@@ -23,7 +23,7 @@ onSearch: () => void
 }
 
 const TEXT_CLASS = "text-gray-800"
-const INPUT_CLASS = `h-[36px] border border-[var(--border)] rounded-[8px] px-3 bg-white focus:outline-none focus:ring-1 focus:ring-[var(--secondary)] text-sm font-normal ${TEXT_CLASS} placeholder:text-gray-500`
+const INPUT_CLASS = `h-[32px] md:h-[36px] border border-[var(--border)] rounded-[8px] px-2 md:px-3 bg-white focus:outline-none focus:ring-1 focus:ring-[var(--secondary)] text-xs md:text-sm font-normal ${TEXT_CLASS} placeholder:text-gray-500`
 
 const courseOptions = [
 { value: "", label: "교육과정 선택" },
@@ -60,7 +60,7 @@ export const inspectionKindOptions = [
 ]
 
 const renderSelect = (value: string, onChange: (v: string) => void, options: { value: string; label: string }[]) => (
-<select className={`${INPUT_CLASS} w-full sm:w-[220px] appearance-none pr-8`} value={value} onChange={e => onChange(e.target.value)}>
+<select className={`${INPUT_CLASS} w-full sm:w-[220px] appearance-none pr-6 md:pr-8`} value={value} onChange={e => onChange(e.target.value)}>
 {options.map(opt => (<option key={opt.value} value={opt.value}>{opt.label}</option>))}
 </select>
 )
@@ -90,14 +90,14 @@ const shouldShowDate = Boolean(showDateRange && startDate !== undefined && endDa
 const hasSearchInput = (keyword !== undefined && onKeywordChange) || (searchText !== undefined && onSearchText)
 
 return (
-<section className="tbm-filter w-full flex flex-wrap items-center gap-2 px-3 py-3 mb-3 bg-white border border-[var(--border)] rounded-[10px]">
+<section className="tbm-filter w-full flex flex-wrap items-center gap-2 px-2 md:px-3 py-2 md:py-3 mb-2 md:mb-3 bg-white border border-[var(--border)] rounded-[10px]">
 <div className="flex flex-wrap items-center gap-2 flex-grow min-w-0 w-full">
 {shouldShowDate && (
-<div className="flex items-center gap-2 w-full sm:w-auto min-w-0">
-<span className="text-sm font-medium text-gray-800 whitespace-nowrap shrink-0">기간 선택</span>
-<div className="flex items-center gap-2 flex-1 sm:flex-none w-full sm:w-auto">
+<div className="flex items-center gap-1 md:gap-2 w-full sm:w-auto min-w-0">
+<span className="text-xs md:text-sm font-medium text-gray-800 whitespace-nowrap shrink-0">기간</span>
+<div className="flex items-center gap-1 md:gap-2 flex-1 sm:flex-none w-full sm:w-auto">
 <input type="date" className={`${INPUT_CLASS} flex-1 sm:w-[130px] w-full`} value={startDate} onChange={e => onStartDate!(e.target.value)} />
-<span className={`text-sm font-normal ${TEXT_CLASS} select-none shrink-0`}>~</span>
+<span className={`text-xs md:text-sm font-normal ${TEXT_CLASS} select-none shrink-0`}>~</span>
 <input type="date" className={`${INPUT_CLASS} flex-1 sm:w-[130px] w-full`} value={endDate} onChange={e => onEndDate!(e.target.value)} />
 </div>
 </div>
@@ -118,8 +118,8 @@ return (
 )}
 
 {hasSearchInput ? (
-<div className="flex items-center gap-2 w-full sm:w-auto min-w-0">
-<div className="flex items-center gap-2 w-full sm:w-auto">
+<div className="flex items-center gap-1 md:gap-2 w-full sm:w-auto min-w-0">
+<div className="flex items-center gap-1 md:gap-2 w-full sm:w-auto">
 <input
 type="text"
 className={`${INPUT_CLASS} flex-1 w-full sm:w-[250px]`}
@@ -127,12 +127,12 @@ placeholder="검색어 입력"
 value={keyword ?? searchText ?? ""}
 onChange={e => { if (onKeywordChange) onKeywordChange(e.target.value); else if (onSearchText) onSearchText(e.target.value) }}
 />
-<Button variant="primary" className="h-[36px] px-5 text-xs md:text-sm shrink-0" onClick={onSearch}>검색</Button>
+<Button variant="primary" className="h-[32px] md:h-[36px] px-3 md:px-5 text-xs md:text-sm shrink-0" onClick={onSearch}>검색</Button>
 </div>
 </div>
 ) : (
 <div className="flex items-center gap-1 flex-shrink-0 w-full sm:w-auto">
-<Button variant="primary" className="h-[36px] px-5 text-xs md:text-sm w-full sm:w-auto" onClick={onSearch}>검색</Button>
+<Button variant="primary" className="h-[32px] md:h-[36px] px-3 md:px-5 text-xs md:text-sm w-full sm:w-auto" onClick={onSearch}>검색</Button>
 </div>
 )}
 </div>

@@ -29,7 +29,10 @@ navigate("/login")
 const updateDateTime=useCallback(()=>{
 const n=new Date()
 setDate(n.toLocaleDateString("ko-KR",{year:"numeric",month:"2-digit",day:"2-digit"}))
-setTime(n.toLocaleTimeString("ko-KR",{hour12:false}))
+const h=String(n.getHours()).padStart(2,'0')
+const m=String(n.getMinutes()).padStart(2,'0')
+const s=String(n.getSeconds()).padStart(2,'0')
+setTime(`${h}:${m}:${s}`)
 },[])
 
 useEffect(()=>{
@@ -43,6 +46,7 @@ const AVATAR_SIZE=20
 
 return(
 <>
+{/* Desktop & Tablet */}
 <div
 className="hidden md:flex"
 style={{
@@ -54,91 +58,54 @@ top:0,
 left:0,
 width:"100vw",
 zIndex:101,
-padding:"0 20px"
+padding:"0 16px 0 16px"
 }}
 >
 <div
-style={{width:190,display:"flex",justifyContent:"center",alignItems:"center",cursor:"pointer"}}
+className="w-[140px] lg:w-[190px] shrink-0"
+style={{display:"flex",justifyContent:"center",alignItems:"center",cursor:"pointer"}}
 onClick={()=>navigate("/dashboard")}
 >
 <img src="/logo.svg"alt="logo"style={{height:18}}/>
 </div>
-<div style={{marginLeft:50,color:"#CBCBCB",fontSize:13}}>{factoryName}</div>
-<div
-style={{
-position:"absolute",
-top:0,
-left:0,
-width:"100%",
-height:"100%",
-display:"flex",
-alignItems:"center",
-justifyContent:"center",
-pointerEvents:"none"
-}}
->
+<div className="hidden lg:block ml-3 text-[13px] text-[#CBCBCB] truncate max-w-[280px]">{factoryName}</div>
+<div className="hidden xl:flex absolute top-0 left-0 w-full h-full items-center justify-center pointer-events-none">
 <strong style={{fontSize:18,color:"#fff",fontWeight:500}}>가디언AI 통합관제 플랫폼</strong>
 </div>
-<div style={{display:"flex",alignItems:"center",marginLeft:"auto",gap:20}}>
+<div className="flex items-center ml-auto gap-3 lg:gap-5 pr-4">
 <button
 type="button"
-style={{
-display:"flex",
-alignItems:"center",
-padding:"0 14px",
-height:30,
-borderRadius:30,
-border:"1px solid #C6C6C6",
-background:"none",
-color:"#fff",
-fontSize:13,
-fontWeight:600,
-cursor:"pointer"
-}}
+className="hidden lg:flex items-center px-3 h-[30px] rounded-[30px] border border-[#C6C6C6] bg-transparent text-white text-[13px] font-semibold cursor-pointer"
 >
-<Volume2 size={15}color="#fff"style={{marginRight:6}}/>소리재생
+<Volume2 size={15}color="#fff"className="mr-1.5"/>소리재생
 </button>
 <div
 onClick={()=>navigate("/mypage")}
-style={{display:"flex",alignItems:"center",gap:6,cursor:"pointer"}}
-className="hover:opacity-80 transition-opacity"
+className="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition-opacity"
 >
 <img
 src="/ico/ico-avatar.svg"
 alt="avatar"
 style={{width:AVATAR_SIZE,height:AVATAR_SIZE,borderRadius:"50%"}}
 />
-<span style={{fontSize:13,fontWeight:600,color:"#B1B1B1"}}>{userName} 님</span>
+<span className="text-[13px] font-semibold text-[#B1B1B1] hidden lg:inline">{userName} 님</span>
 </div>
-<div style={{width:190}}>
-<p style={{lineHeight:"20px",fontSize:13,color:"#B1B1B1",margin:0}}>
+<div className="hidden lg:block">
+<p className="leading-[20px] text-[13px] text-[#B1B1B1] m-0 whitespace-nowrap">
 {date}
-<span style={{marginLeft:10,color:"#fff",fontWeight:700}}>{time}</span>
+<span className="ml-2.5 text-white font-bold inline-block min-w-[0px] tabular-nums">{time}</span>
 </p>
 </div>
-<div style={{paddingRight:10}}>
 <button
 onClick={handleLogout}
-style={{
-padding:"0 13px",
-borderRadius:20,
-display:"flex",
-alignItems:"center",
-height:30,
-fontSize:13,
-fontWeight:600,
-color:"#fff",
-background:"#717171",
-cursor:"pointer",
-border:"none"
-}}
+className="px-3 rounded-[20px] flex items-center h-[30px] text-[13px] font-semibold text-white bg-[#717171] cursor-pointer border-none"
 >
 로그아웃
 </button>
 </div>
 </div>
-</div>
 
+{/* Mobile */}
 <div
 className="flex md:hidden"
 style={{
