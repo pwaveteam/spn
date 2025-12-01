@@ -157,15 +157,17 @@ export const lawMockData: DataRow[] = [
 
 // Approval
 export const receivedApprovalMockData: DataRow[] = [
-  { id: 3, date: "2025-05-11", type: "위험요인개선", content: "유해·위험요인 개선계획 결재 요청", drafter: "박근로", status: { text: "결재대기", color: "orange" }, sign: "done" },
-  { id: 2, date: "2025-05-19", type: "점검계획서", content: "정기 자체점검 계획 결재 요청", drafter: "박안전", status: { text: "결재대기", color: "orange" }, sign: "pending" },
-  { id: 1, date: "2025-05-30", type: "예산계획서", content: "안전보건 예산 및 인력계획 결재 요청", drafter: "박관리", status: { text: "결재완료", color: "gray" }, sign: "pending" }
+  { id: 1, date: "2025-01-20", type: "위험작업허가서", content: "1월 4주차 용접작업 허가 요청", drafter: "김현장", status: { text: "결재대기", color: "yellow" } },
+  { id: 2, date: "2025-01-18", type: "작업위험분석(JSA)", content: "고소작업 위험분석서", drafter: "이안전", status: { text: "결재대기", color: "yellow" } },
+  { id: 3, date: "2025-01-15", type: "TBM", content: "1월 3주차 TBM 안전일지", drafter: "박작업", status: { text: "결재완료", color: "green" } },
+  { id: 4, date: "2025-01-12", type: "현장위험성평가(JSA)", content: "밀폐공간 작업 위험성평가", drafter: "최관리", status: { text: "결재완료", color: "green" } },
+  { id: 5, date: "2025-01-10", type: "위험작업허가서", content: "전기작업 허가 요청", drafter: "정기술", status: { text: "반려", color: "red" } }
 ]
 
 export const sentApprovalMockData: DataRow[] = [
-  { id: 3, date: "2025-05-11", document: "안전보건 예산 및 인력확보 계획서", status: { text: "결재대기", color: "green" }, progress: "0/3", finalApprover: "김관리" },
-  { id: 2, date: "2025-05-19", document: "자체점검 계획서", status: { text: "결재완료", color: "blue" }, progress: "3/3", finalApprover: "이대표" },
-  { id: 1, date: "2025-05-30", document: "안전보건관리체계 구축계획서", status: { text: "결재대기", color: "green" }, progress: "1/3", finalApprover: "최관리" }
+  { id: 1, date: "2025-05-30", document: "안전보건관리체계 구축계획서", status: { text: "결재중", color: "yellow" }, progress: "1/3", finalApprover: "최관리" },
+  { id: 2, date: "2025-05-19", document: "자체점검 계획서", status: { text: "결재완료", color: "green" }, progress: "3/3", finalApprover: "이대표" },
+  { id: 3, date: "2025-05-11", document: "안전보건 예산 및 인력확보 계획서", status: { text: "결재대기", color: "yellow" }, progress: "0/3", finalApprover: "김관리" }
 ]
 
 // Business
