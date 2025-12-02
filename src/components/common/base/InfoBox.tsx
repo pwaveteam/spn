@@ -7,7 +7,7 @@ message: string
 
 const InfoBox: React.FC<InfoBoxProps> = ({ message }) => (
 <div>
-<div className="mb-1 p-3 bg-blue-50 border border-blue-100 rounded-lg text-sm md:text-base text-[#031E36] flex items-center gap-1">
+<div className="mb-1 p-3 bg-blue-50 border border-blue-100 rounded-lg text-xs md:text-sm text-[#031E36] flex items-center gap-1">
 <Wand2 size={16} className="text-blue-400" />
 <span>{message}</span>
 </div>

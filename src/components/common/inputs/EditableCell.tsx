@@ -39,11 +39,11 @@ onChange={handleChange}
 placeholder={placeholder}
 disabled={disabled}
 className={`
-w-full min-w-[80px] px-2 py-1 rounded-lg border border-[var(--border)]
-text-xs sm:text-sm md:text-base font-sans text-left outline-none
-whitespace-nowrap overflow-hidden text-ellipsis appearance-none
-${disabled ? "bg-neutral-bg cursor-not-allowed" : "bg-white"}
-${className}
+  w-full min-w-[80px] px-2 py-1 rounded-lg border border-[var(--border)]
+  text-xs sm:text-sm font-sans text-left outline-none
+  whitespace-nowrap overflow-hidden text-ellipsis appearance-none
+  ${disabled ? "bg-neutral-bg cursor-not-allowed" : "bg-white"}
+  ${className}
 `}
 />
 </div>

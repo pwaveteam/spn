@@ -9,29 +9,17 @@ import PageTitle from "@/components/common/base/PageTitle"
 import { FrequencyRiskDataRow } from "@/types/riskAssessment"
 import { frequencyStep2MockData } from "@/data/mockRiskAssessmentData"
 
-const selectStyle: React.CSSProperties = {
-  appearance: "none",
-  WebkitAppearance: "none",
-  MozAppearance: "none",
-  paddingRight: 30,
-  backgroundColor: "transparent",
-  border: "none",
-  outline: "none",
-  fontSize: 15,
-  cursor: "pointer",
-  width: "100%"
-}
-
 export default function FrequencyStep2() {
   const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(1)
   const [checked, setChecked] = useState<(number | string)[]>([])
   const [data, setData] = useState<FrequencyRiskDataRow[]>(frequencyStep2MockData)
 
-  const calcRisk = (f: number, i: number) => f * i
-  const getRiskColor = (v: number) => (v >= 7 ? "#FF3939" : v >= 4 ? "#FFE13E" : "#1EED1E")
-
   const handleInputChange = (id: number | string, key: string, value: string) => {
+    setData(prev => prev.map(r => (r.id === id ? { ...r, [key]: value } : r)))
+  }
+
+  const handleRiskChange = (id: number | string, key: string, value: number) => {
     setData(prev => prev.map(r => (r.id === id ? { ...r, [key]: value } : r)))
   }
 
@@ -47,64 +35,19 @@ export default function FrequencyStep2() {
       setData(prev => prev.filter(r => !ids.includes(r.id)))
       setChecked([])
     },
-    onSave: () => {
-      // 실제 저장 로직
-    },
-    onNextStep: () => {
-      navigate("/risk-assessment/methods/frequency/step3")
-    },
+    onSave: () => {},
+    onNextStep: () => navigate("/risk-assessment/methods/frequency/step3"),
     saveMessage: "임시저장 완료"
   })
 
   const columns: Column<FrequencyRiskDataRow>[] = [
     { key: "id", label: "번호", type: "index" },
     { key: "work", label: "공정(작업)" },
-    { key: "hazard", label: "유해위험요인", align: "left" },
+    { key: "hazard", label: "유해위험요인", type: "textarea", align: "left" },
     { key: "action", label: "현재 안전보건조치", type: "textarea", align: "left" },
-    {
-      key: "frequency",
-      label: "빈도",
-      renderCell: row => (
-        <div className="relative">
-          <select
-            style={selectStyle}
-            value={row.frequency}
-            onChange={e => setData(prev => prev.map(r => (r.id === row.id ? { ...r, frequency: Number(e.target.value) } : r)))}
-            className="font-semibold"
-          >
-            {[1, 2, 3].map(v => <option key={v}>{v}</option>)}
-          </select>
-        </div>
-      )
-    },
-    {
-      key: "intensity",
-      label: "강도",
-      renderCell: row => (
-        <div className="relative">
-          <select
-            style={selectStyle}
-            value={row.intensity}
-            onChange={e => setData(prev => prev.map(r => (r.id === row.id ? { ...r, intensity: Number(e.target.value) } : r)))}
-            className="font-semibold"
-          >
-            {[1, 2, 3].map(v => <option key={v}>{v}</option>)}
-          </select>
-        </div>
-      )
-    },
-    {
-      key: "risk",
-      label: "위험성",
-      renderCell: row => {
-        const val = calcRisk(row.frequency, row.intensity)
-        return (
-          <div className="flex justify-center">
-            <span className="px-5 py-1 rounded-lg font-bold" style={{ backgroundColor: getRiskColor(val) }}>{val}</span>
-          </div>
-        )
-      }
-    },
+    { key: "frequency", label: "빈도", type: "riskSelect" },
+    { key: "intensity", label: "강도", type: "riskSelect" },
+    { key: "risk", label: "위험성", type: "riskResult" },
     { key: "afterPhoto", label: "평가현장 사진", type: "upload" },
     { key: "evaluationDate", label: "평가일자", type: "date" }
   ]
@@ -134,8 +77,8 @@ export default function FrequencyStep2() {
             data={data}
             onCheckedChange={setChecked}
             onInputChange={handleInputChange}
+            onRiskChange={handleRiskChange}
             onUploadChange={handleUploadChange}
-            selectable
           />
         </div>
       </div>

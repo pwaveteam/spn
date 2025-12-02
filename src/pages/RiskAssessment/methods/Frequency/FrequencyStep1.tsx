@@ -15,7 +15,7 @@ import { frequencyStep1MockData } from "@/data/mockRiskAssessmentData"
 const columns: Column[] = [
   { key: "work", label: "공정(작업)", type: "textarea", align: "left" },
   { key: "hazard", label: "유해위험요인", type: "textarea", align: "left" },
-  { key: "law", label: "관련법규", align: "left" },
+  { key: "law", label: "관련법규", type: "textarea", align: "left" },
   { key: "action", label: "현재 안전보건조치", type: "textarea", align: "left" },
   { key: "proof", label: "첨부파일", type: "upload" }
 ]
