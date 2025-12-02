@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Outlet, useLocation } from "react-router-dom"
-import Sidebar from "../sidebar/Sidebar"
+import Sidebar from "../Sidebar/Sidebar"
 import Breadcrumb from "../common/base/Breadcrumb"
 import Header from "../layout/Header"
 
