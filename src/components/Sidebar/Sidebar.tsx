@@ -36,7 +36,7 @@ const infoSubMenu:MenuItem[]=[
 const supportMenu:MenuItem[]=[
 {label:"마이페이지",path:"/mypage",Icon:UserCircleIcon},
 {label:"1:1 지원",path:"/support",Icon:ChatBubbleLeftRightIcon},
-{label:"사용가이드",path:"https://www.notion.so/",Icon:BookOpenIcon}
+// {label:"사용가이드",path:"https://www.notion.so/",Icon:BookOpenIcon}
 ]
 
 const Sidebar:React.FC<SidebarProps>=({

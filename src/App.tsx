@@ -87,6 +87,9 @@ import PublicInspectionList from "./components/QR/PublicInspectionList"
 import PublicInspectionExecute from "./components/QR/PublicInspectionExecute"
 import PublicSiteEvaluation from "./components/QR/PublicSiteEvaluation"
 import PublicTBM from "./components/QR/PublicTBM"
+import PublicNearMiss from "./components/QR/PublicNearMiss"
+import PublicSafeVoice from "./components/QR/PublicSafeVoice"
+import PublicCertificate from "./components/QR/PublicCertificate"
 
 const App: React.FC = () => {
 const { isLoading } = useLoadingStore()
@@ -107,6 +110,9 @@ return (
 <Route path="/public/inspection/:id/execute" element={<PublicInspectionExecute />} />
 <Route path="/public/site-evaluation" element={<PublicSiteEvaluation />} />
 <Route path="/public/tbm" element={<PublicTBM />} />
+<Route path="/public/nearmiss" element={<PublicNearMiss />} />
+<Route path="/public/safevoice" element={<PublicSafeVoice />} />
+<Route path="/public/certificate" element={<PublicCertificate />} />
 
 <Route element={<MainLayout />}>
 <Route path="/" element={<Navigate to="/dashboard" replace />} />
