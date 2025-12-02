@@ -63,7 +63,7 @@ notifyEnabled = true,
 }: FormScreenProps) {
 const BORDER_STYLE = { borderWidth: "1px", borderStyle: "solid" as const, borderColor: "var(--border)" }
 
-const FONT_SM_BASE = "text-sm md:text-base"
+const FONT_SM_BASE = "text-xs md:text-base"
 
 const headerFont = { fontWeight: 600, color: "var(--tertiary)" }
 const bodyFont = { fontWeight: 400, color: "#666" }
@@ -77,8 +77,8 @@ const TEXT_SECONDARY = "text-gray-600"
 const TEXT_DISABLED = "text-gray-500"
 
 const BORDER_CLASS = "rounded-lg"
-const PLACEHOLDER_CLASS = "placeholder:font-normal placeholder:text-gray-500 placeholder:text-sm md:placeholder:text-base"
-const TEXT_BASE_CLASS = "text-sm md:text-base font-medium"
+const PLACEHOLDER_CLASS = "placeholder:font-normal placeholder:text-gray-500 placeholder:text-xs md:placeholder:text-base"
+const TEXT_BASE_CLASS = "text-xs md:text-base font-medium"
 const INPUT_BASE_CLASS = `${BORDER_CLASS} px-2 py-2 w-full appearance-none ${PLACEHOLDER_CLASS} ${TEXT_BASE_CLASS}`
 
 const INPUT_EDITABLE = `${INPUT_BASE_CLASS} ${BG_WHITE} ${TEXT_PRIMARY}`
@@ -89,7 +89,7 @@ const TEXTAREA_CLASS = `${BORDER_CLASS} ${PLACEHOLDER_CLASS} ${TEXT_BASE_CLASS} 
 const FILE_WRAPPER_CLASS = `w-full h-10 ${BORDER_CLASS} flex items-center justify-center ${TEXT_BASE_CLASS}`
 const FILE_BTN_CLASS = `h-8 flex items-center px-3 bg-gray-100 rounded ${FONT_SM_BASE} ${TEXT_PRIMARY} cursor-pointer`
 const FILE_TEXT_CLASS = `${FONT_SM_BASE} ${TEXT_SECONDARY} flex-1 truncate`
-const FILE_LIST_CLASS = `rounded-md p-2 max-h-[120px] overflow-auto text-sm md:text-base ${TEXT_PRIMARY}`
+const FILE_LIST_CLASS = `rounded-md p-2 max-h-[120px] overflow-auto text-xs md:text-base ${TEXT_PRIMARY}`
 
 const TAG_CONTAINER_CLASS = `w-full max-w-full ${BG_WHITE} px-1 py-0.5 ${BORDER_CLASS} h-10 flex items-center`
 const TAG_ITEM_CLASS = `flex items-center ${TEXT_PRIMARY} text-xs md:text-sm ${BORDER_CLASS} px-2 py-1`

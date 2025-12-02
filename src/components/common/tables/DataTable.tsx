@@ -4,7 +4,7 @@ import { Download, Image, Eye, Upload } from "lucide-react";
 import Badge, { BadgeColor } from "../base/Badge";
 import EditableCell from "@/components/common/inputs/EditableCell";
 import EditableTextArea from "@/components/common/inputs/EditableTextArea";
-import SitePhotoViewer from "@/components/modules/SitePhotoViewer";
+import SitePhotoViewer from "@/components/snippet/SitePhotoViewer";
 import ToggleSwitch from "@/components/common/base/ToggleSwitch";
 
 export type ColumnType =
@@ -585,7 +585,7 @@ const justifyClass = getJustifyClass(align);
 return (
 <th
 key={col.key}
-className={`text-sm md:text-base align-middle py-[11px] ${
+className={`text-xs md:text-base align-middle py-[11px] ${
 isLast ? "pl-[13px] pr-[19px]" : "px-[13px]"
 } ${commonHeaderClass}`}
 style={{
@@ -627,7 +627,7 @@ const align = resolveAlign(col);
 return (
 <td
 key={col.key}
-className={`text-sm md:text-base align-middle py-[11px] ${
+className={`text-xs md:text-base align-middle py-[11px] ${
 isLast ? "pl-[13px] pr-[19px]" : "px-[13px]"
 } ${commonBodyClass}`}
 style={{

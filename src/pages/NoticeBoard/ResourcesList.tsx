@@ -54,9 +54,10 @@ setModalOpen(true)
 onDeleteSuccess:ids=>setData(prev=>prev.filter(r=>!ids.includes(r.id)))
 })
 
-const handleSave=(item:{title:string;author:string;date:string;fileAttach:boolean})=>{
+const handleSave=(item:{title:string;author:string;content:string;fileUpload:string})=>{
 const newId=data.length>0?Math.max(...data.map(d=>Number(d.id)))+1:1
-const newRow:DataRow={id:newId,title:item.title,author:item.author,date:item.date,fileAttach:item.fileAttach}
+const today=new Date().toISOString().split('T')[0]
+const newRow:DataRow={id:newId,title:item.title,author:item.author,date:today,fileAttach:!!item.fileUpload}
 setData(prev=>[newRow,...prev])
 setModalOpen(false)
 setIsEditMode(false)

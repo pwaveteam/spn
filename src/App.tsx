@@ -83,6 +83,9 @@ import MyPage from "./pages/MyPage/MyPage"
 import Support from "./pages/Support/Support"
 import UserGuide from "./pages/UserGuide/UserGuide"
 
+import PublicInspectionList from "./components/QR/PublicInspectionList"
+import PublicInspectionExecute from "./components/QR/PublicInspectionExecute"
+
 const App: React.FC = () => {
 const { isLoading } = useLoadingStore()
 
@@ -97,6 +100,9 @@ return (
 <BrowserRouter>
 <Routes>
 <Route path="/login" element={<Login />} />
+
+<Route path="/public/inspection" element={<PublicInspectionList />} />
+<Route path="/public/inspection/:id/execute" element={<PublicInspectionExecute />} />
 
 <Route element={<MainLayout />}>
 <Route path="/" element={<Navigate to="/dashboard" replace />} />

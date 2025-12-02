@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from "react"
+import { X, Check, FileText, Pencil, FolderOpen, RotateCcw, Clock } from "lucide-react"
 import Button from "@/components/common/base/Button"
 import Badge from "@/components/common/base/Badge"
-import Dialog from "@/components/common/base/Dialog"
-import { Check, X, FileText, Pencil, FolderOpen, RotateCcw, Clock } from "lucide-react"
+
+const TEXT_PRIMARY = "text-gray-800"
 
 export type ReceivedDetail = {
 id: number | string
@@ -22,20 +23,8 @@ progress: string
 finalApprover: string
 }
 
-type ReceivedProps = {
-variant: "received"
-row: ReceivedDetail
-onClose: () => void
-onApprove?: (id: number | string, signature: string) => void
-onReject?: (id: number | string) => void
-}
-
-type SentProps = {
-variant: "sent"
-row: SentDetail
-onClose: () => void
-}
-
+type ReceivedProps = { variant: "received"; row: ReceivedDetail; onClose: () => void; onApprove?: (id: number | string, signature: string) => void; onReject?: (id: number | string) => void }
+type SentProps = { variant: "sent"; row: SentDetail; onClose: () => void }
 type Props = ReceivedProps | SentProps
 
 function SignaturePad({ value, onChange }: { value: string; onChange: (v: string) => void }) {
@@ -114,25 +103,19 @@ else onChange("")
 return (
 <div className="space-y-3">
 <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
-<button type="button" onClick={() => handleModeChange("draw")}
-className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-sm rounded-md transition-colors ${mode === "draw" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
+<button type="button" onClick={() => handleModeChange("draw")} className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-sm rounded-md transition-colors ${mode === "draw" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
 <Pencil size={16} />직접 서명
 </button>
-<button type="button" onClick={() => handleModeChange("load")}
-className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-sm rounded-md transition-colors ${mode === "load" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
+<button type="button" onClick={() => handleModeChange("load")} className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-sm rounded-md transition-colors ${mode === "load" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"}`}>
 <FolderOpen size={16} />내 서명 불러오기
 </button>
 </div>
 {mode === "draw" ? (
 <div className="relative">
-<canvas ref={canvasRef}
-className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-crosshair touch-none bg-white"
-onMouseDown={startDraw} onMouseMove={draw} onMouseUp={endDraw} onMouseLeave={endDraw}
-onTouchStart={startDraw} onTouchMove={draw} onTouchEnd={endDraw} />
+<canvas ref={canvasRef} className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-crosshair touch-none bg-white" onMouseDown={startDraw} onMouseMove={draw} onMouseUp={endDraw} onMouseLeave={endDraw} onTouchStart={startDraw} onTouchMove={draw} onTouchEnd={endDraw} />
 {!value && <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-gray-400 text-sm">여기에 서명해주세요</div>}
 {value && (
-<button type="button" onClick={clearCanvas}
-className="absolute top-2 right-2 p-1.5 bg-white/80 hover:bg-white rounded-md border border-gray-200 text-gray-500 hover:text-gray-700">
+<button type="button" onClick={clearCanvas} className="absolute top-2 right-2 p-1.5 bg-white/80 hover:bg-white rounded-md border border-gray-200 text-gray-500 hover:text-gray-700">
 <RotateCcw size={16} />
 </button>
 )}
@@ -185,7 +168,14 @@ onClose()
 }
 
 return (
-<Dialog title="결재 상세" onClose={onClose} size="md">
+<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+<div className="bg-white rounded-none md:rounded-2xl w-full md:w-[500px] md:max-w-full p-4 md:p-6 shadow-2xl h-screen md:h-auto md:max-h-[90vh] flex flex-col overflow-y-auto">
+<div className="flex items-center justify-between mb-4 shrink-0">
+<h2 className={`text-base md:text-xl font-bold tracking-tight ${TEXT_PRIMARY}`}>결재 상세</h2>
+<button onClick={onClose} className="p-1 hover:bg-[var(--neutral-bg)] rounded transition text-[var(--neutral)]">
+<X size={24} />
+</button>
+</div>
 <div className="space-y-4">
 <div className="bg-gray-50 rounded-lg p-4">
 <div className="grid grid-cols-[100px_1fr] gap-y-3 text-sm">
@@ -240,7 +230,8 @@ return (
 </div>
 )}
 </div>
-</Dialog>
+</div>
+</div>
 )
 }
 
@@ -249,7 +240,14 @@ const isRejected = row.status === "반려"
 const isPending = row.status === "결재중" || row.status === "결재대기"
 
 return (
-<Dialog title="결재 상세" onClose={onClose} size="md">
+<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+<div className="bg-white rounded-none md:rounded-2xl w-full md:w-[500px] md:max-w-full p-4 md:p-6 shadow-2xl h-screen md:h-auto md:max-h-[90vh] flex flex-col overflow-y-auto">
+<div className="flex items-center justify-between mb-4 shrink-0">
+<h2 className={`text-base md:text-xl font-bold tracking-tight ${TEXT_PRIMARY}`}>결재 상세</h2>
+<button onClick={onClose} className="p-1 hover:bg-[var(--neutral-bg)] rounded transition text-[var(--neutral)]">
+<X size={24} />
+</button>
+</div>
 <div className="space-y-4">
 <div className="bg-gray-50 rounded-lg p-4">
 <div className="grid grid-cols-[100px_1fr] gap-y-3 text-sm">
@@ -297,6 +295,7 @@ return (
 </div>
 )}
 </div>
-</Dialog>
+</div>
+</div>
 )
 }

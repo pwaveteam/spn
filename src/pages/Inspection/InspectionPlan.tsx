@@ -6,6 +6,7 @@ import DataTable, { Column, DataRow } from "@/components/common/tables/DataTable
 import TabMenu from "@/components/common/base/TabMenu"
 import PageTitle from "@/components/common/base/PageTitle"
 import Pagination from "@/components/common/base/Pagination"
+import QRDialog from "@/components/QR/QRDialog"
 import useFilterBar from "@/hooks/useFilterBar"
 import usePagination from "@/hooks/usePagination"
 import useTableActions from "@/hooks/tableActions"
@@ -33,18 +34,32 @@ const { currentIndex, handleTabClick } = useTabNavigation(TAB_PATHS)
 const [data, setData] = useState<PlanRow[]>(inspectionPlanMockData as PlanRow[])
 const [checkedIds, setCheckedIds] = useState<(number | string)[]>([])
 
+const [qrDialogOpen, setQrDialogOpen] = useState(false)
+const [qrUrl, setQrUrl] = useState("")
+
 const { searchText, setSearchText } = useFilterBar()
 const [inspectionField, setInspectionField] = useState("")
 const [inspectionKind, setInspectionKind] = useState("")
 
 const { currentPage, totalPages, currentData, onPageChange } = usePagination<PlanRow>(data, 30)
 
-const { handleCreate, handleDelete, handleDownload, handleGenerateQR } = useTableActions({
+const { handleCreate, handleDelete, handleDownload } = useTableActions({
 data,
 checkedIds,
 onCreate: () => navigate("/inspection/plan/register"),
 onDeleteSuccess: ids => setData(prev => prev.filter(row => !ids.includes(row.id)))
 })
+
+const handleOpenQR = () => {
+if (checkedIds.length === 0) {
+const url = `${window.location.origin}/public/inspection`
+setQrUrl(url)
+} else {
+const url = `${window.location.origin}/public/inspection?ids=${checkedIds.join(",")}`
+setQrUrl(url)
+}
+setQrDialogOpen(true)
+}
 
 const handleStartInspection = (id: number | string) => {
 navigate(`/inspection/plan/${id}/execute`)
@@ -106,7 +121,7 @@ onSearch={() => {}}
 <div className="flex flex-col gap-1 w-full justify-end sm:hidden">
 <div className="flex gap-1 justify-end">
 <Button variant="action" onClick={handleCreate} className="flex items-center gap-1"><CirclePlus size={16} />신규등록</Button>
-<Button variant="action" onClick={handleGenerateQR} className="flex items-center gap-1"><QrCode size={16} />QR</Button>
+<Button variant="action" onClick={handleOpenQR} className="flex items-center gap-1"><QrCode size={16} />QR</Button>
 <Button variant="action" onClick={handleDownload} className="flex items-center gap-1"><Save size={16} />다운로드</Button>
 <Button variant="action" onClick={handleDelete} className="flex items-center gap-1"><Trash2 size={16} />삭제</Button>
 </div>
@@ -114,7 +129,7 @@ onSearch={() => {}}
 
 <div className="hidden sm:flex flex-nowrap gap-1 w-auto justify-end">
 <Button variant="action" onClick={handleCreate} className="flex items-center gap-1"><CirclePlus size={16} />신규등록</Button>
-<Button variant="action" onClick={handleGenerateQR} className="flex items-center gap-1"><QrCode size={16} />QR</Button>
+<Button variant="action" onClick={handleOpenQR} className="flex items-center gap-1"><QrCode size={16} />QR</Button>
 <Button variant="action" onClick={handleDownload} className="flex items-center gap-1"><Save size={16} />다운로드</Button>
 <Button variant="action" onClick={handleDelete} className="flex items-center gap-1"><Trash2 size={16} />삭제</Button>
 </div>
@@ -125,6 +140,13 @@ onSearch={() => {}}
 </div>
 
 <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={onPageChange} />
+
+<QRDialog
+open={qrDialogOpen}
+url={qrUrl}
+title="점검 QR코드"
+onClose={() => setQrDialogOpen(false)}
+/>
 </section>
 )
 }

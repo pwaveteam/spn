@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom"
 import Checkbox from "@/components/common/base/Checkbox"
 import Button from "@/components/common/base/Button"
 import FormScreen, { Field } from "@/components/common/forms/FormScreen"
-import RiskLevelTable3x3 from "@/components/modules/RiskLevelTable3x3"
-import RiskLevelTable5x4 from "@/components/modules/RiskLevelTable5x4"
+import RiskLevelTable3x3 from "@/components/snippetRisk/RiskLevelTable3x3"
+import RiskLevelTable5x4 from "@/components/snippetRisk/RiskLevelTable5x4"
 import Spinner from "@/components/common/base/Spinner"
 
 type Props = { onClose: () => void }
@@ -30,59 +30,16 @@ setFormValues(prev => ({ ...prev, [name]: value }))
 
 const baseFields: Field[] = [
 { label: "위험성평가명", name: "riskAssessmentName", type: "text", required: true, placeholder: "위험성평가명 입력" },
-{ label: "평가구분", name: "evaluationType", type: "select", required: true, options: [ { value: "최초평가", label: "최초평가" }, { value: "정기평가", label: "정기평가" }, { value: "수시평가", label: "수시평가" }, { value: "상시평가", label: "상시평가" } ] },
-{ label: "평가방법", name: "evaluationMethod", type: "select", required: true, options: [ { value: "빈도·강도법", label: "빈도·강도법" }, { value: "위험성수준 3단계 판단법", label: "위험성수준 3단계 판단법" }, { value: "화학물질 평가법", label: "화학물질 평가법" }, { value: "체크리스트법", label: "체크리스트법" } ] },
+{ label: "평가구분", name: "evaluationType", type: "select", required: true, options: [{ value: "최초평가", label: "최초평가" }, { value: "정기평가", label: "정기평가" }, { value: "수시평가", label: "수시평가" }, { value: "상시평가", label: "상시평가" }] },
+{ label: "평가방법", name: "evaluationMethod", type: "select", required: true, options: [{ value: "빈도·강도법", label: "빈도·강도법" }, { value: "위험성수준 3단계 판단법", label: "위험성수준 3단계 판단법" }, { value: "화학물질 평가법", label: "화학물질 평가법" }, { value: "체크리스트법", label: "체크리스트법" }] },
 { label: "실시규정", name: "regulationFile", type: "fileUpload", required: true },
 ]
 
-const additionalFields: Field[] = formValues.evaluationMethod === "빈도·강도법" ? [{ label: "평가척도", name: "scale", type: "radio", options: [ { value: "3x3", label: "3×3" }, { value: "5x4", label: "5×4" } ] }] : []
+const additionalFields: Field[] = formValues.evaluationMethod === "빈도·강도법" ? [{ label: "평가척도", name: "scale", type: "radio", options: [{ value: "3x3", label: "3×3" }, { value: "5x4", label: "5×4" }] }] : []
 
 const fields: Field[] = [...baseFields.slice(0, 3), ...additionalFields, ...baseFields.slice(3)]
 
-return (
-<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-<div className="bg-white w-full max-w-[860px] rounded-xl p-6 m-4 shadow-lg pre-checklist overflow-y-auto max-h-[90vh]">
-<style>{`.formscreen-reset table th {background-color: #EFEFF3 !important;}`}</style>
-<h3 className="font-semibold text-lg mb-2">위험성평가 사전 체크리스트</h3>
-<div className="space-y-2 mb-3">
-{items.map(item => (
-<div key={item.id} className="flex gap-2 items-start border border-[var(--border)] rounded-lg p-2.5 bg-white hover:bg-gray-50 transition-colors">
-<div className="flex-1">
-{item.content.map((line, i) => (
-<p key={i} className="text-sm text-[#666] leading-snug">{line}</p>
-))}
-</div>
-<div className="flex-shrink-0">
-<Checkbox checked={checked.includes(item.id)} onChange={() => handleCheck(item.id)} />
-</div>
-</div>
-))}
-</div>
-<div className="flex justify-end gap-1 mb-3">
-<Button variant="secondaryOutline">안전보건정보 조사표 내려받기</Button>
-<Button variant="secondaryOutline">위험성평가 실시규정 예시 내려받기</Button>
-</div>
-<div className="mt-6">
-<h3 className="font-semibold text-lg mb-1">사전평가정보 입력</h3>
-<div className="formscreen-reset">
-<FormScreen fields={fields} values={formValues} onChange={handleChange} onClose={onClose} onSave={() => {}} />
-{formValues.evaluationMethod === "빈도·강도법" && formValues.scale === "3x3" && (<RiskLevelTable3x3 />)}
-{formValues.evaluationMethod === "빈도·강도법" && formValues.scale === "5x4" && (<RiskLevelTable5x4 />)}
-</div>
-</div>
-<div className="mt-6 flex justify-center gap-1">
-<Button variant="primaryOutline" onClick={onClose}>닫기</Button>
-
-{isLoading && (
-<div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50">
-<Spinner />
-</div>
-)}
-
-<Button
-variant="primary"
-disabled={isLoading}
-onClick={async () => {
+const handleSubmit = async () => {
 if (!formValues.evaluationMethod) {
 alert("평가방법을 선택해주세요.")
 return
@@ -90,7 +47,6 @@ return
 setIsLoading(true)
 await new Promise((r) => setTimeout(r, 1500))
 await onClose()
-
 switch (formValues.evaluationMethod) {
 case "빈도·강도법":
 navigate("/risk-assessment/methods/frequency/step1")
@@ -107,11 +63,51 @@ navigate("/risk-assessment/methods/chemical")
 break
 }
 setIsLoading(false)
-}}
->
-위험성평가 실시
-</Button>
+}
 
+return (
+<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+<div className="bg-white w-full max-w-[860px] rounded-xl p-4 md:p-6 m-4 shadow-lg pre-checklist overflow-y-auto max-h-[90vh]">
+<style>{`.formscreen-reset table th {background-color: #EFEFF3 !important;}`}</style>
+<h3 className="font-semibold text-base md:text-lg mb-2">위험성평가 사전 체크리스트</h3>
+<div className="space-y-2 mb-3">
+{items.map(item => (
+<div
+key={item.id}
+onClick={() => handleCheck(item.id)}
+className="flex gap-2 items-start border border-[var(--border)] rounded-lg p-2 md:p-2.5 bg-white hover:bg-gray-50 transition-colors cursor-pointer select-none"
+>
+<div className="flex-1">
+{item.content.map((line, i) => (
+<p key={i} className="text-xs md:text-sm text-gray-500 leading-snug">{line}</p>
+))}
+</div>
+<div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+<Checkbox checked={checked.includes(item.id)} onChange={() => handleCheck(item.id)} />
+</div>
+</div>
+))}
+</div>
+<div className="flex flex-row justify-end gap-1 mb-3">
+<Button variant="secondaryOutline" className="text-xs md:text-sm">안전보건정보 조사표 내려받기</Button>
+<Button variant="secondaryOutline" className="text-xs md:text-sm">위험성평가 실시규정 예시 내려받기</Button>
+</div>
+<div className="mt-4 md:mt-6">
+<h3 className="font-semibold text-base md:text-lg mb-1">사전평가정보 입력</h3>
+<div className="formscreen-reset">
+<FormScreen fields={fields} values={formValues} onChange={handleChange} onClose={onClose} onSave={() => {}} />
+{formValues.evaluationMethod === "빈도·강도법" && formValues.scale === "3x3" && <RiskLevelTable3x3 />}
+{formValues.evaluationMethod === "빈도·강도법" && formValues.scale === "5x4" && <RiskLevelTable5x4 />}
+</div>
+</div>
+<div className="mt-4 md:mt-6 flex justify-center gap-1">
+<Button variant="primaryOutline" onClick={onClose}>닫기</Button>
+{isLoading && (
+<div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50">
+<Spinner />
+</div>
+)}
+<Button variant="primary" disabled={isLoading} onClick={handleSubmit}>위험성평가 실시</Button>
 </div>
 </div>
 </div>

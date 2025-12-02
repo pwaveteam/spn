@@ -21,7 +21,7 @@ export default function PTWRegister(): React.ReactElement {
   const ptwId = "NEW"
 
   useEffect(() => {
-    setPageTitle(`PTW 등록 · ${tabs[activeTab]}`)
+    setPageTitle(`등록 · ${tabs[activeTab]}`)
   }, [activeTab])
 
   return (
@@ -33,7 +33,7 @@ export default function PTWRegister(): React.ReactElement {
             value={ptwName}
             onChange={e => setPtwName(e.target.value)}
             className="h-7 text-xs bg-white flex-1 border-gray-300"
-            placeholder="예: 11월 4주차 일지"
+            placeholder="슬래그 밀(Slag Mill) 정비"
           />
         </div>
         <TabMenu tabs={tabs} activeIndex={activeTab} onTabClick={setActiveTab} className="mb-2" />
@@ -48,7 +48,7 @@ export default function PTWRegister(): React.ReactElement {
             value={ptwName}
             onChange={e => setPtwName(e.target.value)}
             className="h-8 bg-white w-full max-w-[400px] border-[#DFDFDF] focus-visible:ring-1 focus-visible:ring-gray-400"
-            placeholder="예: 11월 4주차 일지"
+            placeholder="슬래그 밀(Slag Mill) 정비"
           />
         </div>
       </div>

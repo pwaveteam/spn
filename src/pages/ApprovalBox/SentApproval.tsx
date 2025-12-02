@@ -9,7 +9,7 @@ import Pagination from "@/components/common/base/Pagination"
 import usePagination from "@/hooks/usePagination"
 import useFilterBar from "@/hooks/useFilterBar"
 import { Save, Trash2 } from "lucide-react"
-import ApprovalDetail, { type SentDetail } from "@/components/modules/ApprovalDetail"
+import ApprovalDetail, { type SentDetail } from "@/components/snippet/ApprovalDetail"
 import { sentApprovalMockData } from "@/data/mockData"
 
 const TAB_LABELS = ["받은결재함", "보낸결재함"]

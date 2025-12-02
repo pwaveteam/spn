@@ -1,204 +1,201 @@
 import{CauseImporterRow,NearMissImporterRow,EvaluationData,FrequencyStep1Row,FrequencyRiskDataRow,FrequencyStep3Row,ThreeStep1Row,ThreeStepRiskDataRow,ThreeStep3Row,ChemicalEditableRow,ChecklistSection,ProcessRow,ChecklistStep1Row}from"@/types/riskAssessment"
 
-export const causeImporterMockData:CauseImporterRow[]=[
-{id:1,category:'설비결함',situation:'기계 부품 파손으로 인한 충돌 위험',hazard:'돌출물 접촉으로 인한 상해'},
-{id:2,category:'작업자 부주의',situation:'안전모 미착용으로 낙하물 충돌 위험',hazard:'머리 손상 위험'},
-{id:3,category:'관리미흡',situation:'출입통제 미비로 위험구역 무단 진입',hazard:'고소작업 중 추락 위험'},
-{id:4,category:'작업환경 요인',situation:'조명 부족으로 인한 시야 확보 어려움',hazard:'시야 제한에 따른 충돌 위험'},
-{id:5,category:'보호구 미착용',situation:'화학물질 취급 중 보호안경 미착용',hazard:'화학물질 접촉으로 눈 손상'},
-{id:6,category:'설비오작동',situation:'센서 오작동으로 인한 기계 자동 작동',hazard:'협착 및 절단 위험'},
-{id:7,category:'불안전한 작업방법',situation:'적재물 위에서 작업 수행',hazard:'높이작업 시 낙상 위험'},
-{id:8,category:'위험물 관리미흡',situation:'인화성 물질 밀폐 보관 미흡',hazard:'화재 및 폭발 위험'},
-{id:9,category:'비상조치 미비',situation:'비상정지장치 접근 어려움',hazard:'비상 상황 시 즉시 대응 불가'},
-{id:10,category:'작업자 피로누적',situation:'과로로 집중력 저하',hazard:'부주의에 의한 사고 증가'}
-]
+export const causeImporterMockData: CauseImporterRow[] = [
+    { id: 1, category: '설비결함', situation: '슬래그 밀 라이너 고정 볼트 풀림으로 인한 부품 파손 위험', hazard: '파손된 부품 비산으로 인한 충돌/상해' },
+    { id: 2, category: '작업자 부주의', situation: '밀 내부 점검 중 안전대 미체결로 인한 추락 위험', hazard: '고소 작업 중 심각한 추락 부상' },
+    { id: 3, category: '관리미흡', situation: 'LOTOTO 미실시 구역에 작업자 무단 진입', hazard: '기계 불시 가동으로 인한 협착 위험' },
+    { id: 4, category: '작업환경 요인', situation: '슈트 내부 작업 시 조명 부족으로 인한 시야 확보 어려움', hazard: '밀폐 공간 내 충돌 및 미끄러짐 위험' },
+    { id: 5, category: '보호구 미착용', situation: '고농도 분진 구역에서 일반 마스크 착용', hazard: '분진 흡입으로 인한 호흡기 질환' },
+    { id: 6, category: '설비오작동', situation: '유압 밸브 오작동으로 인한 압력 급상승', hazard: '고압 호스 파손 및 오일 분출로 인한 화상/충돌 위험' },
+    { id: 7, category: '불안전한 작업방법', situation: '어큐뮬레이터 교체 시 지정된 인양 장비 외 사용', hazard: '중량물 낙하 및 장비 파손 위험' },
+    { id: 8, category: '위험물 관리미흡', situation: '폐유 저장 드럼통 인화성 물질과 혼합 보관', hazard: '화재 및 폭발 위험' },
+    { id: 9, category: '비상조치 미비', situation: '비상정지장치(E-STOP) 주변에 자재 적치', hazard: '비상 상황 시 설비 즉시 정지 불가' },
+    { id: 10, category: '작업자 피로누적', situation: '장시간 반복적인 컨베이어벨트 정비 작업', hazard: '부주의에 의한 끼임/협착 사고 증가' }
+  ]
 
-export const nearMissImporterMockData:NearMissImporterRow[]=[
-{id:1,process:'물류 하역 작업',hazard:'하역 중 적재물 낙하로 인한 부상 위험',action:'적재물 고정 상태 점검 및 하역 시 2인 1조 작업'},
-{id:2,process:'기계 유지보수',hazard:'방호장치 해체 후 손 끼임 위험',action:'정비 전 전원 차단 및 방호장치 설치 상태 확인'},
-{id:3,process:'용접 작업',hazard:'불꽃 비산으로 인한 화상 위험',action:'방염포 설치 및 보호구 착용'},
-{id:4,process:'지게차 운행',hazard:'협소 구역에서 충돌 위험',action:'후진 시 유도자 배치 및 경고음 작동 확인'},
-{id:5,process:'화학약품 이송',hazard:'용기 누출로 인한 피부 접촉 위험',action:'밀폐용기 사용 및 이송 전 외관 점검'},
-{id:6,process:'고소 작업',hazard:'작업 중 추락 위험',action:'이동식 작업대 고정 및 안전벨트 착용'},
-{id:7,process:'절단기 사용',hazard:'날카로운 절단날에 의한 베임 위험',action:'작업 전 안전커버 작동 여부 확인'},
-{id:8,process:'전기 설비 점검',hazard:'감전 위험',action:'절연 장갑 착용 및 차단기 확인 후 작업'},
-{id:9,process:'도장 작업',hazard:'밀폐 공간 내 유증기 흡입 위험',action:'송풍기 설치 및 유기용제 사용 기준 준수'},
-{id:10,process:'운반 작업',hazard:'과중 하중 취급 시 근골격계 부담',action:'운반 보조구 사용 및 적정 중량 유지'}
-]
+  export const nearMissImporterMockData: NearMissImporterRow[] = [
+    { id: 1, process: '어큐뮬레이터 교체', hazard: '인양 중 슬링벨트가 풀려 중량물 낙하 위험', action: '인양 전 슬링벨트 마모도 점검 및 체결상태 2인 1조 더블 체크' },
+    { id: 2, process: '컨베이어 벨트 정비', hazard: 'LOTOTO 해제 전 시험 가동 버튼 잘못 조작할 위험', action: '정비 후 잠금장치 해제 전 관리감독자 최종 확인 및 작업자 전원 대피 확인' },
+    { id: 3, process: '용접 작업', hazard: '밀 주변 낙분된 슬래그 미분에 불꽃 비산으로 인한 화재 위험', action: '용접 주변 방염포 설치 및 낙분 청소 후 작업, 소화기 상시 비치' },
+    { id: 4, process: '지게차 운행', hazard: '협소 구역에서 회전하며 설비와 충돌할 위험', action: '지게차 운행 통로 확보 및 경광등, 경고음 작동 확인' },
+    { id: 5, process: '유압 오일 보충', hazard: '오일 주입 중 호스 이탈로 인해 고온 오일 분출 위험', action: '호스 체결 상태 점검 및 오일 온도 확인 후 작업, 안면 보호구 착용' },
+    { id: 6, process: '밀 내부 청소', hazard: '밀폐 공간 내 작업 중 산소 농도 저하 위험', action: '작업 전 유해가스 측정 및 작업 중 감시인 상시 배치, 환기 실시' },
+    { id: 7, process: '절단기 사용', hazard: '분쇄된 슬래그 조각이 튀어 눈에 맞을 위험', action: '작업 전 방호 커버 위치 조정 및 보안경/안면 보호구 착용' },
+    { id: 8, process: '전기 패널 점검', hazard: '차단기 조작 미숙으로 인한 감전 위험', action: '전기 작업 시 2인 1조 원칙 준수 및 절연 장갑/절연화 착용' },
+    { id: 9, process: '낙분 청소', hazard: '장시간 분진 노출로 인한 호흡기 보호구 미흡 위험', action: '특급 방진마스크 지급 및 작업 시간 조정, 습식 청소 권고' },
+    { id: 10, process: '드럼통 운반', hazard: '핸드 자키 사용 중 드럼통이 전도되어 깔릴 위험', action: '운반 경로 정리정돈 및 드럼통 전도 방지 고임목 사용' }
+  ]
+  
+  export const evaluationListMockData: EvaluationData[] = [
+    { id: 1, year: 2025, title: "슬래그 밀 설비 라이너 교체 위험성 평가", type: "정기평가", method: "빈도·강도법", regulation: "산안법 제37조", registered: "2025-01-20", modified: "2025-01-22", completed: "2025-01-25", status: { text: "완료", color: "blue" } },
+    { id: 2, year: 2025, title: "유압라인 분해/조립 특별 위험성 평가", type: "수시평가", method: "위험성수준 3단계 판단법", regulation: "산안법 제37조", registered: "2025-02-01", modified: "2025-02-03", completed: "2025-02-04", status: { text: "완료", color: "blue" } },
+    { id: 3, year: 2025, title: "인렛 슈트 밀폐공간 진입 최초 평가", type: "최초평가", method: "체크리스트법", regulation: "산안법 제37조", registered: "2025-02-08", modified: "2025-02-09", completed: "2025-02-10", status: { text: "완료", color: "blue" } },
+    { id: 4, year: 2025, title: "고소 작업(Master Roller) 정기 위험성 평가", type: "정기평가", method: "정량적 평가", regulation: "산안법 제37조", registered: "2025-03-15", modified: "2025-03-17", completed: "2025-03-20", status: { text: "완료", color: "blue" } },
+    { id: 5, year: 2025, title: "고농도 분진 발생 작업 수시 평가", type: "수시평가", method: "화학물질 평가법", regulation: "산안법 제37조", registered: "2025-03-11", modified: "2025-03-12", completed: "2025-03-13", status: { text: "완료", color: "blue" } },
+    { id: 6, year: 2025, title: "컨베이어벨트 용접 작업 수시 평가", type: "수시평가", method: "체크리스트법", regulation: "산안법 제37조", registered: "2025-04-29", modified: "2025-04-29", completed: "2025-05-01", status: { text: "완료", color: "blue" } },
+    { id: 7, year: 2025, title: "위험물 저장소(유압유/솔벤트) 정기 평가", type: "정기평가", method: "빈도·강도법", regulation: "산안법 제37조", registered: "2025-05-01", modified: "2025-05-03", completed: "2025-05-05", status: { text: "완료", color: "blue" } },
+    { id: 8, year: 2025, title: "지게차 운반 작업 정기 위험성 평가", type: "정기평가", method: "체크리스트법", regulation: "산안법 제37조", registered: "2025-06-05", modified: "2025-06-06", completed: "2025-06-08", status: { text: "완료", color: "blue" } },
+    { id: 9, year: 2025, title: "전기 설비 MCC 판넬 점검 수시 평가", type: "수시평가", method: "정량적 평가", regulation: "산안법 제37조", registered: "2025-07-10", modified: "2025-07-11", completed: "2025-07-13", status: { text: "완료", color: "blue" } },
+    { id: 10, year: 2025, title: "폐수처리장 펌프 정비 최초 위험성 평가", type: "최초평가", method: "정성적 평가", regulation: "산안법 제37조", registered: "2025-08-01", modified: "2025-08-02", completed: "2025-08-04", status: { text: "완료", color: "blue" } },
+    { id: 11, year: 2025, title: "전사 비상 대응 시나리오 훈련 평가", type: "수시평가", method: "정성적 평가", regulation: "산안법 제37조", registered: "2025-09-05", modified: "2025-09-06", completed: "2025-09-07", status: { text: "완료", color: "blue" } },
+    { id: 12, year: 2025, title: "유해화학물질 취급 공정 위험성 평가 (MEK/Toluene)", type: "정기평가", method: "화학물질 평가법", regulation: "산안법 제37조", registered: "2025-10-20", modified: "2025-10-21", completed: "2025-10-23", status: { text: "완료", color: "blue" } },
+    { id: 13, year: 2025, title: "가스 누출 점검 평가", type: "수시평가", method: "정성적 평가", regulation: "산안법 제37조", registered: "2025-11-01", modified: "2025-11-02", completed: "2025-11-03", status: { text: "완료", color: "blue" } },
+    { id: 14, year: 2025, title: "플랜트 해체 작업 위험평가", type: "정기평가", method: "체크리스트법", regulation: "산안법 제37조", registered: "2025-11-15", modified: "2025-11-16", completed: "2025-11-18", status: { text: "완료", color: "blue" } },
+    { id: 15, year: 2025, title: "압력용기 취급 평가", type: "최초평가", method: "정량적 평가", regulation: "산안법 제37조", registered: "2025-12-01", modified: "2025-12-02", completed: "2025-12-04", status: { text: "완료", color: "blue" } },
+    { id: 16, year: 2025, title: "냉매 가스 취급 작업 평가", type: "수시평가", method: "정성적 평가", regulation: "산안법 제37조", registered: "2025-12-05", modified: "2025-12-06", completed: "2025-12-07", status: { text: "완료", color: "blue" } },
+    { id: 17, year: 2025, title: "가공기계 위험성 평가", type: "정기평가", method: "위험성수준 3단계 판단법", regulation: "산안법 제37조", registered: "2025-12-08", modified: "2025-12-09", completed: "2025-12-10", status: { text: "완료", color: "blue" } },
+    { id: 18, year: 2025, title: "야간 작업 평가", type: "수시평가", method: "빈도·강도법", regulation: "산안법 제37조", registered: "2025-12-11", modified: "2025-12-12", completed: "2025-12-13", status: { text: "완료", color: "blue" } },
+    { id: 19, year: 2025, title: "고소작업 위험성 평가", type: "최초평가", method: "정성적 평가", regulation: "산안법 제37조", registered: "2025-12-14", modified: "2025-12-15", completed: "2025-12-16", status: { text: "완료", color: "blue" } },
+    { id: 20, year: 2025, title: "중장비 작업 평가", type: "정기평가", method: "정량적 평가", regulation: "산안법 제37조", registered: "2025-12-17", modified: "2025-12-18", completed: "2025-12-19", status: { text: "완료", color: "blue" } },
+    { id: 21, year: 2025, title: "컨베이어벨트 점검 평가", type: "수시평가", method: "체크리스트법", regulation: "산안법 제37조", registered: "2025-12-20", modified: "2025-12-21", completed: "2025-12-22", status: { text: "완료", color: "blue" } },
+    { id: 22, year: 2025, title: "수출 포장 작업 평가", type: "정기평가", method: "정량적 평가", regulation: "산안법 제37조", registered: "2025-12-23", modified: "2025-12-24", completed: "2025-12-25", status: { text: "완료", color: "blue" } },
+    { id: 23, year: 2025, title: "야적장 적재 평가", type: "정기평가", method: "빈도·강도법", regulation: "산안법 제37조", registered: "2025-12-26", modified: "2025-12-27", completed: "2025-12-28", status: { text: "완료", color: "blue" } },
+    { id: 24, year: 2025, title: "산소용접 작업 평가", type: "최초평가", method: "체크리스트법", regulation: "산안법 제37조", registered: "2025-12-29", modified: "2025-12-30", completed: "2025-12-31", status: { text: "완료", color: "blue" } },
+    { id: 25, year: 2025, title: "가연성 액체 취급 평가", type: "수시평가", method: "정성적 평가", regulation: "산안법 제37조", registered: "2025-01-02", modified: "2025-01-03", completed: "2025-01-04", status: { text: "완료", color: "blue" } },
+    { id: 26, year: 2025, title: "산업용 로봇 작업 평가", type: "정기평가", method: "정량적 평가", regulation: "산안법 제37조", registered: "2025-01-05", modified: "2025-01-06", completed: "2025-01-07", status: { text: "완료", color: "blue" } },
+    { id: 27, year: 2025, title: "건축 해체 작업 위험평가", type: "수시평가", method: "위험성수준 3단계 판단법", regulation: "산안법 제37조", registered: "2025-01-08", modified: "2025-01-09", completed: "2025-01-10", status: { text: "완료", color: "blue" } },
+    { id: 28, year: 2025, title: "용접 후 가스 제거 평가", type: "최초평가", method: "정성적 평가", regulation: "산안법 제37조", registered: "2025-01-11", modified: "2025-01-12", completed: "2025-01-13", status: { text: "완료", color: "blue" } },
+    { id: 29, year: 2025, title: "이동형 크레인 작업 평가", type: "정기평가", method: "체크리스트법", regulation: "산안법 제37조", registered: "2025-01-14", modified: "2025-01-15", completed: "2025-01-16", status: { text: "완료", color: "blue" } },
+    { id: 30, year: 2025, title: "컨테이너 하역 평가", type: "정기평가", method: "정성적 평가", regulation: "산안법 제37조", registered: "2025-01-17", modified: "2025-01-18", completed: "2025-01-19", status: { text: "완료", color: "blue" } }
+  ]
+  export const frequencyStep1MockData: FrequencyStep1Row[] = [
+    { id: 1, work: "슬래그 밀 정비", hazard: "슬래그 미분 분진 흡입으로 인한 호흡기 질환 위험", law: "산업안전보건법 제32조(보호구의 지급 등)", action: "- 특급 방진마스크 지급 및 착용 철저\n- 작업 전 습식 살수 실시", proof: null },
+    { id: 2, work: "밀폐공간 점검", hazard: "인렛 슈트 내부 유해가스 및 산소 결핍에 의한 질식 위험", law: "산업안전보건법 제39조(보건조치)", action: "- 작업 전 산소농도 및 유해가스 측정\n- 송기마스크 착용 및 환기팬 가동", proof: null },
+    { id: 3, work: "유압라인 보수", hazard: "고압 호스 파손 및 고온 오일 분출로 인한 화상 위험", law: "산업안전보건법 제38조(안전조치)", action: "- 유압 펌프 정지 및 잔압(0 bar) 확인\n- 내열 장갑 및 보안면 착용", proof: null },
+    { id: 4, work: "설비 전원 차단", hazard: "작업 중 설비 불시 가동으로 인한 협착(끼임) 위험", law: "산업안전보건법 제38조(안전조치)", action: "- LOTOTO 절차 준수 및 잠금장치 설치\n- 기동 스위치 조작 금지 표지 부착", proof: null },
+    { id: 5, work: "고소 작업", hazard: "2m 이상 높이에서 작업 중 추락 위험", law: "산업안전보건법 제38조(안전조치)", action: "- 안전대(Safety Belt) 체결 및 이중 고리 사용\n- 작업 발판 고정 상태 확인", proof: null },
+    { id: 6, work: "중량물 인양", hazard: "체인블럭 및 호이스트 줄걸이 불량으로 낙하 위험", law: "산업안전보건법 제38조(안전조치)", action: "- 정격 하중 준수 및 줄걸이 상태 점검\n- 인양물 하부 출입 금지", proof: null },
+    { id: 7, work: "전기 패널 점검", hazard: "활선 근접 작업 시 충전부 접촉으로 인한 감전 위험", law: "산업안전보건법 제38조(안전조치)", action: "- 절연 장갑 및 절연화 착용\n- 정전 작업 원칙 준수", proof: null },
+    { id: 8, work: "화기 작업", hazard: "용접/용단 불티 비산으로 인한 주변 가연물 화재 위험", law: "산업안전보건법 제23조(안전조치)", action: "- 불티 비산 방지포 설치\n- 소화기 2대 이상 근접 비치", proof: null },
+    { id: 9, work: "현장 소음 노출", hazard: "밀(Mill) 가동 소음으로 인한 소음성 난청 위험", law: "산업안전보건법 제167조(청력보전프로그램)", action: "- 귀마개 등 청력보호구 올바른 착용\n- 저소음 작업 방법 적용", proof: null },
+    { id: 10, work: "지게차 운반", hazard: "지게차 운행 중 보행자 충돌 및 자재 전도 위험", law: "산업안전보건법 제38조(안전조치)", action: "- 사내 제한속도(10km/h) 준수\n- 유도자 배치 및 신호수 운영", proof: null },
+    { id: 11, work: "컨베이어 정비", hazard: "회전체(롤러)에 신체 말림 및 끼임 위험", law: "산업안전보건법 제87조(방호조치)", action: "- 회전체 방호 덮개 설치 확인\n- 비상정지 스위치 작동 테스트", proof: null },
+    { id: 12, work: "어큐뮬레이터 교체", hazard: "질소 가스 누출 및 고압 폭발 위험", law: "산업안전보건법 제38조(안전조치)", action: "- 내부 질소 압력 완전 제거 확인\n- 전용 공구 사용", proof: null },
+    { id: 13, work: "작업장 이동", hazard: "바닥 오일 및 자재로 인한 미끄러짐/넘어짐 위험", law: "산업안전보건법 제3조(사업주 의무)", action: "- 통로상 장애물 제거 및 5S 활동\n- 미끄럼 방지 안전화 착용", proof: null }
+  ]
+  
+  export const frequencyStep2MockData: FrequencyRiskDataRow[] = [
+    { id: 1, work: "슬래그 밀 정비", hazard: "슬래그 미분 분진 흡입으로 인한 호흡기 질환 위험", action: "- 특급 방진마스크 지급 및 착용 철저", attachmentFile: null, frequency: 3, intensity: 2, afterPhoto: null, evaluator: "이효성", evaluationDate: new Date('2025-10-27') },
+    { id: 2, work: "밀폐공간 점검", hazard: "인렛 슈트 내부 유해가스 및 산소 결핍에 의한 질식 위험", action: "- 작업 전 산소농도 측정 및 환기 실시", attachmentFile: null, frequency: 2, intensity: 4, afterPhoto: null, evaluator: "이호성", evaluationDate: new Date('2025-10-27') },
+    { id: 3, work: "유압라인 보수", hazard: "고압 호스 파손 및 고온 오일 분출로 인한 화상 위험", action: "- 잔압 제거 및 내열 보호구 착용", attachmentFile: null, frequency: 2, intensity: 3, afterPhoto: null, evaluator: "최승휴", evaluationDate: new Date('2025-10-28') },
+    { id: 4, work: "설비 전원 차단", hazard: "작업 중 설비 불시 가동으로 인한 협착(끼임) 위험", action: "- LOTOTO 실시 및 키 관리 철저", attachmentFile: null, frequency: 3, intensity: 4, afterPhoto: null, evaluator: "최승휴", evaluationDate: new Date('2025-10-28') },
+    { id: 5, work: "고소 작업", hazard: "2m 이상 높이에서 작업 중 추락 위험", action: "- 안전대 착용 및 생명줄 체결", attachmentFile: null, frequency: 3, intensity: 3, afterPhoto: null, evaluator: "양강현", evaluationDate: new Date('2025-10-29') },
+    { id: 6, work: "중량물 인양", hazard: "체인블럭 및 호이스트 줄걸이 불량으로 낙하 위험", action: "- 줄걸이 상태 점검 및 하부 통제", attachmentFile: null, frequency: 2, intensity: 3, afterPhoto: null, evaluator: "양재훈", evaluationDate: new Date('2025-10-29') },
+    { id: 7, work: "전기 패널 점검", hazard: "활선 근접 작업 시 충전부 접촉으로 인한 감전 위험", action: "- 절연 보호구 착용 및 2인 1조 작업", attachmentFile: null, frequency: 1, intensity: 4, afterPhoto: null, evaluator: "김반장", evaluationDate: new Date('2025-10-29') },
+    { id: 8, work: "화기 작업", hazard: "용접/용단 불티 비산으로 인한 주변 가연물 화재 위험", action: "- 화기 감시자 배치 및 소화기 비치", attachmentFile: null, frequency: 2, intensity: 3, afterPhoto: null, evaluator: "박소장", evaluationDate: new Date('2025-10-30') },
+    { id: 9, work: "현장 소음 노출", hazard: "밀(Mill) 가동 소음으로 인한 소음성 난청 위험", action: "- 청력보호구(귀마개) 착용 생활화", attachmentFile: null, frequency: 3, intensity: 2, afterPhoto: null, evaluator: "이효성", evaluationDate: new Date('2025-10-30') },
+    { id: 10, work: "지게차 운반", hazard: "지게차 운행 중 보행자 충돌 및 자재 전도 위험", action: "- 사내 속도 준수 및 신호수 배치", attachmentFile: null, frequency: 2, intensity: 3, afterPhoto: null, evaluator: "정감독", evaluationDate: new Date('2025-10-30') },
+    { id: 11, work: "컨베이어 정비", hazard: "회전체(롤러)에 신체 말림 및 끼임 위험", action: "- 가동 중 접근 금지 및 방호덮개 점검", attachmentFile: null, frequency: 2, intensity: 2, afterPhoto: null, evaluator: "문반장", evaluationDate: new Date('2025-10-31') },
+    { id: 12, work: "어큐뮬레이터 교체", hazard: "질소 가스 누출 및 고압 폭발 위험", action: "- 압력 제거 확인 프로세스 준수", attachmentFile: null, frequency: 1, intensity: 4, afterPhoto: null, evaluator: "서반장", evaluationDate: new Date('2025-10-31') },
+    { id: 13, work: "작업장 이동", hazard: "바닥 오일 및 자재로 인한 미끄러짐/넘어짐 위험", action: "- 작업장 정리정돈(5S) 및 오일 제거", attachmentFile: null, frequency: 3, intensity: 1, afterPhoto: null, evaluator: "장감독", evaluationDate: new Date('2025-10-31') }
+  ]
+  
+  export const frequencyStep3MockData: FrequencyStep3Row[] = [
+    { id: 1, work: "슬래그 밀 정비", hazard: "슬래그 미분 분진 흡입으로 인한 호흡기 질환 위험", action: "특급 방진마스크 전원 지급 완료 및 작업 전 살수 조치 시행", plannedDate: new Date('2025-10-27'), completedDate: new Date('2025-10-27'), evaluator: "이효성", frequency: 1, intensity: 2, afterPhoto: null },
+    { id: 2, work: "밀폐공간 점검", hazard: "인렛 슈트 내부 유해가스 및 산소 결핍에 의한 질식 위험", action: "산소농도 21% 확인 및 송풍기 상시 가동 조치", plannedDate: new Date('2025-10-27'), completedDate: new Date('2025-10-27'), evaluator: "이호성", frequency: 1, intensity: 2, afterPhoto: null },
+    { id: 3, work: "유압라인 보수", hazard: "고압 호스 파손 및 고온 오일 분출로 인한 화상 위험", action: "압력 게이지 0 확인 후 분해 작업 진행, 보안면 착용 확인", plannedDate: new Date('2025-10-28'), completedDate: new Date('2025-10-28'), evaluator: "최승휴", frequency: 1, intensity: 3, afterPhoto: null },
+    { id: 4, work: "설비 전원 차단", hazard: "작업 중 설비 불시 가동으로 인한 협착(끼임) 위험", action: "MCC룸 차단기 LOTO 설치 및 작업자 전원 자물쇠 체결 확인", plannedDate: new Date('2025-10-28'), completedDate: new Date('2025-10-28'), evaluator: "최승휴", frequency: 1, intensity: 4, afterPhoto: null },
+    { id: 5, work: "고소 작업", hazard: "2m 이상 높이에서 작업 중 추락 위험", action: "안전대 걸이 시설물 보강 및 안전대 착용 상태 교차 점검", plannedDate: new Date('2025-10-29'), completedDate: new Date('2025-10-29'), evaluator: "양강현", frequency: 1, intensity: 3, afterPhoto: null },
+    { id: 6, work: "중량물 인양", hazard: "체인블럭 및 호이스트 줄걸이 불량으로 낙하 위험", action: "줄걸이 용구(슬링벨트) 손상 여부 점검 후 작업 승인", plannedDate: new Date('2025-10-29'), completedDate: new Date('2025-10-29'), evaluator: "양재훈", frequency: 1, intensity: 3, afterPhoto: null },
+    { id: 7, work: "전기 패널 점검", hazard: "활선 근접 작업 시 충전부 접촉으로 인한 감전 위험", action: "특고압 절연장갑 지급 및 검전기 작동 확인", plannedDate: new Date('2025-10-29'), completedDate: new Date('2025-10-29'), evaluator: "김반장", frequency: 1, intensity: 4, afterPhoto: null },
+    { id: 8, work: "화기 작업", hazard: "용접/용단 불티 비산으로 인한 주변 가연물 화재 위험", action: "불티 비산 방지포 틈새 없이 설치 및 살수 준비 완료", plannedDate: new Date('2025-10-30'), completedDate: new Date('2025-10-30'), evaluator: "박소장", frequency: 1, intensity: 3, afterPhoto: null },
+    { id: 9, work: "현장 소음 노출", hazard: "밀(Mill) 가동 소음으로 인한 소음성 난청 위험", action: "소음 측정 실시 및 귀마개 착용 교육(TBM) 진행", plannedDate: new Date('2025-10-30'), completedDate: new Date('2025-10-30'), evaluator: "이효성", frequency: 2, intensity: 2, afterPhoto: null },
+    { id: 10, work: "지게차 운반", hazard: "지게차 운행 중 보행자 충돌 및 자재 전도 위험", action: "지게차 후방 카메라 작동 확인 및 작업 반경 내 접근 금지 테이핑", plannedDate: new Date('2025-10-30'), completedDate: new Date('2025-10-30'), evaluator: "정감독", frequency: 1, intensity: 3, afterPhoto: null },
+    { id: 11, work: "컨베이어 정비", hazard: "회전체(롤러)에 신체 말림 및 끼임 위험", action: "작업 구간 비상 정지 밧줄 스위치(Pull Cord) 작동 상태 점검", plannedDate: new Date('2025-10-31'), completedDate: new Date('2025-10-31'), evaluator: "문반장", frequency: 1, intensity: 2, afterPhoto: null },
+    { id: 12, work: "어큐뮬레이터 교체", hazard: "질소 가스 누출 및 고압 폭발 위험", action: "매니폴드 블록 압력 제로화 확인 및 안전 캡 장착", plannedDate: new Date('2025-10-31'), completedDate: new Date('2025-10-31'), evaluator: "서반장", frequency: 1, intensity: 4, afterPhoto: null },
+    { id: 13, work: "작업장 이동", hazard: "바닥 오일 및 자재로 인한 미끄러짐/넘어짐 위험", action: "오일 흡착포 이용 바닥 청소 완료 및 통행로 확보", plannedDate: new Date('2025-10-31'), completedDate: new Date('2025-10-31'), evaluator: "장감독", frequency: 1, intensity: 1, afterPhoto: null }
+  ]
+  
+  export const threeStep1MockData: ThreeStep1Row[] = [
+    { id: 1, work: "슬래그 밀 정비", hazard: "슬래그 미분 분진 흡입으로 인한 호흡기 질환 위험", law: "산업안전보건법 제32조(보호구의 지급 등)", action: "- 특급 방진마스크 지급 및 착용 철저\n- 작업 전 습식 살수 실시", proof: null },
+    { id: 2, work: "밀폐공간 점검", hazard: "인렛 슈트 내부 유해가스 및 산소 결핍에 의한 질식 위험", law: "산업안전보건법 제39조(보건조치)", action: "- 작업 전 산소농도 및 유해가스 측정\n- 송기마스크 착용 및 환기팬 가동", proof: null },
+    { id: 3, work: "유압라인 보수", hazard: "고압 호스 파손 및 고온 오일 분출로 인한 화상 위험", law: "산업안전보건법 제38조(안전조치)", action: "- 유압 펌프 정지 및 잔압(0 bar) 확인\n- 내열 장갑 및 보안면 착용", proof: null },
+    { id: 4, work: "설비 전원 차단", hazard: "작업 중 설비 불시 가동으로 인한 협착(끼임) 위험", law: "산업안전보건법 제38조(안전조치)", action: "- LOTOTO 절차 준수 및 잠금장치 설치\n- 기동 스위치 조작 금지 표지 부착", proof: null },
+    { id: 5, work: "고소 작업", hazard: "2m 이상 높이에서 작업 중 추락 위험", law: "산업안전보건법 제38조(안전조치)", action: "- 안전대(Safety Belt) 체결 및 이중 고리 사용\n- 작업 발판 고정 상태 확인", proof: null },
+    { id: 6, work: "중량물 인양", hazard: "체인블럭 및 호이스트 줄걸이 불량으로 낙하 위험", law: "산업안전보건법 제38조(안전조치)", action: "- 정격 하중 준수 및 줄걸이 상태 점검\n- 인양물 하부 출입 금지", proof: null },
+    { id: 7, work: "전기 패널 점검", hazard: "활선 근접 작업 시 충전부 접촉으로 인한 감전 위험", law: "산업안전보건법 제38조(안전조치)", action: "- 절연 장갑 및 절연화 착용\n- 정전 작업 원칙 준수", proof: null },
+    { id: 8, work: "화기 작업", hazard: "용접/용단 불티 비산으로 인한 주변 가연물 화재 위험", law: "산업안전보건법 제23조(안전조치)", action: "- 불티 비산 방지포 설치\n- 소화기 2대 이상 근접 비치", proof: null },
+    { id: 9, work: "현장 소음 노출", hazard: "밀(Mill) 가동 소음으로 인한 소음성 난청 위험", law: "산업안전보건법 제167조(청력보전프로그램)", action: "- 귀마개 등 청력보호구 올바른 착용\n- 저소음 작업 방법 적용", proof: null },
+    { id: 10, work: "지게차 운반", hazard: "지게차 운행 중 보행자 충돌 및 자재 전도 위험", law: "산업안전보건법 제38조(안전조치)", action: "- 사내 제한속도(10km/h) 준수\n- 유도자 배치 및 신호수 운영", proof: null },
+    { id: 11, work: "컨베이어 정비", hazard: "회전체(롤러)에 신체 말림 및 끼임 위험", law: "산업안전보건법 제87조(방호조치)", action: "- 회전체 방호 덮개 설치 확인\n- 비상정지 스위치 작동 테스트", proof: null },
+    { id: 12, work: "어큐뮬레이터 교체", hazard: "질소 가스 누출 및 고압 폭발 위험", law: "산업안전보건법 제38조(안전조치)", action: "- 내부 질소 압력 완전 제거 확인\n- 전용 공구 사용", proof: null },
+    { id: 13, work: "작업장 이동", hazard: "바닥 오일 및 자재로 인한 미끄러짐/넘어짐 위험", law: "산업안전보건법 제3조(사업주 의무)", action: "- 통로상 장애물 제거 및 5S 활동\n- 미끄럼 방지 안전화 착용", proof: null }
+  ]
+  
+  export const threeStep2MockData: ThreeStepRiskDataRow[] = [
+    { id: 1, work: "슬래그 밀 정비", hazard: "슬래그 미분 분진 흡입으로 인한 호흡기 질환 위험", action: "- 특급 방진마스크 지급 및 착용 철저", attachmentFile: null, afterPhoto: null, evaluator: "이효성", evaluationDate: new Date('2025-10-27'), riskLevel: 2 },
+    { id: 2, work: "밀폐공간 점검", hazard: "인렛 슈트 내부 유해가스 및 산소 결핍에 의한 질식 위험", action: "- 작업 전 산소농도 측정 및 환기 실시", attachmentFile: null, afterPhoto: null, evaluator: "이호성", evaluationDate: new Date('2025-10-27'), riskLevel: 3 },
+    { id: 3, work: "유압라인 보수", hazard: "고압 호스 파손 및 고온 오일 분출로 인한 화상 위험", action: "- 잔압 제거 및 내열 보호구 착용", attachmentFile: null, afterPhoto: null, evaluator: "최승휴", evaluationDate: new Date('2025-10-28'), riskLevel: 2 },
+    { id: 4, work: "설비 전원 차단", hazard: "작업 중 설비 불시 가동으로 인한 협착(끼임) 위험", action: "- LOTOTO 실시 및 키 관리 철저", attachmentFile: null, afterPhoto: null, evaluator: "최승휴", evaluationDate: new Date('2025-10-28'), riskLevel: 3 },
+    { id: 5, work: "고소 작업", hazard: "2m 이상 높이에서 작업 중 추락 위험", action: "- 안전대 착용 및 생명줄 체결", attachmentFile: null, afterPhoto: null, evaluator: "양강현", evaluationDate: new Date('2025-10-29'), riskLevel: 3 },
+    { id: 6, work: "중량물 인양", hazard: "체인블럭 및 호이스트 줄걸이 불량으로 낙하 위험", action: "- 줄걸이 상태 점검 및 하부 통제", attachmentFile: null, afterPhoto: null, evaluator: "양재훈", evaluationDate: new Date('2025-10-29'), riskLevel: 2 },
+    { id: 7, work: "전기 패널 점검", hazard: "활선 근접 작업 시 충전부 접촉으로 인한 감전 위험", action: "- 절연 보호구 착용 및 2인 1조 작업", attachmentFile: null, afterPhoto: null, evaluator: "김반장", evaluationDate: new Date('2025-10-29'), riskLevel: 3 },
+    { id: 8, work: "화기 작업", hazard: "용접/용단 불티 비산으로 인한 주변 가연물 화재 위험", action: "- 화기 감시자 배치 및 소화기 비치", attachmentFile: null, afterPhoto: null, evaluator: "박소장", evaluationDate: new Date('2025-10-30'), riskLevel: 2 },
+    { id: 9, work: "현장 소음 노출", hazard: "밀(Mill) 가동 소음으로 인한 소음성 난청 위험", action: "- 청력보호구(귀마개) 착용 생활화", attachmentFile: null, afterPhoto: null, evaluator: "이효성", evaluationDate: new Date('2025-10-30'), riskLevel: 2 },
+    { id: 10, work: "지게차 운반", hazard: "지게차 운행 중 보행자 충돌 및 자재 전도 위험", action: "- 사내 속도 준수 및 신호수 배치", attachmentFile: null, afterPhoto: null, evaluator: "정감독", evaluationDate: new Date('2025-10-30'), riskLevel: 2 },
+    { id: 11, work: "컨베이어 정비", hazard: "회전체(롤러)에 신체 말림 및 끼임 위험", action: "- 가동 중 접근 금지 및 방호덮개 점검", attachmentFile: null, afterPhoto: null, evaluator: "문반장", evaluationDate: new Date('2025-10-31'), riskLevel: 2 },
+    { id: 12, work: "어큐뮬레이터 교체", hazard: "질소 가스 누출 및 고압 폭발 위험", action: "- 압력 제거 확인 프로세스 준수", attachmentFile: null, afterPhoto: null, evaluator: "서반장", evaluationDate: new Date('2025-10-31'), riskLevel: 3 },
+    { id: 13, work: "작업장 이동", hazard: "바닥 오일 및 자재로 인한 미끄러짐/넘어짐 위험", action: "- 작업장 정리정돈(5S) 및 오일 제거", attachmentFile: null, afterPhoto: null, evaluator: "장감독", evaluationDate: new Date('2025-10-31'), riskLevel: 1 }
+  ]
+  
+  export const threeStep3MockData: ThreeStep3Row[] = [
+    { id: 1, work: "슬래그 밀 정비", hazard: "슬래그 미분 분진 흡입으로 인한 호흡기 질환 위험", action: "특급 방진마스크 전원 지급 완료 및 작업 전 살수 조치 시행", plannedDate: new Date('2025-10-27'), completedDate: new Date('2025-10-27'), evaluator: "이효성", riskLevel: 2, afterPhoto: null },
+    { id: 2, work: "밀폐공간 점검", hazard: "인렛 슈트 내부 유해가스 및 산소 결핍에 의한 질식 위험", action: "산소농도 21% 확인 및 송풍기 상시 가동 조치", plannedDate: new Date('2025-10-27'), completedDate: new Date('2025-10-27'), evaluator: "이호성", riskLevel: 3, afterPhoto: null },
+    { id: 3, work: "유압라인 보수", hazard: "고압 호스 파손 및 고온 오일 분출로 인한 화상 위험", action: "압력 게이지 0 확인 후 분해 작업 진행, 보안면 착용 확인", plannedDate: new Date('2025-10-28'), completedDate: new Date('2025-10-28'), evaluator: "최승휴", riskLevel: 2, afterPhoto: null },
+    { id: 4, work: "설비 전원 차단", hazard: "작업 중 설비 불시 가동으로 인한 협착(끼임) 위험", action: "MCC룸 차단기 LOTO 설치 및 작업자 전원 자물쇠 체결 확인", plannedDate: new Date('2025-10-28'), completedDate: new Date('2025-10-28'), evaluator: "최승휴", riskLevel: 3, afterPhoto: null },
+    { id: 5, work: "고소 작업", hazard: "2m 이상 높이에서 작업 중 추락 위험", action: "안전대 걸이 시설물 보강 및 안전대 착용 상태 교차 점검", plannedDate: new Date('2025-10-29'), completedDate: new Date('2025-10-29'), evaluator: "양강현", riskLevel: 3, afterPhoto: null },
+    { id: 6, work: "중량물 인양", hazard: "체인블럭 및 호이스트 줄걸이 불량으로 낙하 위험", action: "줄걸이 용구(슬링벨트) 손상 여부 점검 후 작업 승인", plannedDate: new Date('2025-10-29'), completedDate: new Date('2025-10-29'), evaluator: "양재훈", riskLevel: 2, afterPhoto: null },
+    { id: 7, work: "전기 패널 점검", hazard: "활선 근접 작업 시 충전부 접촉으로 인한 감전 위험", action: "특고압 절연장갑 지급 및 검전기 작동 확인", plannedDate: new Date('2025-10-29'), completedDate: new Date('2025-10-29'), evaluator: "김반장", riskLevel: 3, afterPhoto: null },
+    { id: 8, work: "화기 작업", hazard: "용접/용단 불티 비산으로 인한 주변 가연물 화재 위험", action: "불티 비산 방지포 틈새 없이 설치 및 살수 준비 완료", plannedDate: new Date('2025-10-30'), completedDate: new Date('2025-10-30'), evaluator: "박소장", riskLevel: 2, afterPhoto: null },
+    { id: 9, work: "현장 소음 노출", hazard: "밀(Mill) 가동 소음으로 인한 소음성 난청 위험", action: "소음 측정 실시 및 귀마개 착용 교육(TBM) 진행", plannedDate: new Date('2025-10-30'), completedDate: new Date('2025-10-30'), evaluator: "이효성", riskLevel: 2, afterPhoto: null },
+    { id: 10, work: "지게차 운반", hazard: "지게차 운행 중 보행자 충돌 및 자재 전도 위험", action: "지게차 후방 카메라 작동 확인 및 작업 반경 내 접근 금지 테이핑", plannedDate: new Date('2025-10-30'), completedDate: new Date('2025-10-30'), evaluator: "정감독", riskLevel: 2, afterPhoto: null },
+    { id: 11, work: "컨베이어 정비", hazard: "회전체(롤러)에 신체 말림 및 끼임 위험", action: "작업 구간 비상 정지 밧줄 스위치(Pull Cord) 작동 상태 점검", plannedDate: new Date('2025-10-31'), completedDate: new Date('2025-10-31'), evaluator: "문반장", riskLevel: 2, afterPhoto: null },
+    { id: 12, work: "어큐뮬레이터 교체", hazard: "질소 가스 누출 및 고압 폭발 위험", action: "매니폴드 블록 압력 제로화 확인 및 안전 캡 장착", plannedDate: new Date('2025-10-31'), completedDate: new Date('2025-10-31'), evaluator: "서반장", riskLevel: 3, afterPhoto: null },
+    { id: 13, work: "작업장 이동", hazard: "바닥 오일 및 자재로 인한 미끄러짐/넘어짐 위험", action: "오일 흡착포 이용 바닥 청소 완료 및 통행로 확보", plannedDate: new Date('2025-10-31'), completedDate: new Date('2025-10-31'), evaluator: "장감독", riskLevel: 1, afterPhoto: null }
+  ]
 
-export const evaluationListMockData:EvaluationData[]=[
-{id:30,year:2025,title:"금속 절삭 작업 위험성 평가",type:"정기평가",method:"빈도·강도법",regulation:"산안법 제37조",registered:"2025-06-01",modified:"2025-06-02",completed:"2025-06-10",status:{text:"완료",color:"blue"}},
-{id:29,year:2025,title:"분진 취급 공정 위험평가",type:"수시평가",method:"체크리스트법",regulation:"산안법 제37조",registered:"2025-06-03",modified:"2025-06-05",completed:"",status:{text:"진행",color:"green"}},
-{id:28,year:2025,title:"레이저 절단기 작업 평가",type:"최초평가",method:"화학물질 평가법",regulation:"산안법 제37조",registered:"2025-06-06",modified:"2025-06-07",completed:"2025-06-08",status:{text:"완료",color:"blue"}},
-{id:27,year:2025,title:"용광로 작업장 평가",type:"정기평가",method:"위험성수준 3단계 판단법",regulation:"산안법 제37조",registered:"2025-05-28",modified:"2025-05-30",completed:"2025-06-01",status:{text:"완료",color:"blue"}},
-{id:26,year:2025,title:"연마 작업장 위험성 평가",type:"정기평가",method:"체크리스트법",regulation:"산안법 제37조",registered:"2025-05-25",modified:"2025-05-26",completed:"2025-05-27",status:{text:"완료",color:"blue"}},
-{id:25,year:2024,title:"화학물질 보관소 위험평가",type:"수시평가",method:"정성적 평가",regulation:"산안법 제37조",registered:"2024-12-01",modified:"2024-12-03",completed:"",status:{text:"진행",color:"green"}},
-{id:24,year:2024,title:"제철소 고온작업 평가",type:"정기평가",method:"빈도·강도법",regulation:"산안법 제37조",registered:"2024-11-10",modified:"2024-11-12",completed:"2024-11-14",status:{text:"완료",color:"blue"}},
-{id:23,year:2024,title:"지게차 운전 평가",type:"최초평가",method:"체크리스트법",regulation:"산안법 제37조",registered:"2024-10-01",modified:"2024-10-03",completed:"2024-10-05",status:{text:"완료",color:"blue"}},
-{id:22,year:2024,title:"전기 설비 위험성 평가",type:"수시평가",method:"정량적 평가",regulation:"산안법 제37조",registered:"2024-09-12",modified:"2024-09-13",completed:"2024-09-15",status:{text:"완료",color:"blue"}},
-{id:21,year:2024,title:"가스 누출 점검 평가",type:"수시평가",method:"정성적 평가",regulation:"산안법 제37조",registered:"2024-08-30",modified:"2024-09-01",completed:"",status:{text:"진행",color:"green"}},
-{id:20,year:2024,title:"플랜트 해체 작업 위험평가",type:"정기평가",method:"체크리스트법",regulation:"산안법 제37조",registered:"2024-08-10",modified:"2024-08-12",completed:"2024-08-14",status:{text:"완료",color:"blue"}},
-{id:19,year:2024,title:"압력용기 취급 평가",type:"최초평가",method:"정량적 평가",regulation:"산안법 제37조",registered:"2024-07-22",modified:"2024-07-23",completed:"2024-07-25",status:{text:"완료",color:"blue"}},
-{id:18,year:2024,title:"유해화학물질 취급 평가",type:"정기평가",method:"화학물질 평가법",regulation:"산안법 제37조",registered:"2024-07-10",modified:"2024-07-12",completed:"2024-07-14",status:{text:"완료",color:"blue"}},
-{id:17,year:2024,title:"냉매 가스 취급 작업 평가",type:"수시평가",method:"정성적 평가",regulation:"산안법 제37조",registered:"2024-06-30",modified:"2024-07-01",completed:"2024-07-03",status:{text:"완료",color:"blue"}},
-{id:16,year:2024,title:"가공기계 위험성 평가",type:"정기평가",method:"위험성수준 3단계 판단법",regulation:"산안법 제37조",registered:"2024-06-15",modified:"2024-06-16",completed:"",status:{text:"진행",color:"green"}},
-{id:15,year:2024,title:"야간 작업 평가",type:"수시평가",method:"빈도·강도법",regulation:"산안법 제37조",registered:"2024-06-01",modified:"2024-06-02",completed:"2024-06-03",status:{text:"완료",color:"blue"}},
-{id:14,year:2024,title:"고소작업 위험성 평가",type:"최초평가",method:"정성적 평가",regulation:"산안법 제37조",registered:"2024-05-12",modified:"2024-05-13",completed:"2024-05-15",status:{text:"완료",color:"blue"}},
-{id:13,year:2024,title:"중장비 작업 평가",type:"정기평가",method:"정량적 평가",regulation:"산안법 제37조",registered:"2024-05-01",modified:"2024-05-02",completed:"2024-05-04",status:{text:"완료",color:"blue"}},
-{id:12,year:2024,title:"컨베이어벨트 점검 평가",type:"수시평가",method:"체크리스트법",regulation:"산안법 제37조",registered:"2024-04-20",modified:"2024-04-21",completed:"",status:{text:"진행",color:"green"}},
-{id:11,year:2024,title:"수출 포장 작업 평가",type:"정기평가",method:"정량적 평가",regulation:"산안법 제37조",registered:"2024-04-01",modified:"2024-04-02",completed:"2024-04-04",status:{text:"완료",color:"blue"}},
-{id:10,year:2023,title:"야적장 적재 평가",type:"정기평가",method:"빈도·강도법",regulation:"산안법 제37조",registered:"2023-12-01",modified:"2023-12-02",completed:"2023-12-05",status:{text:"완료",color:"blue"}},
-{id:9,year:2023,title:"산소용접 작업 평가",type:"최초평가",method:"체크리스트법",regulation:"산안법 제37조",registered:"2023-11-11",modified:"2023-11-12",completed:"2023-11-14",status:{text:"완료",color:"blue"}},
-{id:8,year:2023,title:"가연성 액체 취급 평가",type:"수시평가",method:"정성적 평가",regulation:"산안법 제37조",registered:"2023-10-05",modified:"2023-10-07",completed:"",status:{text:"진행",color:"green"}},
-{id:7,year:2023,title:"산업용 로봇 작업 평가",type:"정기평가",method:"정량적 평가",regulation:"산안법 제37조",registered:"2023-09-18",modified:"2023-09-19",completed:"2023-09-21",status:{text:"완료",color:"blue"}},
-{id:6,year:2023,title:"건축 해체 작업 위험평가",type:"수시평가",method:"위험성수준 3단계 판단법",regulation:"산안법 제37조",registered:"2023-09-01",modified:"2023-09-02",completed:"2023-09-04",status:{text:"완료",color:"blue"}},
-{id:5,year:2023,title:"용접 후 가스 제거 평가",type:"최초평가",method:"정성적 평가",regulation:"산안법 제37조",registered:"2023-08-12",modified:"2023-08-14",completed:"2023-08-15",status:{text:"완료",color:"blue"}},
-{id:4,year:2023,title:"이동형 크레인 작업 평가",type:"정기평가",method:"체크리스트법",regulation:"산안법 제37조",registered:"2023-07-01",modified:"2023-07-02",completed:"2023-07-03",status:{text:"완료",color:"blue"}},
-{id:3,year:2023,title:"컨테이너 하역 평가",type:"정기평가",method:"정성적 평가",regulation:"산안법 제37조",registered:"2023-06-20",modified:"2023-06-21",completed:"",status:{text:"진행",color:"green"}},
-{id:2,year:2023,title:"공장 내 피난동선 점검",type:"수시평가",method:"정량적 평가",regulation:"산안법 제37조",registered:"2023-06-01",modified:"2023-06-02",completed:"2023-06-04",status:{text:"완료",color:"blue"}},
-{id:1,year:2023,title:"정전기 발생 위험성 평가",type:"정기평가",method:"화학물질 평가법",regulation:"산안법 제37조",registered:"2023-05-10",modified:"2023-05-11",completed:"2023-05-13",status:{text:"완료",color:"blue"}}
-]
+  export const chemicalStep1MockData: ChemicalEditableRow[] = [
+    { id: 1, process: "부품 세정", product: "기어/베어링", substance: "메틸에틸케톤(MEK)", exposure: "증기 흡입 및 피부 접촉", toxicity: "호흡기 자극/신경계 영향", risk: 3, action: "국소배기장치 가동 철저 및 방독마스크 착용", image: null },
+    { id: 2, process: "유압 정비", product: "유압 라인", substance: "광유(Mineral Oil)", exposure: "오일 미스트 흡입", toxicity: "피부염 유발/폐 질환", risk: 2, action: "내유성 장갑 착용 및 오일 미스트 제거 설비 확인", image: null },
+    { id: 3, process: "용접 보수", product: "슈트/호퍼", substance: "용접 흄(망간)", exposure: "고농도 흄 흡입", toxicity: "신경독성/폐기능 저하", risk: 3, action: "이동식 흄 집진기 설치 및 특급 방진마스크 착용", image: null },
+    { id: 4, process: "도장 작업", product: "설비 외면", substance: "자일렌/톨루엔", exposure: "유기용제 증기 흡입", toxicity: "중추신경 억제/인화성", risk: 3, action: "방폭 환기팬 설치 및 송기마스크(또는 방독) 착용", image: null },
+    { id: 5, process: "배터리 점검", product: "지게차", substance: "황산", exposure: "전해액 비산 및 접촉", toxicity: "화학적 화상/부식성", risk: 3, action: "보안면(Face Shield) 및 내산 장갑/앞치마 착용", image: null },
+    { id: 6, process: "슬래그 처리", product: "원료/부산물", substance: "결정형 유리규산", exposure: "비산 먼지 흡입", toxicity: "발암성(1급)/진폐증", risk: 2, action: "습식 작업 원칙 준수 및 살수 설비 상시 가동", image: null },
+    { id: 7, process: "윤활 작업", product: "구동부", substance: "리튬 구리스", exposure: "반복적인 피부 접촉", toxicity: "피부 과민 반응", risk: 1, action: "불침투성 보호장갑 착용 및 작업 후 손 세척 철저", image: null },
+    { id: 8, process: "냉각수 교체", product: "냉각 설비", substance: "에틸렌글리콜", exposure: "액체 접촉 및 오인 섭취", toxicity: "신장 독성/생식 독성", risk: 2, action: "소분 용기 경고 표지 부착 및 MSDS 교육 실시", image: null },
+    { id: 9, process: "녹 제거", product: "배관/볼트", substance: "방청윤활제", exposure: "에어로졸 흡입", toxicity: "두통/어지러움 유발", risk: 1, action: "밀폐 공간 사용 금지 및 환기 양호 상태 유지", image: null }
+  ]
 
-export const frequencyStep1MockData:FrequencyStep1Row[]=[
-{id:1,work:"운송준비",hazard:"내부 청소 작업 시 바닥면의 분진이 재비산되면서 흡입 위험",law:"산업안전보건법 제32조(보호구의 지급 등)",action:"- 보호구 지급 및 착용",proof:null},
-{id:2,work:"운송준비",hazard:"청소 작업 시 소음에 노출되어 난청 발생 위험",law:"산업안전보건법 제32조(보호구의 지급 등)",action:"- 보호구 지급 및 착용",proof:null},
-{id:3,work:"운송준비",hazard:"반복 청소 작업으로 근골격계질환 위험",law:"산업안전보건법 제661조(유해성 등의 주지)",action:"- 유해요인 교육\n- 올바른 자세\n- 대체요령",proof:null},
-{id:4,work:"운송준비",hazard:"청소 장비에 걸려 넘어짐 위험",law:"산업안전보건법 제3조(전도의 방지)",action:"- 정리정돈\n- 전도예방조치",proof:null},
-{id:5,work:"운송준비",hazard:"제한된 공간 점검 시 충돌 위험",law:"산업안전보건법 제3조(전도의 방지)",action:"- 정리정돈\n- 전도예방조치",proof:null},
-{id:6,work:"여객운송",hazard:"승·하선 시 넘어짐 위험",law:"산업안전보건법 제23조(가설통로의 구조)",action:"- 가설통로 설치\n- 안전난간 설치",proof:null},
-{id:7,work:"여객운송",hazard:"점검 시 낙하 위험",law:"산업안전보건법 제47조(구명구 등)",action:"- 구명장구 비치",proof:null},
-{id:8,work:"여객운송",hazard:"작업 공간 점검 시 낙하 위험",law:"산업안전보건법 제113조(안전난간 구조 및 설치요건)",action:"- 안전난간\n- 발끝막이판",proof:null},
-{id:9,work:"여객운송",hazard:"기계 가동음에 의한 난청 위험",law:"산업안전보건법 제516조(청력보호구의 지급 등)",action:"- 청력보호구 지급",proof:null},
-{id:10,work:"여객운송",hazard:"진동으로 인한 피로 증가 위험",law:"산업안전보건법 제79조(휴게시설)",action:"- 휴게시설 설치",proof:null},
-{id:11,work:"여객운송",hazard:"정기 점검 시 기후 영향 위험",law:"산업안전보건법 제32조(보호구의 지급 등)",action:"- 보호구 지급 및 착용",proof:null},
-{id:12,work:"여객운송",hazard:"정기 점검 시 기후 영향 위험",law:"산업안전보건법 제37조(작업 및 감장 작업 중지)",action:"- 작업 중지",proof:null},
-{id:13,work:"여객운송",hazard:"통로 조명 부족으로 인한 사고 위험",law:"산업안전보건법 제21조(통로의 조명)",action:"- 차량 조명 확보\n- 조명 설치",proof:null},
-{id:14,work:"여객운송",hazard:"이동 중 넘어짐 위험",law:"산업안전보건법 제3조(전도의 방지)",action:"- 정리정돈\n- 전도예방조치",proof:null}
-]
-
-export const frequencyStep2MockData:FrequencyRiskDataRow[]=[
-{id:1,work:"운송준비",hazard:"내부 청소 작업 시 바닥면의 분진이 재비산되면서 흡입 위험",action:"- 보호구 지급 및 착용",attachmentFile:null,frequency:3,intensity:2,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:2,work:"운송준비",hazard:"청소 작업 시 청소 장비 등의 가동음에 의한 소음에 노출되어 난청 발생 위험",action:"- 보호구 지급 및 착용",attachmentFile:null,frequency:2,intensity:2,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:3,work:"운송준비",hazard:"운행 전 청소 작업 시 반복해서 청소 작업을 수행하여 근골격계질환 위험",action:"- 근골격계부담작업의 유해요인 교육\n- 올바른 작업자세\n- 대체요령 교육",attachmentFile:null,frequency:2,intensity:3,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:4,work:"운송준비",hazard:"청소 작업 시 청소 장비 등에 의한 걸림으로 넘어짐 위험",action:"- 작업장 정리정돈 및 청소\n- 전도예방조치(고정)",attachmentFile:null,frequency:1,intensity:1,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:5,work:"운송준비",hazard:"협소한 장소 및 구성된 곳 등 제한된 공간의 점검 시 충돌 사고 위험",action:"- 작업장 정리정돈 및 청소\n- 전도예방조치(고정)",attachmentFile:null,frequency:1,intensity:2,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:6,work:"여객운송",hazard:"승·하선 및 이동 시 틈틈이 의한 넘어짐 위험",action:"- 가설통로 설치\n- 안전난간 설치",attachmentFile:null,frequency:2,intensity:1,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:7,work:"여객운송",hazard:"운송수단의 운행 시 제한적인 작업공간 이동 및 점검 시 떨어지는 사고 위험",action:"- 작업장소 구명장구 비치",attachmentFile:null,frequency:2,intensity:2,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:8,work:"여객운송",hazard:"운송수단의 운행 시 제한적인 작업공간의 이동 및 점검 시 아래로 떨어지는 사고 위험",action:"- 안전난간 설치\n- 발끝막이판 설치",attachmentFile:null,frequency:3,intensity:3,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:9,work:"여객운송",hazard:"여객석의 운행 시 기계실 등의 점검에 따른 기계 가동음에 노출되어 난청 발생 위험",action:"- 청력보호구 지급 착용",attachmentFile:null,frequency:2,intensity:2,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:10,work:"여객운송",hazard:"운송수단의 운행 시 틈틈이로 전신 진동 등으로 근무자 스트레스, 피로도 증가 위험",action:"- 근로자 휴게시설 설치",attachmentFile:null,frequency:2,intensity:1,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:11,work:"여객운송",hazard:"승객의 안전을 위하여 운행 시 정기적인 점검 등으로 기후(한랭/고온)에 영향을 받아 안",action:"- 보호구 지급 및 착용",attachmentFile:null,frequency:2,intensity:2,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:12,work:"여객운송",hazard:"승객의 안전을 위하여 운행 시 정기적인 점검 등으로 기후(한랭/고온)에 영향을 받아 안",action:"- 작업 및 감장 작업 중지",attachmentFile:null,frequency:1,intensity:1,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:13,work:"여객운송",hazard:"승객의 이동 통로가 어두울 경우 안전사고 발생 위험",action:"- 안전하게 통행할 수 있도록 75lux 이상의 차량 조명\n- 조명 시설 설치",attachmentFile:null,frequency:2,intensity:2,afterPhoto:null,evaluator:"",evaluationDate:new Date()},
-{id:14,work:"여객운송",hazard:"여객선 등 운송수단의 이동 시 틈틈 등에 의해 넘어질 수 있는 위험",action:"- 작업장 정리정돈 및 청소\n- 전도예방조치(고정)",attachmentFile:null,frequency:2,intensity:1,afterPhoto:null,evaluator:"",evaluationDate:new Date()}
-]
-
-export const frequencyStep3MockData:FrequencyStep3Row[]=[
-{id:1,work:"운송준비",hazard:"내부 청소 작업 시 바닥면의 분진이 재비산되면서 흡입 위험",action:"청소 시 방진마스크 착용 및 습식 청소 시행",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:3,intensity:2,afterPhoto:null},
-{id:2,work:"운송준비",hazard:"청소 작업 시 청소 장비 등의 가동음에 의한 소음에 노출되어 난청 발생 위험",action:"청소작업 시 귀마개 착용 의무화",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:2,intensity:2,afterPhoto:null},
-{id:3,work:"운송준비",hazard:"운행 전 청소 작업 시 반복해서 청소 작업을 수행하여 근골격계질환 위험",action:"작업 전 스트레칭 교육 및 작업대 높이 조정",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:2,intensity:3,afterPhoto:null},
-{id:4,work:"운송준비",hazard:"청소 작업 시 청소 장비 등에 의한 걸림으로 넘어짐 위험",action:"청소 장비 정리정돈 및 작업장 바닥 정비",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:1,intensity:1,afterPhoto:null},
-{id:5,work:"운송준비",hazard:"협소한 장소 및 구성된 곳 등 제한된 공간의 점검 시 충돌 사고 위험",action:"점검 전 작업구간 사전 정리 및 위험표시 부착",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:1,intensity:2,afterPhoto:null},
-{id:6,work:"여객운송",hazard:"승·하선 및 이동 시 틈틈이 의한 넘어짐 위험",action:"승선 시 안전유도선 표시 및 조도 확보",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:2,intensity:1,afterPhoto:null},
-{id:7,work:"여객운송",hazard:"운송수단의 운행 시 제한적인 작업공간 이동 및 점검 시 떨어지는 사고 위험",action:"이동 경로 안전난간 설치 및 안전모 착용",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:2,intensity:2,afterPhoto:null},
-{id:8,work:"여객운송",hazard:"운송수단의 운행 시 제한적인 작업공간의 이동 및 점검 시 아래로 떨어지는 사고 위험",action:"이동 시 추락방지장치 착용 및 2인 1조 작업",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:3,intensity:3,afterPhoto:null},
-{id:9,work:"여객운송",hazard:"여객석의 운행 시 기계실 등의 점검에 따른 기계 가동음에 노출되어 난청 발생 위험",action:"점검 시 귀마개 착용 및 소음 측정 실시",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:2,intensity:2,afterPhoto:null},
-{id:10,work:"여객운송",hazard:"운송수단의 운행 시 틈틈이로 전신 진동 등으로 근무자 스트레스, 피로도 증가 위험",action:"작업시간 조정 및 휴게시설 마련",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:2,intensity:1,afterPhoto:null},
-{id:11,work:"여객운송",hazard:"승객의 안전을 위하여 운행 시 정기적인 점검 등으로 기후(한랭/고온)에 영향을 받아 안",action:"계절별 적정 복장 및 기상 상황에 맞춘 점검시간 조정",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:2,intensity:2,afterPhoto:null},
-{id:12,work:"여객운송",hazard:"승객의 안전을 위하여 운행 시 정기적인 점검 등으로 기후(한랭/고온)에 영향을 받아 안",action:"작업복 보급 및 기후 영향 예보에 따른 작업계획 수립",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:1,intensity:1,afterPhoto:null},
-{id:13,work:"여객운송",hazard:"승객의 이동 통로가 어두울 경우 안전사고 발생 위험",action:"비상등 및 보조등 점검 및 설치",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:2,intensity:2,afterPhoto:null},
-{id:14,work:"여객운송",hazard:"여객선 등 운송수단의 이동 시 틈틈 등에 의해 넘어질 수 있는 위험",action:"틈 보수 및 안전라인 표시",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",frequency:2,intensity:1,afterPhoto:null}
-]
-
-export const threeStep1MockData:ThreeStep1Row[]=[
-{id:1,work:"운송준비",hazard:"내부 청소 작업 시 바닥면의 분진이 재비산되면서 흡입 위험",law:"산업안전보건법 제32조(보호구의 지급 등)",action:"- 보호구 지급 및 착용",proof:null},
-{id:2,work:"운송준비",hazard:"청소 작업 시 소음에 노출되어 난청 발생 위험",law:"산업안전보건법 제32조(보호구의 지급 등)",action:"- 보호구 지급 및 착용",proof:null},
-{id:3,work:"운송준비",hazard:"반복 청소 작업으로 근골격계질환 위험",law:"산업안전보건법 제661조(유해성 등의 주지)",action:"- 유해요인 교육\n- 올바른 자세\n- 대체요령",proof:null},
-{id:4,work:"운송준비",hazard:"청소 장비에 걸려 넘어짐 위험",law:"산업안전보건법 제3조(전도의 방지)",action:"- 정리정돈\n- 전도예방조치",proof:null},
-{id:5,work:"운송준비",hazard:"제한된 공간 점검 시 충돌 위험",law:"산업안전보건법 제3조(전도의 방지)",action:"- 정리정돈\n- 전도예방조치",proof:null},
-{id:6,work:"여객운송",hazard:"승·하선 시 넘어짐 위험",law:"산업안전보건법 제23조(가설통로의 구조)",action:"- 가설통로 설치\n- 안전난간 설치",proof:null},
-{id:7,work:"여객운송",hazard:"점검 시 낙하 위험",law:"산업안전보건법 제47조(구명구 등)",action:"- 구명장구 비치",proof:null},
-{id:8,work:"여객운송",hazard:"작업 공간 점검 시 낙하 위험",law:"산업안전보건법 제113조(안전난간 구조 및 설치요건)",action:"- 안전난간\n- 발끝막이판",proof:null},
-{id:9,work:"여객운송",hazard:"기계 가동음에 의한 난청 위험",law:"산업안전보건법 제516조(청력보호구의 지급 등)",action:"- 청력보호구 지급",proof:null},
-{id:10,work:"여객운송",hazard:"진동으로 인한 피로 증가 위험",law:"산업안전보건법 제79조(휴게시설)",action:"- 휴게시설 설치",proof:null},
-{id:11,work:"여객운송",hazard:"정기 점검 시 기후 영향 위험",law:"산업안전보건법 제32조(보호구의 지급 등)",action:"- 보호구 지급 및 착용",proof:null},
-{id:12,work:"여객운송",hazard:"정기 점검 시 기후 영향 위험",law:"산업안전보건법 제37조(작업 및 감장 작업 중지)",action:"- 작업 중지",proof:null},
-{id:13,work:"여객운송",hazard:"통로 조명 부족으로 인한 사고 위험",law:"산업안전보건법 제21조(통로의 조명)",action:"- 차량 조명 확보\n- 조명 설치",proof:null},
-{id:14,work:"여객운송",hazard:"이동 중 넘어짐 위험",law:"산업안전보건법 제3조(전도의 방지)",action:"- 정리정돈\n- 전도예방조치",proof:null}
-]
-
-export const threeStep2MockData:ThreeStepRiskDataRow[]=[
-{id:1,work:"운송준비",hazard:"내부 청소 작업 시 바닥면의 분진이 재비산되면서 흡입 위험",action:"- 보호구 지급 및 착용",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:2},
-{id:2,work:"운송준비",hazard:"청소 작업 시 청소 장비 등의 가동음에 의한 소음에 노출되어 난청 발생 위험",action:"- 보호구 지급 및 착용",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:2},
-{id:3,work:"운송준비",hazard:"운행 전 청소 작업 시 반복해서 청소 작업을 수행하여 근골격계질환 위험",action:"- 근골격계부담작업의 유해요인 교육\n- 올바른 작업자세\n- 대체요령 교육",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:2},
-{id:4,work:"운송준비",hazard:"청소 작업 시 청소 장비 등에 의한 걸림으로 넘어짐 위험",action:"- 작업장 정리정돈 및 청소\n- 전도예방조치(고정)",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:1},
-{id:5,work:"운송준비",hazard:"협소한 장소 및 구성된 곳 등 제한된 공간의 점검 시 충돌 사고 위험",action:"- 작업장 정리정돈 및 청소\n- 전도예방조치(고정)",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:2},
-{id:6,work:"여객운송",hazard:"승·하선 및 이동 시 틈틈이 의한 넘어짐 위험",action:"- 가설통로 설치\n- 안전난간 설치",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:1},
-{id:7,work:"여객운송",hazard:"운송수단의 운행 시 제한적인 작업공간 이동 및 점검 시 떨어지는 사고 위험",action:"- 작업장소 구명장구 비치",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:2},
-{id:8,work:"여객운송",hazard:"운송수단의 운행 시 제한적인 작업공간의 이동 및 점검 시 아래로 떨어지는 사고 위험",action:"- 안전난간 설치\n- 발끝막이판 설치",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:3},
-{id:9,work:"여객운송",hazard:"여객석의 운행 시 기계실 등의 점검에 따른 기계 가동음에 노출되어 난청 발생 위험",action:"- 청력보호구 지급 착용",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:2},
-{id:10,work:"여객운송",hazard:"운송수단의 운행 시 틈틈이로 전신 진동 등으로 근무자 스트레스, 피로도 증가 위험",action:"- 근로자 휴게시설 설치",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:1},
-{id:11,work:"여객운송",hazard:"승객의 안전을 위하여 운행 시 정기적인 점검 등으로 기후(한랭/고온)에 영향을 받아 안",action:"- 보호구 지급 및 착용",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:2},
-{id:12,work:"여객운송",hazard:"승객의 안전을 위하여 운행 시 정기적인 점검 등으로 기후(한랭/고온)에 영향을 받아 안",action:"- 작업 및 감장 작업 중지",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:1},
-{id:13,work:"여객운송",hazard:"승객의 이동 통로가 어두울 경우 안전사고 발생 위험",action:"- 안전하게 통행할 수 있도록 75lux 이상의 차량 조명\n- 조명 시설 설치",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:2},
-{id:14,work:"여객운송",hazard:"여객선 등 운송수단의 이동 시 틈틈 등에 의해 넘어질 수 있는 위험",action:"- 작업장 정리정돈 및 청소\n- 전도예방조치(고정)",attachmentFile:null,afterPhoto:null,evaluator:"",evaluationDate:new Date(),riskLevel:1}
-]
-
-export const threeStep3MockData:ThreeStep3Row[]=[
-{id:1,work:"운송준비",hazard:"내부 청소 작업 시 바닥면의 분진이 재비산되면서 흡입 위험",action:"청소 시 방진마스크 착용 및 습식 청소 시행",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:2,afterPhoto:null},
-{id:2,work:"운송준비",hazard:"청소 작업 시 청소 장비 등의 가동음에 의한 소음에 노출되어 난청 발생 위험",action:"청소작업 시 귀마개 착용 의무화",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:2,afterPhoto:null},
-{id:3,work:"운송준비",hazard:"운행 전 청소 작업 시 반복해서 청소 작업을 수행하여 근골격계질환 위험",action:"작업 전 스트레칭 교육 및 작업대 높이 조정",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:3,afterPhoto:null},
-{id:4,work:"운송준비",hazard:"청소 작업 시 청소 장비 등에 의한 걸림으로 넘어짐 위험",action:"청소 장비 정리정돈 및 작업장 바닥 정비",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:1,afterPhoto:null},
-{id:5,work:"운송준비",hazard:"협소한 장소 및 구성된 곳 등 제한된 공간의 점검 시 충돌 사고 위험",action:"점검 전 작업구간 사전 정리 및 위험표시 부착",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:2,afterPhoto:null},
-{id:6,work:"여객운송",hazard:"승·하선 및 이동 시 틈틈이 의한 넘어짐 위험",action:"승선 시 안전유도선 표시 및 조도 확보",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:1,afterPhoto:null},
-{id:7,work:"여객운송",hazard:"운송수단의 운행 시 제한적인 작업공간 이동 및 점검 시 떨어지는 사고 위험",action:"이동 경로 안전난간 설치 및 안전모 착용",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:3,afterPhoto:null},
-{id:8,work:"여객운송",hazard:"운송수단의 운행 시 제한적인 작업공간의 이동 및 점검 시 아래로 떨어지는 사고 위험",action:"이동 시 추락방지장치 착용 및 2인 1조 작업",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:3,afterPhoto:null},
-{id:9,work:"여객운송",hazard:"여객석의 운행 시 기계실 등의 점검에 따른 기계 가동음에 노출되어 난청 발생 위험",action:"점검 시 귀마개 착용 및 소음 측정 실시",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:2,afterPhoto:null},
-{id:10,work:"여객운송",hazard:"운송수단의 운행 시 틈틈이로 전신 진동 등으로 근무자 스트레스, 피로도 증가 위험",action:"작업시간 조정 및 휴게시설 마련",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:1,afterPhoto:null},
-{id:11,work:"여객운송",hazard:"승객의 안전을 위하여 운행 시 정기적인 점검 등으로 기후(한랭/고온)에 영향을 받아 안",action:"계절별 적정 복장 및 기상 상황에 맞춘 점검시간 조정",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:2,afterPhoto:null},
-{id:12,work:"여객운송",hazard:"승객의 안전을 위하여 운행 시 정기적인 점검 등으로 기후(한랭/고온)에 영향을 받아 안",action:"작업복 보급 및 기후 영향 예보에 따른 작업계획 수립",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:1,afterPhoto:null},
-{id:13,work:"여객운송",hazard:"승객의 이동 통로가 어두울 경우 안전사고 발생 위험",action:"비상등 및 보조등 점검 및 설치",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:2,afterPhoto:null},
-{id:14,work:"여객운송",hazard:"여객선 등 운송수단의 이동 시 틈틈 등에 의해 넘어질 수 있는 위험",action:"틈 보수 및 안전라인 표시",plannedDate:new Date(),completedDate:new Date(),evaluator:"최담당",riskLevel:1,afterPhoto:null}
-]
-
-export const chemicalStep1MockData:ChemicalEditableRow[]=[
-{id:1,process:"도장공정",product:"외장 패널",substance:"톨루엔",exposure:"흡입 가능성 높음",toxicity:"자연발화성",risk:3,action:"국소배기장치 설치, 보호구 착용, 환기설비 보완",image:null},
-{id:2,process:"세정공정",product:"금속 프레임",substance:"MEK",exposure:"피부접촉",toxicity:"신장독성",risk:2,action:"",image:null},
-{id:3,process:"혼합공정",product:"도료 원액",substance:"자일렌",exposure:"흡입 및 피부접촉",toxicity:"중추신경계 영향",risk:1,action:"작업시간 단축",image:null},
-{id:4,process:"경화공정",product:"합성수지",substance:"스티렌",exposure:"밀폐공간 흡입 우려",toxicity:"발암성 의심",risk:3,action:"",image:null},
-{id:5,process:"세척공정",product:"세정액 용기",substance:"IPA",exposure:"증기 발생",toxicity:"안구 자극",risk:2,action:"세정 전 팬 가동, 보안경 착용",image:null}
-]
-
-export const checklistMockData:ChecklistSection[]=[
-{title:"물질 유해성",downloadKey:"hazardous-substance",items:["현재 취급하고 있는 물질보다 독성이 적은 물질(노출 기준 수치가 높은)로 대체 가능한가?","현재 물질의 물리적 성질을 고려하고 있다면 비발염성 물질로 대체가 가능한가?","현재 유해물질 취급 공정의 폐쇄가 가능한가?"]},
-{title:"물질노출 가능성",downloadKey:"exposure-possibility",items:["현재 사용하고 있는 화학물질의 사용량을 줄일 수 있는가?","물질 또는 교체된 공정의 누출 가능성이 줄어들었는가?","대상 유해물질을 공정 내 밀폐화가 가능한가?","유해물질 취급 시점에서의 재질이적이 최소화가 가능한가?","국소배기장치/후드 설치를 통한 유해물질 노출이 감소가 가능한가?","기존의 국소배기장치/후드 배출점보다 배출점의 설치위치를 좀 더 가까이 설치 가능한가?","직업환경 관리자의 정기적인 점검이 잘 이루어지고 있는가?"]},
-{title:"작업방법",downloadKey:"work-method",items:["유해물질 취급 공정을 인근 공정 및 작업장소와 격리하여 작업할 수 있는가?","유해물질 취급 공정과 인근 작업장소 사이의 공기 이동을 차단하기 위한 차단벽 설치가 가능한가?","현재 유해물질 취급 작업을 자동화 또는 반자동화로 공정 변경이 가능한가?","유해물질 용기를 별도의 저장장소에 보관 가능한가?","유해물질 취급전 적절히 점검이 되고 있는가?"]},
-{title:"관리방안",downloadKey:"management-plan",items:["특수건강검진을 정기적으로 실시하고 있는가?","작업환경측정을 정기적으로 실시하고 있는가?","해당 화학물질에 대해 근로자 교육을 실시하는가?","개인보호용품 등을 보호구가 적정하게 지급되는가?","근로자 작업 중 호흡을 보호구를 착용하고 있는가?"]},
-{title:"기타 개선내역",type:"form"}
-]
-
-export const processSelectorMockData:ProcessRow[]=[
-{id:1,process:'작업장 정리',description:'내부 청소 작업 시 바닥면의 분진이 재비산되면서 흡입 위험'},
-{id:2,process:'기계 점검',description:'청소 작업 시 청소 장비 등의 가동음에 의한 소음에 노출되어 난청 발생 위험'},
-{id:3,process:'배선 정비',description:'운행 전 청소 작업 시 반복해서 청소 작업을 수행하여 근골격계질환 위험'},
-{id:4,process:'폐기물 처리',description:'청소 작업 시 청소 장비 등에 의한 걸림으로 넘어짐 위험'},
-{id:5,process:'설비 유지보수',description:'협소한 장소 및 구성된 곳 등 제한된 공간의 점검 시 충돌 사고 위험'},
-{id:6,process:'승객 유도',description:'승·하선 및 이동 시 틈틈이 의한 넘어짐 위험'},
-{id:7,process:'차량 이동',description:'운송수단의 운행 시 제한적인 작업공간 이동 및 점검 시 떨어지는 사고 위험'},
-{id:8,process:'외부 점검',description:'운송수단의 운행 시 제한적인 작업공간의 이동 및 점검 시 아래로 떨어지는 사고 위험'},
-{id:9,process:'기계실 점검',description:'여객석의 운행 시 기계실 등의 점검에 따른 기계 가동음에 노출되어 난청 발생 위험'},
-{id:10,process:'장거리 운행',description:'운송수단의 운행 시 틈틈이로 전신 진동 등으로 근무자 스트레스, 피로도 증가 위험'}
-]
-
-export const checklistStep1MockData:ChecklistStep1Row[]=[
-{id:1,category:"작업장 환경",hazard:"조명 부족으로 인한 시야 확보 곤란",safetyMeasure:"작업장 조도 300lux 이상 유지",checkResult:"양호",note:""},
-{id:2,category:"기계설비",hazard:"회전 부위 방호장치 미설치",safetyMeasure:"방호덮개 설치 및 정기점검",checkResult:"불량",note:"방호덮개 파손"},
-{id:3,category:"전기안전",hazard:"누전으로 인한 감전 위험",safetyMeasure:"누전차단기 설치 및 접지",checkResult:"양호",note:""},
-{id:4,category:"화재예방",hazard:"소화기 미비치",safetyMeasure:"작업장 내 소화기 2개 이상 비치",checkResult:"양호",note:""},
-{id:5,category:"보호구",hazard:"안전모 미착용",safetyMeasure:"안전모 착용 의무화",checkResult:"양호",note:""},
-{id:6,category:"작업자세",hazard:"부적절한 자세로 인한 근골격계 질환",safetyMeasure:"작업대 높이 조절 및 스트레칭",checkResult:"보통",note:"개선 필요"},
-{id:7,category:"화학물질",hazard:"MSDS 미비치",safetyMeasure:"모든 화학물질 MSDS 비치",checkResult:"불량",note:"일부 누락"},
-{id:8,category:"소음",hazard:"85dB 이상 소음 노출",safetyMeasure:"귀마개 지급 및 착용",checkResult:"양호",note:""},
-{id:9,category:"환기",hazard:"밀폐공간 환기 불량",safetyMeasure:"환기시설 가동 및 점검",checkResult:"보통",note:""},
-{id:10,category:"비상구",hazard:"비상구 폐쇄 또는 물건 적치",safetyMeasure:"비상구 상시 개방 유지",checkResult:"양호",note:""}
-]
+  export const checklistMockData: ChecklistSection[] = [
+    { title: "물질 유해성", downloadKey: "hazardous-substance", items: ["현재 취급하고 있는 물질보다 독성이 적은 물질로 대체 가능한가?", "현재 물질의 물리적 성질을 고려하여 비가연성 물질로 대체가 가능한가?", "현재 유해물질 취급 공정의 완전 밀폐 또는 폐쇄가 가능한가?"] },
+    { title: "물질노출 가능성", downloadKey: "exposure-possibility", items: ["현재 사용하고 있는 화학물질의 사용량(취급량)을 줄일 수 있는가?", "공정 변경을 통해 물질의 누출 가능성을 근본적으로 줄였는가?", "대상 유해물질 발생원에 대한 국소 밀폐가 가능한가?", "유해물질 취급 시 분진의 재비산 최소화가 가능한가?", "국소배기장치/후드 설치를 통해 유해물질 노출 농도 감소가 가능한가?", "후드 흡입구를 오염원(발생원)에 더 가깝게 위치시킬 수 있는가?", "관리감독자에 의한 정기적인 점검(누출 여부 등)이 수행되고 있는가?"] },
+    { title: "작업방법", downloadKey: "work-method", items: ["유해물질 취급 공정을 타 공정 및 일반 작업장소와 격리할 수 있는가?", "오염원 확산 방지를 위한 차단벽(커튼 등) 설치가 가능한가?", "유해물질 취급 작업을 자동화 또는 로봇 공정으로 변경 가능한가?", "유해물질 용기를 지정된 별도 저장소에 보관하고 시건장치 하였는가?", "작업 시작 전 설비 및 보호구 점검이 절차대로 이행되는가?"] },
+    { title: "관리방안", downloadKey: "management-plan", items: ["취급 근로자에 대한 특수건강검진을 주기적으로 실시하고 있는가?", "작업환경측정을 정기적으로 실시하고 노출기준을 준수하는가?", "해당 화학물질의 유해성(MSDS)에 대해 근로자 교육을 실시하였는가?", "물질 특성에 맞는 적정 보호구(호흡기, 피부)가 지급되었는가?", "작업 중 근로자가 지급된 보호구를 올바르게 착용하고 있는가?"] },
+    { title: "기타 개선내역", type: "form" }
+  ]
+  
+  export const processSelectorMockData: ProcessRow[] = [
+    { id: 1, process: '슬래그 파쇄', description: '크러셔 가동 시 발생하는 고농도 비산 먼지 및 소음 노출 위험' },
+    { id: 2, process: '선별/이송', description: '컨베이어 벨트 구동부 끼임 및 낙광 처리 중 낙하물 위험' },
+    { id: 3, process: '밀(Mill) 정비', description: '밀 내부 라이너 교체 작업 중 중량물 낙하 및 협착 위험' },
+    { id: 4, process: '용접/용단', description: '배관 및 구조물 보수 시 불티 비산에 의한 화재 및 흄 흡입 위험' },
+    { id: 5, process: '전기실 점검', description: 'MCC 패널 및 변압기 점검 시 고압 전류 감전 및 아크 화상 위험' },
+    { id: 6, process: '중장비 운용', description: '페이로더 및 덤프 운행 구간 내 보행자 충돌 및 사각지대 사고 위험' },
+    { id: 7, process: '사일로 작업', description: '저장조 내부 진입 시 산소결핍 질식 및 슬래그 붕괴 매몰 위험' },
+    { id: 8, process: '유압설비 보수', description: '유압 호스 교체 중 고압 오일 분출에 의한 안구 손상 및 미끄러짐 위험' },
+    { id: 9, process: '백필터 교체', description: '집진기 내부 필터 교체 시 유해 분진 흡입 및 고소 작업 추락 위험' },
+    { id: 10, process: '출하 상차', description: '제품 상차 시 차량 전복 및 적재함 낙하 사고 위험' }
+  ]
+  
+  export const checklistStep1MockData: ChecklistStep1Row[] = [
+    { id: 1, category: "작업장 환경", hazard: "슬래그 분진 퇴적에 의한 전도 위험", safetyMeasure: "통로 바닥 수시 청소 및 미끄럼 방지 테이프 부착", checkResult: "양호", note: "주 2회 물청소 실시 중" },
+    { id: 2, category: "기계설비", hazard: "컨베이어 리턴 롤러 방호망 탈락", safetyMeasure: "방호망 즉시 재설치 및 고정 상태 확인", checkResult: "불량", note: "즉시 조치 요망 (정비팀 통보)" },
+    { id: 3, category: "전기안전", hazard: "이동형 투광기 케이블 피복 손상", safetyMeasure: "손상 케이블 폐기 및 신규 케이블 교체", checkResult: "보통", note: "절연 테이핑 조치 후 사용 중, 교체 예정" },
+    { id: 4, category: "화재예방", hazard: "유압 탱크 주변 오일 누유 흔적", safetyMeasure: "누유 부위 리테이너 교체 및 흡착포 제거", checkResult: "양호", note: "누유 없음 확인" },
+    { id: 5, category: "보호구", hazard: "용접 작업자 보안면 미착용", safetyMeasure: "작업 시 보안면 착용 지도 및 관리감독 강화", checkResult: "양호", note: "전원 착용 상태 양호" },
+    { id: 6, category: "작업자세", hazard: "하부 슈트 점검 시 쪼그려 앉는 자세 반복", safetyMeasure: "점검구 높이 상향 조정 및 이동식 의자 비치", checkResult: "보통", note: "설비 개선 검토 중" },
+    { id: 7, category: "화학물질", hazard: "소분 용기(세척제) 경고표지 훼손", safetyMeasure: "MSDS 경고표지 재출력 및 코팅 부착", checkResult: "불량", note: "금일 중 부착 예정" },
+    { id: 8, category: "소음", hazard: "파쇄실 내부 90dB 이상 고소음", safetyMeasure: "이중 청력보호구(귀마개+귀덮개) 착용 구역 설정", checkResult: "양호", note: "표지판 설치 완료" },
+    { id: 9, category: "밀폐공간", hazard: "사일로 맨홀 개방 시 유해가스 측정 미실시", safetyMeasure: "작업 허가 전 복합가스 측정 의무화", checkResult: "양호", note: "측정기 검교정 완료" },
+    { id: 10, category: "안전시설", hazard: "2층 점검 데크 안전난간 흔들림", safetyMeasure: "난간 고정 볼트 조임 및 용접 보강", checkResult: "양호", note: "보강 작업 완료" }
+  ]

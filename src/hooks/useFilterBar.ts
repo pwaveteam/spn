@@ -1,15 +1,23 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 
-export default function useFilterBar(){
-  // 한국 표준시 오늘 날짜 yyyy-mm-dd 생성
+export default function useFilterBar<T>(data: T[] = [], searchKeys: (keyof T)[] = []) {
   const today = new Date()
   const koreaToday = new Date(today.getTime() + 9 * 60 * 60 * 1000)
     .toISOString()
     .slice(0, 10)
 
-  const [startDate, setStartDate] = useState(koreaToday)  // 오늘 날짜로 기본값
-  const [endDate, setEndDate] = useState("")              // 빈값
+  const [startDate, setStartDate] = useState(koreaToday)
+  const [endDate, setEndDate] = useState("")
   const [searchText, setSearchText] = useState("")
+
+  const filteredData = useMemo(() => {
+    if (!searchText || searchKeys.length === 0) return data
+    return data.filter(item =>
+      searchKeys.some(key =>
+        String(item[key]).toLowerCase().includes(searchText.toLowerCase())
+      )
+    )
+  }, [data, searchText, searchKeys])
 
   const resetFilters = () => {
     setStartDate(koreaToday)
@@ -24,6 +32,7 @@ export default function useFilterBar(){
     setStartDate,
     setEndDate,
     setSearchText,
-    resetFilters
+    resetFilters,
+    filteredData
   }
 }

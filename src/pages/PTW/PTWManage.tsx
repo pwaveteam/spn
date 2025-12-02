@@ -21,7 +21,7 @@ const[pageTitle,setPageTitle]=useState<string>("PTW 관리")
 const ptwId="TEMP_ID"
 
 useEffect(()=>{
-setPageTitle(`PTW 관리 · ${tabs[activeTab]}`)
+setPageTitle(`관리 · ${tabs[activeTab]}`)
 },[activeTab])
 
 return(
@@ -34,7 +34,7 @@ return(
 value={ptwName}
 onChange={e=>setPtwName(e.target.value)}
 className="h-7 text-xs bg-white flex-1 border-gray-300"
-placeholder="예: 11월 4주차 일지"
+placeholder="슬래그 밀(Slag Mill) 정비"
 />
 </div>
 <TabMenu tabs={tabs} activeIndex={activeTab} onTabClick={setActiveTab} className="mb-2"/>
@@ -52,7 +52,7 @@ placeholder="예: 11월 4주차 일지"
 value={ptwName}
 onChange={e=>setPtwName(e.target.value)}
 className="h-8 bg-white w-full max-w-[400px] border-[#DFDFDF] focus-visible:ring-1 focus-visible:ring-gray-400"
-placeholder="예: 11월 4주차 일지"
+placeholder="슬래그 밀(Slag Mill) 정비"
 />
 </div>
 </div>

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { useReactToPrint } from "react-to-print"
-import StepBar from "@/components/modules/StepBar"
+import StepBar from "@/components/snippetRisk/StepBar"
 import DataTable, { Column } from "@/components/common/tables/DataTable"
 import Button from "@/components/common/base/Button"
 import useTableActions from "@/hooks/tableActions"

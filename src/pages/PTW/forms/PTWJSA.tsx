@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import useTableActions from "@/hooks/tableActions"
 import Button from "@/components/common/base/Button"
-import PTWListModal from "./PTWListModal"
+import PTWListModal from "../../../components/dialog/PTWListDialog"
 import { useLoadingStore } from "@/stores/loadingStore"
 import { PTWFile } from "../FilePanel/FilePanel"
 

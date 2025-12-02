@@ -3,9 +3,9 @@ import{useNavigate,useLocation}from"react-router-dom"
 import FormScreen,{Field}from"@/components/common/forms/FormScreen"
 import Button from"@/components/common/base/Button"
 import PageTitle from"@/components/common/base/PageTitle"
-import ProcessRiskAccordion,{RiskItem}from"@/components/modules/ProcessRiskAccordion"
-import LoadListDialog from"@/components/modules/LoadListDialog"
-import AttendeePanel from"@/components/modules/AttendeePanel"
+import ProcessRiskAccordion,{RiskItem}from"@/components/snippet/ProcessRiskAccordion"
+import LoadListDialog from"@/components/dialog/LoadListDialog"
+import AttendeePanel from"@/components/snippet/AttendeePanel"
 import useTableActions from"@/hooks/tableActions"
 
 interface Attendee{name:string;phone:string;signature?:string}

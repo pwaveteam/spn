@@ -3,7 +3,7 @@ import{useNavigate,useLocation}from"react-router-dom"
 import PageTitle from"@/components/common/base/PageTitle"
 import Button from"@/components/common/base/Button"
 import DataTable,{Column,DataRow}from"@/components/common/tables/DataTable"
-import TemplateSelectDialog from"@/pages/Inspection/TemplateSelectDialog"
+import TemplateSelectDialog from"@/components/dialog/TemplateSelectDialog"
 import{CirclePlus,Trash2,GripVertical,Check,X}from"lucide-react"
 import Sortable from"sortablejs"
 import ToggleSwitch from"@/components/common/base/ToggleSwitch"
@@ -12,8 +12,12 @@ import{inspectionFieldOptions,inspectionKindOptions}from"@/components/common/bas
 type ItemRow=DataRow&{id:number;content:string;isEditing?:boolean;draft?:string;__no?:number}
 type LocationState={mode?:"create"|"edit"}|null
 
-const INPUT_CLASS="h-[36px] border border-[#AAAAAA] rounded-[8px] px-3 bg-white focus:outline-none focus:ring-2 focus:ring-[#B9D0F6] text-sm font-normal text-[#333639] placeholder:text-[#AAAAAA]"
-const LABEL_CLASS="text-sm font-medium text-[#333639] whitespace-nowrap"
+const BORDER_CLASS="border-[var(--border)]"
+const INPUT_CLASS="border rounded-lg px-2 sm:px-3 bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 text-xs sm:text-sm text-gray-800 placeholder:text-gray-400"
+const LABEL_CLASS="text-xs sm:text-sm font-medium text-gray-800 whitespace-nowrap"
+const BTN_CLASS="inline-flex items-center justify-center rounded-md hover:bg-gray-50"
+const TEXT_SECONDARY="text-gray-500"
+const TEXT_PRIMARY="text-gray-800"
 
 const InspectionChecklistRegister:React.FC=()=>{
 const navigate=useNavigate()
@@ -33,6 +37,13 @@ const nextIdRef=useRef<number>(1)
 
 const tableData=useMemo<ItemRow[]>(()=>rows.map((r,idx)=>({...r,__no:idx+1})),[rows])
 
+useEffect(()=>{
+if(rows.length===0&&!isEdit){
+const initialRows:ItemRow[]=Array.from({length:5},(_,i)=>({id:nextIdRef.current++,content:"",isEditing:false}))
+setRows(initialRows)
+}
+},[])
+
 const startEdit=useCallback((id:number)=>{setRows(prev=>prev.map(r=>r.id===id?{...r,isEditing:true,draft:r.content}:r))},[])
 const changeDraft=useCallback((id:number,value:string)=>{setRows(prev=>prev.map(r=>r.id===id?{...r,draft:value}:r))},[])
 const commitEdit=useCallback((id:number)=>{setRows(prev=>prev.map(r=>r.id===id?{...r,content:(r.draft??"").trim(),draft:undefined,isEditing:false}:r))},[])
@@ -42,24 +53,24 @@ const focusInput=(id:number)=>{requestAnimationFrame(()=>{const el=tableWrapRef.
 
 const columns=useMemo<Column<ItemRow>[]>(
 ()=>[
-{key:"__no",label:"번호",minWidth:50},
-{key:"content",label:"점검세부내용",minWidth:500,renderCell:(row:ItemRow)=>{
+{key:"__no",label:"번호",minWidth:40,maxWidth:60},
+{key:"content",label:"점검세부내용",minWidth:200,renderCell:(row:ItemRow)=>{
 if(row.isEditing){
 const isNew=row.content===""
 return(
-<div className="flex items-center gap-2 min-h-[40px]" data-row-id={row.id}>
-<span className="drag-handle inline-flex items-center justify-center cursor-grab text-[#9AA4B2] hover:text-[#6B7485] active:cursor-grabbing select-none" title="드래그하여 순서 변경" aria-label="드래그 핸들"><GripVertical size={16}/></span>
-<input data-edit="true" className={`${INPUT_CLASS} flex-1 h-[32px]`} placeholder="점검 세부내용을 입력하세요" value={row.draft??""} onChange={e=>changeDraft(row.id,e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){commitEdit(row.id)}if(e.key==="Escape"){cancelEdit(row.id,isNew)}}}/>
-<button type="button" aria-label="저장" className="inline-flex items-center justify-center p-1 rounded-md border border-[#D1D5DB] hover:bg-gray-50" onClick={()=>commitEdit(row.id)} title="저장"><Check size={16}/></button>
-<button type="button" aria-label="취소" className="inline-flex items-center justify-center p-1 rounded-md border border-[#D1D5DB] hover:bg-gray-50" onClick={()=>cancelEdit(row.id,isNew)} title="취소"><X size={16}/></button>
+<div className="flex items-center gap-1 sm:gap-2 min-h-[40px]" data-row-id={row.id}>
+<span className="drag-handle inline-flex items-center justify-center cursor-grab text-gray-400 hover:text-gray-600 active:cursor-grabbing select-none" title="드래그하여 순서 변경" aria-label="드래그 핸들"><GripVertical size={14} className="sm:w-4 sm:h-4"/></span>
+<input data-edit="true" className={`${INPUT_CLASS} ${BORDER_CLASS} flex-1 h-7 sm:h-8`} placeholder="점검 세부내용을 입력하세요" value={row.draft??""} onChange={e=>changeDraft(row.id,e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){commitEdit(row.id)}if(e.key==="Escape"){cancelEdit(row.id,isNew)}}}/>
+<button type="button" aria-label="저장" className={`${BTN_CLASS} ${BORDER_CLASS} p-0.5 sm:p-1`} onClick={()=>commitEdit(row.id)} title="저장"><Check size={14} className="sm:w-4 sm:h-4"/></button>
+<button type="button" aria-label="취소" className={`${BTN_CLASS} ${BORDER_CLASS} p-0.5 sm:p-1`} onClick={()=>cancelEdit(row.id,isNew)} title="취소"><X size={14} className="sm:w-4 sm:h-4"/></button>
 </div>
 )
 }
 return(
 <button type="button" className="w-full text-left" onClick={()=>startEdit(row.id)} title="클릭하여 편집">
-<div className="flex items-center gap-2 min-h-[40px]">
-<span className="drag-handle inline-flex items-center justify-center cursor-grab text-[#9AA4B2] hover:text-[#6B7485] active:cursor-grabbing select-none" title="드래그하여 순서 변경" aria-label="드래그 핸들"><GripVertical size={16}/></span>
-<span className="text-left">{row.content}</span>
+<div className="flex items-center gap-1 sm:gap-2 min-h-[40px]">
+<span className="drag-handle inline-flex items-center justify-center cursor-grab text-gray-400 hover:text-gray-600 active:cursor-grabbing select-none" title="드래그하여 순서 변경" aria-label="드래그 핸들"><GripVertical size={14} className="sm:w-4 sm:h-4"/></span>
+<span className={`text-left text-xs sm:text-sm ${TEXT_PRIMARY}`}>{row.content||<span className={TEXT_SECONDARY}>빈 행 - 클릭하여 입력</span>}</span>
 </div>
 </button>
 )
@@ -99,54 +110,56 @@ const handleSave=useCallback(()=>{if(!field||!kind){alert("점검분야/점검�
 return(
 <section className="w-full bg-white">
 <PageTitle>점검표(체크리스트) {isEdit?"편집":"등록"}</PageTitle>
-<div className="w-full px-3 py-3 mb-4 bg-[#F8F8F8] border border-[#E5E5E5] rounded-[10px]">
+<div className={`w-full px-2 md:px-3 py-3 mb-4 bg-gray-50 ${BORDER_CLASS} rounded-lg`}>
 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-<div className="flex items-center gap-3 min-w-0">
-<span className={LABEL_CLASS}>점검분야 <span className="text-[#FF3C0B]">*</span></span>
-<select className={`${INPUT_CLASS} w-full`} value={field} onChange={e=>setField(e.target.value)}>
+<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 min-w-0">
+<span className={LABEL_CLASS}>점검분야 <span className="text-red-600">*</span></span>
+<select className={`${INPUT_CLASS} ${BORDER_CLASS} w-full h-8 sm:h-9`} value={field} onChange={e=>setField(e.target.value)}>
 {inspectionFieldOptions.map(opt=>(
 <option key={opt.value}value={opt.value}>{opt.label}</option>
 ))}
 </select>
 </div>
-<div className="flex items-center gap-3 min-w-0">
-<span className={LABEL_CLASS}>점검종류 <span className="text-[#FF3C0B]">*</span></span>
-<select className={`${INPUT_CLASS} w-full`} value={kind} onChange={e=>setKind(e.target.value)}>
+<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 min-w-0">
+<span className={LABEL_CLASS}>점검종류 <span className="text-red-600">*</span></span>
+<select className={`${INPUT_CLASS} ${BORDER_CLASS} w-full h-8 sm:h-9`} value={kind} onChange={e=>setKind(e.target.value)}>
 {inspectionKindOptions.map(opt=>(
 <option key={opt.value}value={opt.value}>{opt.label}</option>
 ))}
 </select>
 </div>
-<div className="flex items-center gap-3 min-w-0">
+<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 min-w-0">
 <span className={LABEL_CLASS}>사용여부</span>
+<div className="flex items-center gap-2">
 <ToggleSwitch checked={useYn}onChange={setUseYn}/>
-<span className="text-sm">{useYn?"사용":"미사용"}</span>
-</div>
-</div>
-<div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
-<div className="flex items-center gap-3 min-w-0 md:col-span-3">
-<span className={LABEL_CLASS}>점검표명 <span className="text-[#FF3C0B]">*</span></span>
-<input className={`${INPUT_CLASS} flex-1`} placeholder="점검표명 입력" value={templateName} onChange={e=>setTemplateName(e.target.value)}/>
+<span className={`text-xs sm:text-sm ${TEXT_PRIMARY}`}>{useYn?"사용":"미사용"}</span>
 </div>
 </div>
 </div>
-<div className="flex items-center justify-between mb-2">
-<span className="text-gray-600 text-sm leading-none pt-[3px] mt-2 sm:mt-0">총 {rows.length}건</span>
-<div className="flex gap-1">
+<div className="grid grid-cols-1 gap-3 mt-3">
+<div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 min-w-0">
+<span className={`${LABEL_CLASS} shrink-0`}>점검표명 <span className="text-red-600">*</span></span>
+<input className={`${INPUT_CLASS} ${BORDER_CLASS} w-full sm:flex-1 h-8 sm:h-9`} placeholder="점검표명 입력" value={templateName} onChange={e=>setTemplateName(e.target.value)}/>
+</div>
+</div>
+</div>
+<div className="flex flex-col-reverse sm:flex-row items-start sm:items-center justify-between mb-2 gap-2">
+<span className={`${TEXT_SECONDARY} text-sm leading-none pt-1 mt-2 sm:mt-0`}>총 {rows.length}건</span>
+<div className="flex flex-wrap gap-1 w-full sm:w-auto justify-end">
 <Button variant="action"onClick={addFromTemplate}>템플릿으로 추가</Button>
 <Button variant="action"onClick={addItem}className="flex items-center gap-1"><CirclePlus size={16}/>직접추가</Button>
 <Button variant="action"onClick={deleteSelected}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
-<div className="overflow-x-auto bg-white mb-6" ref={tableWrapRef}>
+<div className="overflow-x-auto bg-white mb-4" ref={tableWrapRef}>
 <DataTable<ItemRow> columns={columns} data={tableData} onCheckedChange={setCheckedIds}/>
 {rows.length===0&&(
-<div className="py-16 text-center text-sm text-gray-500">등록된 항목이 없습니다.</div>
+<div className={`py-16 text-center text-sm ${TEXT_SECONDARY}`}>등록된 항목이 없습니다.</div>
 )}
 </div>
-<div className="absolute right-4 bottom-4 md:static md:mt-8 flex justify-end">
-<Button variant="primary" onClick={handleSave} className="flex items-center">
-  저장하기
+<div className="flex justify-end mt-4 mb-6">
+<Button variant="primary" onClick={handleSave}>
+저장하기
 </Button>
 </div>
 {isTemplateOpen&&(
