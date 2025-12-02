@@ -212,6 +212,14 @@ export const organizationMockData: DataRow[] = [
   { id: 1, name: "박대표", safetyPosition: "경영책임자", department: "경영지원팀", position: "대표이사", phone: "010-1234-5678", entryDate: "-", assignDate: "2022-01-10" }
 ]
 
+export const educationCertificateMockData: DataRow[] = [
+  { id: 5, name: "박현장", phone: "010-5555-6666", submitDate: "2024-03-20", eduName: "관리감독자 교육", eduDate: "2024-03-15", certificate: "certificate_5.pdf", confirm: { text: "확인", color: "blue" } },
+  { id: 4, name: "최안전", phone: "010-4444-5555", submitDate: "2024-03-18", eduName: "특별안전교육", eduDate: "2024-03-10", certificate: "certificate_4.pdf", confirm: { text: "확인", color: "blue" } },
+  { id: 3, name: "이영희", phone: "010-3456-7890", submitDate: "2024-03-15", eduName: "신규채용자 교육", eduDate: "2024-03-10", certificate: "", confirm: { text: "미확인", color: "red" } },
+  { id: 2, name: "김철수", phone: "010-2345-6789", submitDate: "2024-02-25", eduName: "관리감독자 교육", eduDate: "2024-02-20", certificate: "certificate_2.pdf", confirm: { text: "확인", color: "blue" } },
+  { id: 1, name: "홍길동", phone: "010-1234-5678", submitDate: "2024-01-20", eduName: "신규채용자 교육", eduDate: "2024-01-15", certificate: "certificate_1.pdf", confirm: { text: "확인", color: "blue" } }
+]
+
 // Safety Work Permit
 export const safetyWorkPermitMockData: DataRow[] = [
   { id: 3, workType: "밀폐공간 진입", workerCount: "6명", hazardLevel: "높음", workPeriod: "2025-06-04 ~ 2025-06-05", registrationDate: "2025-05-30", approvalStatus: { text: "완료", color: "blue" }, attachment: "", manage: "" },
@@ -225,8 +233,9 @@ export const qrManagementMockData = [
   { id: 4, qrName: "관리자 사용 가이드 QR", link: "관리자용 사용 설명서", useStatus: true },
   { id: 3, qrName: "종사자 의견청취 QR", link: "설문/건의 등 의견 수렴 폼 링크", useStatus: true },
   { id: 2, qrName: "관리자 페이지 접속 QR", link: "관리자용 웹페이지 링크", useStatus: true },
-  { id: 1, qrName: "근로자 앱 설치 QR", link: "안드로이드/iOS 다운로드 링크", useStatus: true }
+  { id: 1, qrName: "이수증 제출 QR", link: "안드로이드/iOS 다운로드 링크", useStatus: true }
 ]
+
 
 // Response Manual
 export const responseManualMockData: DataRow[] = [

@@ -81,7 +81,7 @@ export default function LoadListDialog({
         </div>
 
         <div className="text-right mb-2 text-[13px] text-[#FF4D4F]">
-          * 완료된, '승인완료' 상태의 위험성평가표만 조회됩니다.
+          * '승인완료' 상태의 위험성평가표만 조회됩니다.
         </div>
 
         {/* Table Area */}

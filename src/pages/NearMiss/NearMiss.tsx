@@ -24,8 +24,8 @@ reason:string
 sitePhotos:string[]
 }
 
-const TAB_LABELS=["아차사고","안전보이스"]
-const TAB_PATHS=["/nearmiss","/nearmiss/safevoice"]
+const TAB_LABELS = ["아차사고", "안전보이스"]
+const TAB_PATHS = ["/nearmiss/incident", "/nearmiss/safevoice"]
 
 const nearMissColumns:Column[]=[
 {key:"index",label:"번호",type:"index"},

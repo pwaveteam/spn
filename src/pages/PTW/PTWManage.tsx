@@ -9,7 +9,7 @@ import PTWTBM from"./forms/PTWTBM"
 import FilePanel,{PTWFile}from"./FilePanel/FilePanel"
 import{Input}from"@/components/ui/input"
 
-const tabs:string[]=["위험작업허가서","작업위험분석(JSA)","현장 위험성평가(JSA)","TBM"]
+const tabs:string[]=["위험작업허가서","작업위험분석(JSA)","현장 위험성평가","TBM"]
 
 export default function PTWManage():React.ReactElement{
 const location=useLocation()

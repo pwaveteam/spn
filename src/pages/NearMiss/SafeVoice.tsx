@@ -13,8 +13,8 @@ import useTableActions from"@/hooks/tableActions"
 import{CirclePlus,Trash2,Save}from"lucide-react"
 import{safeVoiceMockData}from"@/data/mockData"
 
-const TAB_LABELS=["아차사고","안전보이스"]
-const TAB_PATHS=["/nearmiss","/nearmiss/safevoice"]
+const TAB_LABELS = ["아차사고", "안전보이스"]
+const TAB_PATHS = ["/nearmiss/incident", "/nearmiss/safevoice"]
 
 const safeVoiceColumns:Column[]=[
 {key:"index",label:"번호",type:"index"},

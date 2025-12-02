@@ -23,7 +23,7 @@ const safetySubMenu:MenuItem[]=[
 {label:"도급협의체관리",path:"/supply-chain-management",Icon:UserGroupIcon},
 {label:"안전보이스",path:"/nearmiss",Icon:ClipboardDocumentListIcon},
 {label:"TBM",path:"/tbm",Icon:DocumentTextIcon},
-{label:"작업중지권요청",path:"/safety-work-permit",Icon:ClipboardDocumentCheckIcon}
+{label:"작업중지요청",path:"/safety-work-permit",Icon:ClipboardDocumentCheckIcon}
 ]
 
 const infoSubMenu:MenuItem[]=[

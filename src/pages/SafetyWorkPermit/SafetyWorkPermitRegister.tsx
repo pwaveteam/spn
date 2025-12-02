@@ -1,232 +1,114 @@
-import React,{useCallback,useState}from"react"
-import Button from"@/components/common/base/Button"
-import FormScreen,{Field}from"@/components/common/forms/FormScreen"
-import ToggleSwitch from"@/components/common/base/ToggleSwitch"
-import RadioGroup from"@/components/common/base/RadioGroup"
-import ChemicalAutocomplete from"@/components/common/inputs/ChemicalAutocomplete"
-import Checkbox from"@/components/common/base/Checkbox"
+import React, { useState } from "react"
+import Button from "@/components/common/base/Button"
+import FormScreen, { Field } from "@/components/common/forms/FormScreen"
+import RadioGroup from "@/components/common/base/RadioGroup"
+import useTableActions from "@/hooks/tableActions"
 
-type AlertWhen="1일 전"|"1주일 전"|"1개월 전"
-type Props={isOpen:boolean;onClose:()=>void;onSave:(data:FormDataState)=>void;isEdit?:boolean}
-type FormDataState={
-chemicalName:string;casNo:string;
-exposureLimitValue:string;exposureLimitUnit:string;
-dailyUsageValue:string;dailyUsageUnit:string;
-storageAmountValue:string;storageAmountUnit:string;
-corrosive:"예"|"아니오";toxicity:string;adverseReaction:string;
-registrationDate:string;inspectionCycle:string;
-msds:string;note:string;notify:boolean;notifyWhen:AlertWhen;
-repeat:boolean;
+type FormData = {
+workType: string
+workContent: string
+hazardFactors: string
+hazardLevel: string
+safetyPlan: string
+workLocation: string
+startDate: string
+endDate: string
+startHour: string
+startMinute: string
+endHour: string
+endMinute: string
+workerCount: string
+note: string
+fileUpload: string
 }
 
-type Option={value:string;label:string}
-const concentrationUnits:Option[]=[
-{value:"ppb",label:"ppb"},
-{value:"ppm",label:"ppm"},
-{value:"mg/m³",label:"mg/m³"},
-{value:"µg/m³",label:"µg/m³"},
-{value:"mg/L",label:"mg/L"},
-{value:"µg/L",label:"µg/L"}
-]
-const usageUnits:Option[]=[
-{value:"µL",label:"µL"},
-{value:"mL",label:"mL"},
-{value:"L",label:"L"},
-{value:"cm³",label:"cm³"},
-{value:"m³",label:"m³"},
-{value:"µg",label:"µg"},
-{value:"mg",label:"mg"},
-{value:"g",label:"g"},
-{value:"kg",label:"kg"}
-]
-const storageUnits:Option[]=[
-{value:"ng",label:"ng"},
-{value:"µg",label:"µg"},
-{value:"mg",label:"mg"},
-{value:"g",label:"g"},
-{value:"kg",label:"kg"},
-{value:"t",label:"t"},
-{value:"µL",label:"µL"},
-{value:"mL",label:"mL"},
-{value:"L",label:"L"},
-{value:"cm³",label:"cm³"},
-{value:"m³",label:"m³"}
-]
-const inspectionCycleOptions:Option[]=[
-{value:"상시",label:"상시"},
-{value:"주간",label:"주간"},
-{value:"월간",label:"월간"},
-{value:"분기",label:"분기"},
-{value:"연간",label:"연간"}
-]
-const alertTimingOptions:Option[]=[
-{value:"1일 전",label:"1일 전"},
-{value:"1주일 전",label:"1주일 전"},
-{value:"1개월 전",label:"1개월 전"}
-]
+type Props = {
+isOpen: boolean
+onClose: () => void
+onSave: (data: FormData) => void
+isEdit?: boolean
+}
 
-export default function AssetHazardRegister({isOpen,onClose,onSave,isEdit}:Props):React.ReactElement|null{
-const[formData,setFormData]=useState<FormDataState>({
-chemicalName:"",casNo:"",
-exposureLimitValue:"",exposureLimitUnit:"",
-dailyUsageValue:"",dailyUsageUnit:"",
-storageAmountValue:"",storageAmountUnit:"",
-corrosive:"예",toxicity:"",adverseReaction:"",
-registrationDate:"",inspectionCycle:"",
-msds:"",note:"",notify:false,notifyWhen:"1일 전",
-repeat:false
+export default function SafetyWorkPermitRegister({ isOpen, onClose, onSave, isEdit }: Props) {
+const [formData, setFormData] = useState<FormData>({
+workType: "",
+workContent: "",
+hazardFactors: "",
+hazardLevel: "높음",
+safetyPlan: "",
+workLocation: "",
+startDate: "",
+endDate: "",
+startHour: "",
+startMinute: "",
+endHour: "",
+endMinute: "",
+workerCount: "",
+note: "",
+fileUpload: ""
 })
 
-const handleChange=useCallback((e:React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>):void=>{
-const{name,value,type,checked}=e.target as HTMLInputElement
-if(name.endsWith("Value")&&value!==""&&!/^\d*\.?\d*$/.test(value))return
-if(type==="checkbox"){
-setFormData(prev=>({...prev,[name]:checked}))
-return
+const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+const { name, value, type } = e.target as HTMLInputElement
+if (name === "workerCount" && value !== "" && !/^\d+$/.test(value)) return
+setFormData(prev => ({ ...prev, [name]: value }))
 }
-if(name==="msds"){
-setFormData(prev=>({...prev,msds:value}))
-return
-}
-if(name==="exposureLimit_value"){setFormData(prev=>({...prev,exposureLimitValue:value}));return}
-if(name==="dailyUsage_value"){setFormData(prev=>({...prev,dailyUsageValue:value}));return}
-if(name==="storageAmount_value"){setFormData(prev=>({...prev,storageAmountValue:value}));return}
-if(name==="exposureLimit_unit"){setFormData(prev=>({...prev,exposureLimitUnit:value}));return}
-if(name==="dailyUsage_unit"){setFormData(prev=>({...prev,dailyUsageUnit:value}));return}
-if(name==="storageAmount_unit"){setFormData(prev=>({...prev,storageAmountUnit:value}));return}
-setFormData(prev=>({...prev,[name]:value}))
-},[])
 
-const fields:Field[]=[
-{
-label:"화학물질명",
-name:"chemicalName",
-type:"custom",
-required:true,
-customRender:(
-<ChemicalAutocomplete
-id="chemicalName"
-value={formData.chemicalName}
-placeholder="화학물질명 입력 또는 선택"
-onChange={v=>setFormData(prev=>({...prev,chemicalName:v}))}
-onSelect={opt=>setFormData(prev=>({...prev,chemicalName:opt.label}))}
-className="w-full"
-/>
-)
-},
-{label:"CAS No",name:"casNo",type:"text",placeholder:"CAS No 입력",required:true},
-{label:"노출기준",name:"exposureLimit",type:"quantityUnit",placeholder:"0",options:concentrationUnits,required:true},
-{label:"일일사용량",name:"dailyUsage",type:"quantityUnit",placeholder:"0",options:usageUnits,required:true},
-{label:"저장량",name:"storageAmount",type:"quantityUnit",placeholder:"0",options:storageUnits,required:true},
-{
-label:"부식성 유무",
-name:"corrosive",
-type:"custom",
-required:false,
-customRender:(
-<RadioGroup
-name="corrosive"
-value={formData.corrosive}
-options={[
-{value:"예",label:"예"},
-{value:"아니오",label:"아니오"}
-]}
-onChange={handleChange}
-/>
-)
-},
-{label:"독성치",name:"toxicity",type:"text",placeholder:"독성치 입력",required:false},
-{label:"이상반응",name:"adverseReaction",type:"text",placeholder:"이상반응 입력",required:false},
-{label:"등록일",name:"registrationDate",type:"date",placeholder:"등록일 선택",required:false},
-{
-label:"점검주기",
-name:"inspectionCycle",
-type:"custom",
-required:false,
-customRender:(
-<div className="flex items-center gap-3 w-full">
-<select
-name="inspectionCycle"
-value={formData.inspectionCycle}
-onChange={e=>{
-const v=e.target.value
-setFormData(p=>({
-...p,
-inspectionCycle:v,
-repeat:v==="상시"?false:p.repeat
-}))
-}}
-className="h-[36px] border border-[#AAAAAA] rounded-[8px] px-3 bg-white text-sm text-[#333639]"
->
-{inspectionCycleOptions.map(opt=>(
-<option key={opt.value}value={opt.value}>{opt.label}</option>
-))}
-</select>
-<span className="text-sm text-[#333639]">반복여부</span>
-<Checkbox checked={formData.repeat}onChange={()=>setFormData(p=>({...p,repeat:!p.repeat}))}/>
-</div>
-)
-},
-{
-label:"알림 전송여부",
-name:"notify",
-type:"custom",
-required:false,
-customRender:(
-<ToggleSwitch checked={formData.notify}onChange={checked=>setFormData(prev=>({...prev,notify:checked}))}/>
-)
-},
-{
-label:"알림 발송시점",
-name:"notifyWhen",
-type:"select",
-options:alertTimingOptions,
-placeholder:"알림 발송시점 선택",
-required:false
-},
-{label:"첨부파일 (MSDS)",name:"msds",type:"fileUpload",required:false}
+const { handleSave } = useTableActions<FormData>({
+data: [formData],
+checkedIds: [],
+onSave: () => onSave(formData)
+})
+
+const workTypeOptions = [
+{ value: "밀폐공간", label: "밀폐공간 작업" },
+{ value: "고소작업", label: "고소작업(2m 이상)" },
+{ value: "화기작업", label: "화기작업(용접·절단 등)" },
+{ value: "전기작업", label: "전기작업(고압 포함)" },
+{ value: "중량물작업", label: "중량물 취급작업(하역·운반)" },
+{ value: "크레인작업", label: "양중작업(크레인·호이스트 등)" },
+{ value: "굴착작업", label: "굴착작업(지반굴착 등)" },
+{ value: "방사선작업", label: "방사선 취급작업" },
+{ value: "화학물질작업", label: "유해화학물질 취급작업" },
+{ value: "지게차작업", label: "지게차 작업" },
+{ value: "이동식기계작업", label: "이동식 기계·설비 작업" },
+{ value: "고정식기계작업", label: "고정식 기계작업(프레스·전단기 등)" },
+{ value: "기타", label: "기타 위험작업" }
 ]
 
-if(!isOpen)return null
+const fields: Field[] = [
+{ label: "작업유형", name: "workType", type: "select", options: workTypeOptions, placeholder: "작업유형 선택", required: true },
+{ label: "작업내용", name: "workContent", type: "textarea", placeholder: "작업내용 입력", required: true },
+{ label: "잠재 위험요소", name: "hazardFactors", type: "text", placeholder: "잠재 위험요소 입력", required: true },
+{ label: "위험수준", name: "hazardLevel", type: "custom", customRender: (<RadioGroup name="hazardLevel" value={formData.hazardLevel} options={[{ value: "높음", label: "높음" }, { value: "중간", label: "중간" }, { value: "낮음", label: "낮음" }]} onChange={handleChange} />) },
+{ label: "안전조치 계획", name: "safetyPlan", type: "textarea", placeholder: "안전조치 계획 입력", required: true },
+{ label: "작업장소", name: "workLocation", type: "text", placeholder: "작업장소 입력", required: true },
+{ label: "작업기간", name: "workPeriod", type: "daterange", required: true },
+{ label: "작업시간", name: "workTime", type: "timeRange", required: true },
+{ label: "작업인원", name: "workerCount", type: "quantity", placeholder: "인원수 입력", required: true },
+{ label: "비고", name: "note", type: "textarea", placeholder: "비고 입력", required: false },
+{ label: "첨부파일", name: "fileUpload", type: "fileUpload", required: false }
+]
 
-const valuesForForm:{[key:string]:string}={
-chemicalName:formData.chemicalName,
-casNo:formData.casNo,
-exposureLimit_value:formData.exposureLimitValue,
-exposureLimit_unit:formData.exposureLimitUnit,
-dailyUsage_value:formData.dailyUsageValue,
-dailyUsage_unit:formData.dailyUsageUnit,
-storageAmount_value:formData.storageAmountValue,
-storageAmount_unit:formData.storageAmountUnit,
-corrosive:formData.corrosive,
-toxicity:formData.toxicity,
-adverseReaction:formData.adverseReaction,
-registrationDate:formData.registrationDate,
-inspectionCycle:formData.inspectionCycle,
-msds:formData.msds,
-note:formData.note,
-notify:formData.notify?"true":"",
-notifyWhen:formData.notifyWhen
-}
+if (!isOpen) return null
 
-return(
-<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-<div className="bg-white rounded-2xl w-[800px] max-w-full p-8 shadow-2xl max-h-[80vh] overflow-y-auto">
+return (
+<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+<div className="bg-white rounded-2xl w-[800px] max-w-full p-4 md:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
 <h2 className="text-xl font-semibold tracking-wide mb-3">
-유해/위험물질 {isEdit?"편집":"등록"}
+작업중지요청 {isEdit ? "편집" : "등록"}
 </h2>
 <FormScreen
 fields={fields}
-values={valuesForForm}
+values={formData}
 onChange={handleChange}
 onClose={onClose}
-onSave={()=>onSave(formData)}
+onSave={handleSave}
 isModal
-notifyEnabled={formData.notify}
 />
-<div className="mt-6 flex justify-center gap-1">
-<Button variant="primaryOutline"onClick={onClose}>닫기</Button>
-<Button variant="primary"onClick={()=>onSave(formData)}>{isEdit?"수정하기":"저장하기"}</Button>
+<div className="mt-6 flex justify-center gap-2">
+<Button variant="primaryOutline" onClick={onClose}>닫기</Button>
+<Button variant="primary" onClick={handleSave}>저장하기</Button>
 </div>
 </div>
 </div>

@@ -58,6 +58,7 @@ import SafeVoice from "./pages/NearMiss/SafeVoice"
 
 import EducationList from "./pages/SafetyEducation/Education"
 import EducationRegister from "./pages/SafetyEducation/EducationRegister"
+import EducationCertificate from "./pages/SafetyEducation/EducationCertificate"
 
 import AssetMachine from "./pages/AssetManagement/AssetMachine"
 import AssetHazard from "./pages/AssetManagement/AssetHazard"
@@ -83,110 +84,107 @@ import Support from "./pages/Support/Support"
 import UserGuide from "./pages/UserGuide/UserGuide"
 
 const App: React.FC = () => {
-  const { isLoading } = useLoadingStore()
+const { isLoading } = useLoadingStore()
 
-  useEffect(() => {
-    initKakao()
-  }, [])
+useEffect(() => {
+initKakao()
+}, [])
 
-  return (
-    <>
-      {isLoading && <Spinner fullscreen />}
+return (
+<>
+{isLoading && <Spinner fullscreen />}
 
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
+<BrowserRouter>
+<Routes>
+<Route path="/login" element={<Login />} />
 
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+<Route element={<MainLayout />}>
+<Route path="/" element={<Navigate to="/dashboard" replace />} />
+<Route path="/dashboard" element={<Dashboard />} />
 
-            <Route path="/inspection" element={<Navigate to="/inspection/plan" replace />} />
-            <Route path="/inspection/plan" element={<InspectionPlan />} />
-            <Route path="/inspection/plan/register" element={<InspectionPlanRegister />} />
-            <Route path="/inspection/checklist" element={<InspectionChecklist />} />
-            <Route path="/inspection/checklist/register" element={<InspectionChecklistRegister />} />
-            <Route path="/inspection/plan/:planId/execute" element={<InspectionExecute />} />
-            <Route path="/inspection/results" element={<InspectionResults />} />
-            <Route path="/inspection/results/:resultId" element={<InspectionResultDetail />} />
+<Route path="/inspection" element={<Navigate to="/inspection/plan" replace />} />
+<Route path="/inspection/plan" element={<InspectionPlan />} />
+<Route path="/inspection/plan/register" element={<InspectionPlanRegister />} />
+<Route path="/inspection/checklist" element={<InspectionChecklist />} />
+<Route path="/inspection/checklist/register" element={<InspectionChecklistRegister />} />
+<Route path="/inspection/plan/:planId/execute" element={<InspectionExecute />} />
+<Route path="/inspection/results" element={<InspectionResults />} />
+<Route path="/inspection/results/:resultId" element={<InspectionResultDetail />} />
 
-            <Route path="/ptw" element={<Navigate to="/ptw/list" replace />} />
-            <Route path="/ptw/list" element={<PTWList />} />
-            <Route path="/ptw/list/work-permit" element={<PTWWorkPermitList />} />
-            <Route path="/ptw/list/jsa" element={<PTWJSAList />} />
-            <Route path="/ptw/list/site-evaluation" element={<PTWSiteEvaluationList />} />
-            <Route path="/ptw/list/tbm" element={<PTWTBMList />} />
-            <Route path="/ptw/work-permit" element={<PTWWorkPermit />} />
-            <Route path="/ptw/jsa" element={<PTWJSA />} />
-            <Route path="/ptw/site-evaluation" element={<PTWSiteEvaluation />} />
-            <Route path="/ptw/tbm" element={<PTWTBM />} />
-            <Route path="/ptw/register" element={<PTWRegister />} />
-            <Route path="/ptw/manage" element={<PTWManage />} />
+<Route path="/ptw" element={<Navigate to="/ptw/list" replace />} />
+<Route path="/ptw/list" element={<PTWList />} />
+<Route path="/ptw/work-permit" element={<PTWWorkPermitList />} />
+<Route path="/ptw/jsa" element={<PTWJSAList />} />
+<Route path="/ptw/site-evaluation" element={<PTWSiteEvaluationList />} />
+<Route path="/ptw/tbm" element={<PTWTBMList />} />
+<Route path="/ptw/register" element={<PTWRegister />} />
+<Route path="/ptw/manage" element={<PTWManage />} />
 
-            <Route path="/tbm" element={<TBM />} />
-            <Route path="/tbm/register" element={<TBMRegister />} />
+<Route path="/tbm" element={<TBM />} />
+<Route path="/tbm/register" element={<TBMRegister />} />
 
-            <Route path="/nearmiss" element={<NearMiss />} />
-            <Route path="/nearmiss/*" element={<Navigate to="/nearmiss" replace />} />
-            <Route path="/nearmiss/safevoice" element={<SafeVoice />} />
-            <Route path="/nearmiss/safevoice/*" element={<Navigate to="/nearmiss/safevoice" replace />} />
+<Route path="/nearmiss" element={<Navigate to="/nearmiss/incident" replace />} />
+<Route path="/nearmiss/incident" element={<NearMiss />} />
+<Route path="/nearmiss/safevoice" element={<SafeVoice />} />
 
-            <Route path="/safety-education" element={<EducationList />} />
-            <Route path="/safety-education/register" element={<EducationRegister />} />
+<Route path="/safety-education" element={<Navigate to="/safety-education/education" replace />} />
+<Route path="/safety-education/education" element={<EducationList />} />
+<Route path="/safety-education/register" element={<EducationRegister />} />
+<Route path="/safety-education/certificate" element={<EducationCertificate />} />
 
-            <Route path="/asset-management" element={<Navigate to="/asset-management/machine" replace />} />
-            <Route path="/asset-management/machine" element={<AssetMachine />} />
-            <Route path="/asset-management/hazard" element={<AssetHazard />} />
+<Route path="/asset-management" element={<Navigate to="/asset-management/machine" replace />} />
+<Route path="/asset-management/machine" element={<AssetMachine />} />
+<Route path="/asset-management/hazard" element={<AssetHazard />} />
 
-            <Route path="/supply-chain-management" element={<Navigate to="/supply-chain-management/partners" replace />} />
-            <Route path="/supply-chain-management/partners" element={<Partners />} />
-            <Route path="/supply-chain-management/evaluation" element={<Evaluation />} />
-            <Route path="/supply-chain-management/committee" element={<Committee />} />
-            <Route path="/supply-chain-management/siteaudit" element={<SiteAudit />} />
-            <Route path="/supply-chain-management/training" element={<Training />} />
+<Route path="/supply-chain-management" element={<Navigate to="/supply-chain-management/partners" replace />} />
+<Route path="/supply-chain-management/partners" element={<Partners />} />
+<Route path="/supply-chain-management/evaluation" element={<Evaluation />} />
+<Route path="/supply-chain-management/committee" element={<Committee />} />
+<Route path="/supply-chain-management/siteaudit" element={<SiteAudit />} />
+<Route path="/supply-chain-management/training" element={<Training />} />
 
-            <Route path="/notice-board" element={<Navigate to="/notice-board/notice" replace />} />
-            <Route path="/notice-board/notice" element={<NoticeList />} />
-            <Route path="/notice-board/resources" element={<ResourcesList />} />
-            <Route path="/notice-board/law" element={<LawBoard />} />
+<Route path="/notice-board" element={<Navigate to="/notice-board/notice" replace />} />
+<Route path="/notice-board/notice" element={<NoticeList />} />
+<Route path="/notice-board/resources" element={<ResourcesList />} />
+<Route path="/notice-board/law" element={<LawBoard />} />
 
-            <Route path="/safety-work-permit" element={<SafetyWorkPermit />} />
-            <Route path="/response-manual" element={<ResponseManual />} />
+<Route path="/safety-work-permit" element={<SafetyWorkPermit />} />
+<Route path="/response-manual" element={<ResponseManual />} />
 
-            <Route path="/approval-box" element={<Navigate to="/approval-box/received" replace />} />
-            <Route path="/approval-box/received" element={<ReceivedApproval />} />
-            <Route path="/approval-box/sent" element={<SentApproval />} />
+<Route path="/approval-box" element={<Navigate to="/approval-box/received" replace />} />
+<Route path="/approval-box/received" element={<ReceivedApproval />} />
+<Route path="/approval-box/sent" element={<SentApproval />} />
 
-            <Route path="/qr-management" element={<QRManagement />} />
-            <Route path="/mypage" element={<MyPage />} />
-            <Route path="/support" element={<Support />} />
-            <Route path="/user-guide" element={<UserGuide />} />
-          </Route>
+<Route path="/qr-management" element={<QRManagement />} />
+<Route path="/mypage" element={<MyPage />} />
+<Route path="/support" element={<Support />} />
+<Route path="/user-guide" element={<UserGuide />} />
+</Route>
 
-          <Route element={<BusinessManagementLayout />}>
-            <Route path="/business-management" element={<Navigate to="/business-management/basic" replace />} />
-            <Route path="/business-management/basic" element={<BasicManagement />} />
-            <Route path="/business-management/policy-goal" element={<PolicyGoal />} />
-            <Route path="/business-management/budget" element={<Budget />} />
-            <Route path="/business-management/organization" element={<Organization />} />
-          </Route>
+<Route element={<BusinessManagementLayout />}>
+<Route path="/business-management" element={<Navigate to="/business-management/basic" replace />} />
+<Route path="/business-management/basic" element={<BasicManagement />} />
+<Route path="/business-management/policy-goal" element={<PolicyGoal />} />
+<Route path="/business-management/budget" element={<Budget />} />
+<Route path="/business-management/organization" element={<Organization />} />
+</Route>
 
-          <Route element={<RiskAssessmentLayout />}>
-            <Route path="/risk-assessment" element={<Navigate to="/risk-assessment/list" replace />} />
-            <Route path="/risk-assessment/list" element={<EvaluationList />} />
-            <Route path="/risk-assessment/methods/frequency/step1" element={<FrequencyStep1 />} />
-            <Route path="/risk-assessment/methods/frequency/step2" element={<FrequencyStep2 />} />
-            <Route path="/risk-assessment/methods/frequency/step3" element={<FrequencyStep3 />} />
-            <Route path="/risk-assessment/methods/checklist" element={<Checklist />} />
-            <Route path="/risk-assessment/methods/threestep/step1" element={<ThreeStep1 />} />
-            <Route path="/risk-assessment/methods/threestep/step2" element={<ThreeStep2 />} />
-            <Route path="/risk-assessment/methods/threestep/step3" element={<ThreeStep3 />} />
-            <Route path="/risk-assessment/methods/chemical" element={<Chemical />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </>
-  )
+<Route element={<RiskAssessmentLayout />}>
+<Route path="/risk-assessment" element={<Navigate to="/risk-assessment/list" replace />} />
+<Route path="/risk-assessment/list" element={<EvaluationList />} />
+<Route path="/risk-assessment/methods/frequency/step1" element={<FrequencyStep1 />} />
+<Route path="/risk-assessment/methods/frequency/step2" element={<FrequencyStep2 />} />
+<Route path="/risk-assessment/methods/frequency/step3" element={<FrequencyStep3 />} />
+<Route path="/risk-assessment/methods/checklist" element={<Checklist />} />
+<Route path="/risk-assessment/methods/threestep/step1" element={<ThreeStep1 />} />
+<Route path="/risk-assessment/methods/threestep/step2" element={<ThreeStep2 />} />
+<Route path="/risk-assessment/methods/threestep/step3" element={<ThreeStep3 />} />
+<Route path="/risk-assessment/methods/chemical" element={<Chemical />} />
+</Route>
+</Routes>
+</BrowserRouter>
+</>
+)
 }
 
 export default App

@@ -14,8 +14,8 @@ import{CirclePlus,Save,Printer,Trash2}from"lucide-react"
 import{PTWGroupItem}from"@/types/ptw"
 import{ptwGroupMockData}from"@/data/mockData"
 
-const TAB_LABELS=["PTW 그룹","위험작업허가서 목록","작업위험분석(JSA) 목록","현장 위험성평가 목록","TBM 목록"]
-const TAB_PATHS=["/ptw/list","/ptw/list/work-permit","/ptw/list/jsa","/ptw/list/site-evaluation","/ptw/list/tbm"]
+const TAB_LABELS = ["PTW 그룹", "위험작업허가서", "작업위험분석(JSA)", "현장 위험성평가", "TBM"]
+const TAB_PATHS = ["/ptw/list", "/ptw/work-permit", "/ptw/jsa", "/ptw/site-evaluation", "/ptw/tbm"]
 
 const columns:Column<PTWGroupItem>[]=[
 {key:"index",label:"번호",type:"index",align:"center"},

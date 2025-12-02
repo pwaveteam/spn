@@ -12,7 +12,7 @@ import useTableActions from"@/hooks/tableActions"
 import{CirclePlus,Download,Trash2}from"lucide-react"
 import{safetyWorkPermitMockData}from"@/data/mockData"
 
-const TAB_LABELS=["안전작업허가서 목록"]
+const TAB_LABELS=["작업중지요청 목록"]
 const TAB_PATHS=["/safety-work-permit"]
 
 const columns:Column[]=[
@@ -62,7 +62,7 @@ setIsEditMode(false)
 
 return(
 <section className="safety-work-permit-content w-full bg-white">
-<PageTitle>안전작업허가서</PageTitle>
+<PageTitle>작업중지요청</PageTitle>
 
 <TabMenu tabs={TAB_LABELS}activeIndex={0}onTabClick={()=>{}}className="mb-6"/>
 
@@ -84,14 +84,14 @@ onSearch={()=>{}}
 <div className="flex flex-col gap-1 w-full justify-end sm:hidden">
 <div className="flex gap-1 justify-end">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
-<Button variant="action"onClick={handlePermitFormDownload}className="flex items-center gap-1"><Download size={16}/>안전작업허가서 양식</Button>
+<Button variant="action"onClick={handlePermitFormDownload}className="flex items-center gap-1"><Download size={16}/>작업중지요청 양식</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
 
 <div className="hidden sm:flex flex-nowrap gap-1 w-auto justify-end">
 <Button variant="action"onClick={handleCreate}className="flex items-center gap-1"><CirclePlus size={16}/>신규등록</Button>
-<Button variant="action"onClick={handlePermitFormDownload}className="flex items-center gap-1"><Download size={16}/>안전작업허가서 양식</Button>
+<Button variant="action"onClick={handlePermitFormDownload}className="flex items-center gap-1"><Download size={16}/>작업중지요청 양식</Button>
 <Button variant="action"onClick={handleDelete}className="flex items-center gap-1"><Trash2 size={16}/>삭제</Button>
 </div>
 </div>
