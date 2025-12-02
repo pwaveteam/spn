@@ -85,6 +85,8 @@ import UserGuide from "./pages/UserGuide/UserGuide"
 
 import PublicInspectionList from "./components/QR/PublicInspectionList"
 import PublicInspectionExecute from "./components/QR/PublicInspectionExecute"
+import PublicSiteEvaluation from "./components/QR/PublicSiteEvaluation"
+import PublicTBM from "./components/QR/PublicTBM"
 
 const App: React.FC = () => {
 const { isLoading } = useLoadingStore()
@@ -103,6 +105,8 @@ return (
 
 <Route path="/public/inspection" element={<PublicInspectionList />} />
 <Route path="/public/inspection/:id/execute" element={<PublicInspectionExecute />} />
+<Route path="/public/site-evaluation" element={<PublicSiteEvaluation />} />
+<Route path="/public/tbm" element={<PublicTBM />} />
 
 <Route element={<MainLayout />}>
 <Route path="/" element={<Navigate to="/dashboard" replace />} />
