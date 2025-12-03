@@ -6,51 +6,80 @@ import { inspectionPlanMockData } from "@/data/mockData"
 type PlanRow = { id: number | string; planName: string; site: string; area: string; kind: string; inspector: string; schedule: string; progress: "미점검" | "완료" }
 
 export default function PublicInspectionList() {
-const navigate = useNavigate()
-const [searchParams] = useSearchParams()
-const [data, setData] = useState<PlanRow[]>([])
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const [data, setData] = useState<PlanRow[]>([])
 
-useEffect(() => {
-const ids = searchParams.get("ids")
-if (ids) {
-const idList = ids.split(",").map(id => parseInt(id))
-setData((inspectionPlanMockData as PlanRow[]).filter(item => idList.includes(Number(item.id))))
-} else {
-setData(inspectionPlanMockData as PlanRow[])
-}
-}, [searchParams])
+  useEffect(() => {
+    const ids = searchParams.get("ids")
+    if (ids) {
+      const idList = ids.split(",").map(id => parseInt(id))
+      setData((inspectionPlanMockData as PlanRow[]).filter(item => idList.includes(Number(item.id))))
+    } else {
+      setData(inspectionPlanMockData as PlanRow[])
+    }
+  }, [searchParams])
 
-return (
-<div className="min-h-screen bg-gray-50">
-<header className="bg-[var(--primary)] text-white p-4 sticky top-0 z-10">
-<div className="flex items-center gap-2"><ClipboardCheck size={24} /><h1 className="text-base font-semibold">점검 목록</h1></div>
-</header>
-<main className="p-4">
-<p className="text-xs text-gray-500 mb-3">총 {data.length}건</p>
-<div className="flex flex-col gap-3">
-{data.map(item => (
-<div key={item.id} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-<div className="flex justify-between items-start mb-2">
-<h3 className="text-sm font-semibold text-gray-800 flex-1 pr-2">{item.planName}</h3>
-<span className={`text-xs px-2 py-1 rounded-full shrink-0 ${item.progress === "완료" ? "bg-gray-100 text-gray-500" : "bg-blue-100 text-blue-600"}`}>{item.progress}</span>
-</div>
-<div className="text-xs text-gray-500 space-y-1 mb-3">
-<p>장소: {item.site}</p>
-<p>점검분야: {item.area}</p>
-<p>점검종류: {item.kind}</p>
-<p>점검일정: {item.schedule}</p>
-<p>점검자: {item.inspector}</p>
-</div>
-{item.progress === "완료" ? (
-<button disabled className="w-full py-2 rounded-lg bg-gray-100 text-gray-400 text-xs font-medium">점검완료</button>
-) : (
-<button onClick={() => navigate(`/public/inspection/${item.id}/execute`)} className="w-full py-2 rounded-lg bg-[var(--primary)] text-white text-xs font-medium flex items-center justify-center gap-1 hover:opacity-90 transition-opacity">점검하기<ChevronRight size={14} /></button>
-)}
-</div>
-))}
-</div>
-{data.length === 0 && <div className="text-center py-10 text-gray-400 text-sm">점검 항목이 없습니다.</div>}
-</main>
-</div>
-)
+  const pending = data.filter(d => d.progress === "미점검")
+  const completed = data.filter(d => d.progress === "완료")
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-[var(--primary)] text-white p-4 sticky top-0 z-10">
+        <div className="flex items-center gap-2">
+          <ClipboardCheck size={24} />
+          <h1 className="text-base font-semibold">점검 목록</h1>
+          <span className="ml-auto text-xs opacity-80">{pending.length}건 대기</span>
+        </div>
+      </header>
+
+      <main className="p-4">
+        {/* 미점검 */}
+        {pending.length > 0 && (
+          <div className="mb-4">
+            <h2 className="text-xs font-semibold text-gray-500 mb-2">미점검</h2>
+            <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-100">
+              {pending.map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => navigate(`/public/inspection/${item.id}/execute`)}
+                  className="w-full p-3 flex items-center gap-3 text-left hover:bg-gray-50 active:bg-gray-100"
+                >
+                  <div className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-800 truncate">{item.planName}</p>
+                    <p className="text-xs text-gray-500">{item.site} · {item.schedule}</p>
+                  </div>
+                  <ChevronRight size={16} className="text-gray-400 shrink-0" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 완료 */}
+        {completed.length > 0 && (
+          <div>
+            <h2 className="text-xs font-semibold text-gray-500 mb-2">완료</h2>
+            <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-100">
+              {completed.map(item => (
+                <div key={item.id} className="p-3 flex items-center gap-3 opacity-60">
+                  <div className="w-2 h-2 rounded-full bg-gray-400 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-600 truncate">{item.planName}</p>
+                    <p className="text-xs text-gray-400">{item.site} · {item.schedule}</p>
+                  </div>
+                  <span className="text-xs text-gray-400">완료</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {data.length === 0 && (
+          <div className="text-center py-10 text-gray-400 text-sm">점검 항목이 없습니다.</div>
+        )}
+      </main>
+    </div>
+  )
 }
