@@ -1,4 +1,4 @@
-import React,{useState}from"react"
+import React,{useState,useMemo}from"react"
 import{useNavigate,useLocation}from"react-router-dom"
 import FormScreen,{Field}from"@/components/common/forms/FormScreen"
 import Button from"@/components/common/base/Button"
@@ -7,6 +7,7 @@ import ProcessRiskAccordion,{RiskItem}from"@/components/snippet/ProcessRiskAccor
 import LoadListDialog from"@/components/dialog/LoadListDialog"
 import AttendeePanel from"@/components/snippet/AttendeePanel"
 import useTableActions from"@/hooks/tableActions"
+import useFormValidation,{ValidationRules}from"@/hooks/useFormValidation"
 
 interface Attendee{name:string;phone:string;signature?:string}
 
@@ -39,6 +40,14 @@ const[expandedProcesses,setExpandedProcesses]=useState<Record<string,boolean>>({
 const[checkedItems,setCheckedItems]=useState<Record<string,boolean[]>>({})
 const[attendeesList,setAttendeesList]=useState<Attendee[]>([])
 const[sitePhotos,setSitePhotos]=useState("")
+
+const validationRules=useMemo<ValidationRules>(()=>({
+location:{required:true},
+date:{required:true},
+tbmName:{required:true}
+}),[])
+
+const{validateForm,isFieldInvalid}=useFormValidation(validationRules)
 
 const toggleExpand=(proc:string)=>setExpandedProcesses(prev=>({...prev,[proc]:!prev[proc]}))
 
@@ -101,10 +110,10 @@ return{...prev,[proc]:items}
 }
 
 const fields:Field[]=[
-{label:"TBM 장소",name:"location",type:"text",placeholder:"장소 입력",required:true},
-{label:"TBM 일자",name:"date",type:"date",required:true},
+{label:"TBM 장소",name:"location",type:"text",placeholder:"장소 입력",required:true,hasError:isFieldInvalid("location")},
+{label:"TBM 일자",name:"date",type:"date",required:true,hasError:isFieldInvalid("date")},
 {label:"진행시간",name:"timeRange",type:"timeRange",required:true},
-{label:"작업명",name:"tbmName",type:"text",placeholder:"작업명 입력",required:true},
+{label:"작업명",name:"tbmName",type:"text",placeholder:"작업명 입력",required:true,hasError:isFieldInvalid("tbmName")},
 {
 label:"위험성평가표",
 name:"processes",
@@ -158,7 +167,9 @@ processes:process,
 sitePhotos
 }
 
-const handleSubmit=()=>{
+const handleSave=async()=>{
+if(!validateForm({location:locationText,date,tbmName}))return
+if(!window.confirm("저장하시겠습니까?"))return
 console.log({
 tbmName,
 location:locationText,
@@ -180,12 +191,6 @@ fileUpload
 })
 navigate("/tbm")
 }
-
-const{handleSave}=useTableActions({
-data:[],
-checkedIds:[],
-onSave:handleSubmit
-})
 
 const handleAddAttendee=(att:Attendee)=>setAttendeesList(prev=>[...prev,att])
 const handleRemoveAttendee=(idx:number)=>setAttendeesList(prev=>prev.filter((_,i)=>i!==idx))

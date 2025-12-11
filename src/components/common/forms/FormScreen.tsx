@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react"
 import Button from "@/components/common/base/Button"
+import Checkbox from "@/components/common/base/Checkbox"
 import { X, Search } from "lucide-react"
 import RadioGroup from "@/components/common/base/RadioGroup"
+
+export const INSPECTION_CYCLE_OPTIONS = [
+{ value: "상시", label: "상시" },
+{ value: "주간", label: "주간" },
+{ value: "월간", label: "월간" },
+{ value: "분기", label: "분기" },
+{ value: "연간", label: "연간" },
+{ value: "2년", label: "2년" },
+{ value: "3년", label: "3년" }
+]
 
 export type Field = {
 label: string | React.ReactNode
@@ -28,6 +39,7 @@ type?:
 | "quantity"
 | "autocomplete"
 | "radio"
+| "inspectionCycle"
 placeholder?: string
 options?: { value: string; label: string }[]
 customRender?: React.ReactNode
@@ -35,6 +47,9 @@ buttonRender?: React.ReactNode
 required?: boolean
 showPlusOne?: boolean
 disabled?: boolean
+error?: string
+hasError?: boolean
+hasUnitError?: boolean
 }
 
 export type FormScreenProps = {
@@ -43,11 +58,13 @@ values: { [key: string]: string }
 onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void
 onTagRemove?: (name: string, valueToRemove: string) => void
 onEmailDomainSelect?: (domain: string) => void
+onRepeatChange?: (checked: boolean) => void
 onClose: () => void
 onSave: () => void
 onSubmit?: () => void
 isModal?: boolean
 notifyEnabled?: boolean
+repeatEnabled?: boolean
 }
 
 export default function FormScreen({
@@ -56,10 +73,12 @@ values,
 onChange,
 onTagRemove,
 onEmailDomainSelect,
+onRepeatChange,
 onClose,
 onSave,
 isModal = false,
 notifyEnabled = true,
+repeatEnabled = false,
 }: FormScreenProps) {
 const BORDER_STYLE = { borderWidth: "1px", borderStyle: "solid" as const, borderColor: "var(--border)" }
 
@@ -168,6 +187,10 @@ const isRequired = !["fileUpload", "photoUpload", "tags"].includes(field.type ||
 
 const requiredAttrs = isRequired ? { required: true } : {}
 
+const errorBorderStyle = field.hasError
+  ? { borderWidth: "1px", borderStyle: "solid" as const, borderColor: "#dc2626" }
+  : BORDER_STYLE
+
 if (field.type === "custom" && field.customRender) return field.customRender
 
 if (field.type === "signature") {
@@ -211,7 +234,7 @@ name={field.name}
 value={values[field.name] || ""}
 onChange={onChange}
 className={`${INPUT_EDITABLE} ${SELECT_PADDING} ${(field.disabled || (field.name === "notifyWhen" && !notifyEnabled)) ? "cursor-not-allowed text-gray-400" : ""}`}
-style={BORDER_STYLE}
+style={errorBorderStyle}
 {...requiredAttrs}
 disabled={field.disabled || (field.name === "notifyWhen" && !notifyEnabled)}
 >
@@ -236,7 +259,7 @@ value={values[field.name] || ""}
 onChange={onChange}
 placeholder={field.placeholder || "Search"}
 className={`${INPUT_EDITABLE} pr-8`}
-style={BORDER_STYLE}
+style={errorBorderStyle}
 {...requiredAttrs}
 />
 <Search className={`absolute right-2 top-1/2 -translate-y-1/2 ${TEXT_DISABLED} w-5 h-5 pointer-events-none`} />
@@ -244,14 +267,14 @@ style={BORDER_STYLE}
 )
 }
 
-const renderDateInput = (name: string, value: string, required = false, disabled = false) => (
+const renderDateInput = (name: string, value: string, required = false, disabled = false, hasError = false) => (
 <input
 type="date"
 name={name}
 value={value}
 onChange={onChange}
 className={`${disabled ? INPUT_READONLY : INPUT_EDITABLE} w-full`}
-style={BORDER_STYLE}
+style={hasError ? { borderWidth: "1px", borderStyle: "solid" as const, borderColor: "#dc2626" } : BORDER_STYLE}
 disabled={disabled}
 {...(required ? { required: true } : {})}
 />
@@ -277,7 +300,7 @@ style={BORDER_STYLE}
 if (field.type === "date") {
 return (
 <div className="flex flex-row items-center gap-2 w-full">
-{renderDateInput(field.name, values[field.name] || "", field.required !== false, field.disabled)}
+{renderDateInput(field.name, values[field.name] || "", field.required !== false, field.disabled, field.hasError)}
 {field.showPlusOne !== false && (
 <Button variant="action" onClick={() => addOneDay(field.name)} className="h-9 px-3 shrink-0">
 +1일
@@ -305,6 +328,7 @@ return (
 }
 
 if (field.type === "timeRange") {
+const timeErrorStyle = field.hasError ? { borderWidth: "1px", borderStyle: "solid" as const, borderColor: "#dc2626" } : BORDER_STYLE
 return (
 <div className="flex flex-col gap-2 w-full">
 <div className="flex items-center gap-1 w-full">
@@ -313,7 +337,7 @@ name="startHour"
 value={values.startHour || ""}
 onChange={onChange}
 className={`${INPUT_EDITABLE} ${SELECT_PADDING} flex-1 min-w-0`}
-style={BORDER_STYLE}
+style={timeErrorStyle}
 >
 <option value="">시</option>
 {[...Array(19).keys()].map(h => {
@@ -330,7 +354,7 @@ name="startMinute"
 value={values.startMinute || ""}
 onChange={onChange}
 className={`${INPUT_EDITABLE} ${SELECT_PADDING} flex-1 min-w-0`}
-style={BORDER_STYLE}
+style={timeErrorStyle}
 >
 <option value="">분</option>
 {["00", "15", "30", "45"].map(m => (
@@ -349,7 +373,7 @@ name="endHour"
 value={values.endHour || ""}
 onChange={onChange}
 className={`${INPUT_EDITABLE} ${SELECT_PADDING} flex-1 min-w-0`}
-style={BORDER_STYLE}
+style={timeErrorStyle}
 >
 <option value="">시</option>
 {[...Array(19).keys()].map(h => {
@@ -366,7 +390,7 @@ name="endMinute"
 value={values.endMinute || ""}
 onChange={onChange}
 className={`${INPUT_EDITABLE} ${SELECT_PADDING} flex-1 min-w-0`}
-style={BORDER_STYLE}
+style={timeErrorStyle}
 >
 <option value="">분</option>
 {["00", "15", "30", "45"].map(m => (
@@ -423,12 +447,12 @@ if (field.type === "daterange") {
 return (
 <div className="flex flex-col md:flex-row md:items-center gap-2 w-full">
 <div className="flex-1">
-{renderDateInput("startDate", values.startDate || "")}
+{renderDateInput("startDate", values.startDate || "", false, false, field.hasError)}
 </div>
 <span className={`${FONT_SM_BASE} ${TEXT_PRIMARY} shrink-0 hidden md:inline`}>~</span>
 <span className={`${FONT_SM_BASE} ${TEXT_PRIMARY} shrink-0 md:hidden`}>~</span>
 <div className="flex-1">
-{renderDateInput("endDate", values.endDate || "")}
+{renderDateInput("endDate", values.endDate || "", false, false, field.hasError)}
 </div>
 </div>
 )
@@ -446,7 +470,7 @@ placeholder="010-0000-0000"
 maxLength={13}
 inputMode="numeric"
 className={inputClass}
-style={BORDER_STYLE}
+style={errorBorderStyle}
 {...requiredAttrs}
 />
 </div>
@@ -517,7 +541,7 @@ value={values[field.name] || ""}
 onChange={onChange}
 placeholder={field.placeholder ?? `${field.label} 입력`}
 className={TEXTAREA_CLASS}
-style={BORDER_STYLE}
+style={errorBorderStyle}
 />
 )
 }
@@ -525,7 +549,7 @@ style={BORDER_STYLE}
 if (field.type === "fileUpload") {
 return (
 <div className="flex flex-col gap-2 w-full">
-<label className={`${FILE_WRAPPER_CLASS} relative p-1 gap-2`} style={BORDER_STYLE}>
+<label className={`${FILE_WRAPPER_CLASS} relative p-1 gap-2`} style={errorBorderStyle}>
 <span className={FILE_BTN_CLASS} style={BORDER_STYLE}>
 파일 선택
 </span>
@@ -593,7 +617,7 @@ className="text-gray-400 hover:text-gray-600 shrink-0"
 if (field.type === "photoUpload") {
 return (
 <div className="flex flex-col gap-2 w-full">
-<label className={`${FILE_WRAPPER_CLASS} relative p-1 gap-2`} style={BORDER_STYLE}>
+<label className={`${FILE_WRAPPER_CLASS} relative p-1 gap-2`} style={errorBorderStyle}>
 <span className={FILE_BTN_CLASS} style={BORDER_STYLE}>
 사진 선택
 </span>
@@ -662,7 +686,7 @@ value={values[field.name] || ""}
 onChange={onChange}
 placeholder={field.placeholder || ""}
 className={`${INPUT_EDITABLE} w-full`}
-style={BORDER_STYLE}
+style={errorBorderStyle}
 min={0}
 />
 </div>
@@ -670,6 +694,10 @@ min={0}
 }
 
 if (field.type === "quantityUnit") {
+const unitErrorStyle = field.hasUnitError
+  ? { borderWidth: "1px", borderStyle: "solid" as const, borderColor: "#dc2626" }
+  : BORDER_STYLE
+const isDirectInput = values[field.name + "_unit"] === "직접입력"
 return (
 <div className="flex flex-col md:flex-row md:items-center gap-2 w-full md:max-w-xs">
 <input
@@ -678,15 +706,26 @@ name={field.name + "_value"}
 value={values[field.name + "_value"] || ""}
 placeholder={field.placeholder || "값"}
 className={`${INPUT_EDITABLE} w-full md:flex-1`}
-style={BORDER_STYLE}
+style={errorBorderStyle}
 onChange={onChange}
 />
+{isDirectInput ? (
+<input
+type="text"
+name={field.name + "_unit_custom"}
+value={values[field.name + "_unit_custom"] || ""}
+placeholder="단위 입력"
+className={`${INPUT_EDITABLE} w-full md:flex-1`}
+style={unitErrorStyle}
+onChange={onChange}
+/>
+) : (
 <select
 name={field.name + "_unit"}
 value={values[field.name + "_unit"] || ""}
 onChange={onChange}
 className={`${INPUT_EDITABLE} ${SELECT_PADDING} w-full md:flex-1`}
-style={BORDER_STYLE}
+style={unitErrorStyle}
 >
 <option value="">단위</option>
 {field.options?.map(o => (
@@ -694,7 +733,37 @@ style={BORDER_STYLE}
 {o.label}
 </option>
 ))}
+<option value="직접입력">직접입력</option>
 </select>
+)}
+</div>
+)
+}
+
+if (field.type === "inspectionCycle") {
+const isRepeatDisabled = values[field.name] === "상시"
+return (
+<div className="flex items-center gap-2 w-full">
+<select
+name={field.name}
+value={values[field.name] || ""}
+onChange={onChange}
+className={`${INPUT_EDITABLE} ${SELECT_PADDING} w-[100px] shrink-0`}
+style={BORDER_STYLE}
+>
+<option value="">선택</option>
+{INSPECTION_CYCLE_OPTIONS.map(opt => (
+<option key={opt.value} value={opt.value}>{opt.label}</option>
+))}
+</select>
+<span className="text-sm text-[#333639] whitespace-nowrap shrink-0">반복여부</span>
+<div className="shrink-0">
+<Checkbox
+checked={repeatEnabled && !isRepeatDisabled}
+disabled={isRepeatDisabled}
+onChange={() => onRepeatChange?.(!repeatEnabled)}
+/>
+</div>
 </div>
 )
 }
@@ -752,7 +821,7 @@ value={values[field.name] || ""}
 onChange={onChange}
 placeholder={field.placeholder}
 className={inputClass}
-style={BORDER_STYLE}
+style={errorBorderStyle}
 />
 )
 }
@@ -797,7 +866,12 @@ borderLeft: "1px solid var(--border)"
 }}
 >
 <div className="flex flex-col md:flex-row md:items-center h-full">
-<div className={inputWrapperClass}>{renderInput(f)}</div>
+<div className={inputWrapperClass}>
+{renderInput(f)}
+{f.hasError && (
+<p className="text-red-500 text-xs mt-1">필수 항목입니다.</p>
+)}
+</div>
 {f.buttonRender && (
 <div className="w-full md:w-[35%] px-2 pb-2 md:pb-0 flex items-center justify-start">
 {f.buttonRender}

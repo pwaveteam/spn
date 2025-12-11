@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import Button from "@/components/common/base/Button"
 import FormScreen, { Field } from "@/components/common/forms/FormScreen"
 import Editor from "@/components/common/base/Editor"
 import useTableActions from "@/hooks/tableActions"
+import useFormValidation, { ValidationRules } from "@/hooks/useFormValidation"
 
 type FormDataState = {
 title: string
@@ -39,23 +40,31 @@ setFormData(prev => ({ ...prev, author: userName }))
 }
 }, [isOpen, userName])
 
+const validationRules = useMemo<ValidationRules>(() => ({
+title: { required: true },
+content: { required: true }
+}), [])
+
+const { validateForm, isFieldInvalid } = useFormValidation(validationRules)
+
 const handleContentChange = (value: string): void => {
 setFormData(prev => ({ ...prev, content: value }))
 }
 
 const fields: Field[] = [
-{ label: "자료명", name: "title", type: "text", placeholder: "자료명 입력", required: true },
+{ label: "자료명", name: "title", type: "text", placeholder: "자료명 입력", required: true, hasError: isFieldInvalid("title") },
 { label: "작성자", name: "author", type: "readonly", required: false },
 {
 label: "내용",
 name: "content",
 type: "custom",
 required: true,
+hasError: isFieldInvalid("content"),
 customRender: (
 <Editor
 value={formData.content}
 onChange={handleContentChange}
-className="min-h-[300px]"
+className={`min-h-[300px] ${isFieldInvalid("content") ? "border border-red-600 rounded-lg" : ""}`}
 />
 )
 },
@@ -78,14 +87,7 @@ onSave(formData)
 })
 
 const handleSave = (): void => {
-if (!formData.title.trim()) {
-alert("자료명을 입력하세요")
-return
-}
-if (!formData.content.trim()) {
-alert("내용을 입력하세요")
-return
-}
+if (!validateForm(formData)) return
 handleTableSave()
 }
 

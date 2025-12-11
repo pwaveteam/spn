@@ -1,7 +1,8 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import FormScreen, { Field } from "@/components/common/forms/FormScreen"
 import Button from "@/components/common/base/Button"
 import PageTitle from "@/components/common/base/PageTitle"
+import useFormValidation, { ValidationRules } from "@/hooks/useFormValidation"
 
 export default function MyPage() {
 const [values, setValues] = useState<Record<string, string>>({
@@ -29,7 +30,15 @@ const handleDomainSelect = (domain: string) => {
 setValues(prev => ({ ...prev, emailDomain: domain, emailDomainSelect: domain }))
 }
 
+const validationRules = useMemo<ValidationRules>(() => ({
+currentPassword: { required: true },
+phone: { required: true }
+}), [])
+
+const { validateForm, isFieldInvalid } = useFormValidation(validationRules)
+
 const handleSubmit = () => {
+if (!validateForm(values)) return
 console.log("폼 제출", values)
 }
 
@@ -38,12 +47,12 @@ const fields: Field[] = [
 { label: "이름", name: "name", type: "readonly", required: false },
 { label: "안전직위", name: "safetyRole", type: "readonly", required: false },
 
-{ label: "현재 비밀번호", name: "currentPassword", type: "password", required: true },
+{ label: "현재 비밀번호", name: "currentPassword", type: "password", required: true, hasError: isFieldInvalid("currentPassword") },
 
 { label: "새 비밀번호", name: "newPassword", type: "password", required: false },
 { label: "비밀번호 확인", name: "confirmPassword", type: "password", required: false, buttonRender: <Button variant="action">비밀번호 확인</Button> },
 
-{ label: "휴대전화번호", name: "phone", type: "phone", required: true, buttonRender: <Button variant="action">인증하기</Button> },
+{ label: "휴대전화번호", name: "phone", type: "phone", required: true, hasError: isFieldInvalid("phone"), buttonRender: <Button variant="action">인증하기</Button> },
 
 { label: "이메일", name: "email", type: "email", required: false },
 

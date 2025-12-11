@@ -33,7 +33,7 @@ const columns:Column[]=[
 {key:"hazardousMaterial",label:"유해물질 확인",type:"badge"},
 {key:"responseManual",label:"대응매뉴얼 확인",type:"badge"},
 {key:"allSigned",label:"전체서류 서명",type:"badge"},
-{key:"updatedAt",label:"최종 업데이트 일자"},
+{key:"updatedAt",label:"최종 등록일"},
 {key:"fileAttach",label:"첨부파일",type:"download"},
 {key:"manage",label:"관리",type:"manage"}
 ]

@@ -1,8 +1,9 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import Button from "@/components/common/base/Button"
 import FormScreen, { Field } from "@/components/common/forms/FormScreen"
 import Editor from "@/components/common/base/Editor"
 import useTableActions from "@/hooks/tableActions"
+import useFormValidation, { ValidationRules } from "@/hooks/useFormValidation"
 
 type FormDataState = {
 title: string
@@ -33,6 +34,13 @@ content: "",
 fileUpload: ""
 })
 
+const validationRules = useMemo<ValidationRules>(() => ({
+title: { required: true },
+content: { required: true }
+}), [])
+
+const { validateForm, isFieldInvalid } = useFormValidation(validationRules)
+
 const handleChange = (
 e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
 ): void => {
@@ -53,22 +61,24 @@ onSave(formData)
 })
 
 const handleSave = (): void => {
+if (!validateForm(formData)) return
 handleTableSave()
 }
 
 const fields: Field[] = [
-{ label: "제목", name: "title", type: "text", placeholder: "제목 입력", required: true },
+{ label: "제목", name: "title", type: "text", placeholder: "제목 입력", required: true, hasError: isFieldInvalid("title") },
 { label: "작성자", name: "author", type: "readonly", required: true },
 {
 label: "내용",
 name: "content",
 type: "custom",
 required: true,
+hasError: isFieldInvalid("content"),
 customRender: (
 <Editor
 value={formData.content}
 onChange={handleContentChange}
-className="min-h-[300px]"
+className={`min-h-[300px] ${isFieldInvalid("content") ? "border border-red-600 rounded-lg" : ""}`}
 />
 )
 },

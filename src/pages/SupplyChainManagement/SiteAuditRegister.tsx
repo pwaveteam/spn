@@ -1,7 +1,8 @@
-import React,{useState}from"react"
+import React,{useState,useMemo}from"react"
 import Button from"@/components/common/base/Button"
 import FormScreen,{Field}from"@/components/common/forms/FormScreen"
 import useTableActions from"@/hooks/tableActions"
+import useFormValidation,{ValidationRules}from"@/hooks/useFormValidation"
 
 type Props={isOpen:boolean;onClose:()=>void;onSave:(data:any)=>void;isEdit?:boolean}
 
@@ -17,12 +18,21 @@ inspector:"",
 fileUpload:""
 })
 
+const validationRules=useMemo<ValidationRules>(()=>({
+inspectionDate:{required:true},
+inspectionType:{required:true},
+inspectionName:{required:true},
+inspectionResult:{required:true}
+}),[])
+
+const{validateForm,isFieldInvalid}=useFormValidation(validationRules)
+
 const handleChange=(e:React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>)=>{
 setFormData(prev=>({...prev,[e.target.name]:e.target.value}))
 }
 
 const fields:Field[]=[
-{label:"점검일자",name:"inspectionDate",type:"date",placeholder:"점검일자 선택",required:true},
+{label:"점검일자",name:"inspectionDate",type:"date",placeholder:"점검일자 선택",required:true,hasError:isFieldInvalid("inspectionDate")},
 {
 label:"점검종류",
 name:"inspectionType",
@@ -35,9 +45,10 @@ options:[
 {value:"기타",label:"기타"}
 ],
 placeholder:"점검종류 선택",
-required:true
+required:true,
+hasError:isFieldInvalid("inspectionType")
 },
-{label:"점검계획명",name:"inspectionName",type:"text",placeholder:"점검계획명 입력",required:true},
+{label:"점검계획명",name:"inspectionName",type:"text",placeholder:"점검계획명 입력",required:true,hasError:isFieldInvalid("inspectionName")},
 {
 label:"점검결과",
 name:"inspectionResult",
@@ -49,7 +60,8 @@ options:[
 {value:"시정조치 완료",label:"시정조치 완료"}
 ],
 placeholder:"점검결과 선택",
-required:true
+required:true,
+hasError:isFieldInvalid("inspectionResult")
 },
 {label:"비고사항",name:"note",type:"textarea",placeholder:"비고 입력",required:false},
 {label:"점검자",name:"inspector",type:"text",placeholder:"점검자 성명 입력",required:false},
@@ -57,11 +69,16 @@ required:true
 {label:"첨부자료",name:"fileUpload",type:"fileUpload",required:false}
 ]
 
-const{handleSave}=useTableActions({
+const{handleSave:handleTableSave}=useTableActions({
 data:[formData],
 checkedIds:[],
 onSave:()=>onSave(formData)
 })
+
+const handleSave=()=>{
+if(!validateForm(formData))return
+handleTableSave()
+}
 
 if(!isOpen)return null
 

@@ -1,8 +1,9 @@
-import React,{useState}from"react"
+import React,{useState,useMemo}from"react"
 import Button from"@/components/common/base/Button"
 import FormScreen,{Field}from"@/components/common/forms/FormScreen"
 import{DataRow}from"@/components/common/tables/DataTable"
 import useTableActions from"@/hooks/tableActions"
+import useFormValidation,{ValidationRules}from"@/hooks/useFormValidation"
 
 type PartnerFormData=Partial<DataRow>&{
 company:string
@@ -34,6 +35,14 @@ planFile:"",
 etcFile:""
 })
 
+const validationRules=useMemo<ValidationRules>(()=>({
+company:{required:true},
+startDate:{required:true},
+endDate:{required:true}
+}),[])
+
+const{validateForm,isFieldInvalid}=useFormValidation(validationRules)
+
 const handleChange=(e:React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>,index?:number)=>{
 const{name,value}=e.target as HTMLInputElement
 if(name==="planFile"||name==="etcFile"){
@@ -64,21 +73,35 @@ managerList:prev.managerList.filter((_,i)=>i!==index)
 }))
 }
 
+const valuesForForm:{[key:string]:string}={
+company:formData.company,
+startDate:formData.contractStartDate,
+endDate:formData.contractEndDate,
+contact:formData.contact,
+planFile:formData.planFile,
+etcFile:formData.etcFile
+}
+
 const fields:Field[]=[
-{label:"업체명",name:"company",type:"text",placeholder:"업체명 입력",required:true},
-{label:"계약기간",name:"contractPeriod",type:"daterange",required:true},
+{label:"업체명",name:"company",type:"text",placeholder:"업체명 입력",required:true,hasError:isFieldInvalid("company")},
+{label:"계약기간",name:"contractPeriod",type:"daterange",required:true,hasError:isFieldInvalid("startDate")||isFieldInvalid("endDate")},
 {label:"담당자 연락처",name:"contact",type:"phone",placeholder:"연락처 입력",required:false},
 {label:"안전보건계획서",name:"planFile",type:"fileUpload",required:false},
 {label:"계약서류",name:"etcFile",type:"fileUpload",required:false}
 ]
 
-if(!isOpen)return null
-
-const{handleSave}=useTableActions<PartnerFormData>({
+const{handleSave:handleTableSave}=useTableActions<PartnerFormData>({
 data:[formData],
 checkedIds:[],
 onSave:()=>onSave(formData)
 })
+
+const handleSave=()=>{
+if(!validateForm(valuesForForm))return
+handleTableSave()
+}
+
+if(!isOpen)return null
 
 return(
 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -88,14 +111,7 @@ return(
 </h2>
 <FormScreen
 fields={fields}
-values={{
-company:formData.company,
-startDate:formData.contractStartDate,
-endDate:formData.contractEndDate,
-contact:formData.contact,
-planFile:formData.planFile,
-etcFile:formData.etcFile
-}}
+values={valuesForForm}
 onChange={handleChange}
 onClose={onClose}
 onSave={handleSave}

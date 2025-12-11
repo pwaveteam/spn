@@ -1,5 +1,5 @@
 "use client"
-import React,{useState}from"react"
+import React,{useState,useMemo}from"react"
 import{useNavigate,useLocation}from"react-router-dom"
 import Button from"@/components/common/base/Button"
 import FormScreen,{Field}from"@/components/common/forms/FormScreen"
@@ -9,6 +9,7 @@ import CertificatePanel from"@/components/snippet/CertificatePanel"
 import LoadListDialog from"@/components/dialog/LoadListDialog"
 import{X}from"lucide-react"
 import useTableActions from"@/hooks/tableActions"
+import useFormValidation,{ValidationRules}from"@/hooks/useFormValidation"
 
 interface Attendee{name:string;phone:string;signature?:string}
 
@@ -64,6 +65,16 @@ note:"",
 notifyWhen:"1주일 전",
 linkedRiskAssessment:""
 })
+
+const validationRules=useMemo<ValidationRules>(()=>({
+category:{required:true},
+course:{required:true},
+eduName:{required:true},
+startDate:{required:true},
+endDate:{required:true}
+}),[])
+
+const{validateForm,isFieldInvalid}=useFormValidation(validationRules)
 
 const categoryOptions=["근로자 교육","관리자 교육","기타 교육"]
 
@@ -142,13 +153,15 @@ label:"교육대상",
 name:"category",
 type:"select",
 options:categoryOptions.map(v=>({value:v,label:v})),
-required:true
+required:true,
+hasError:isFieldInvalid("category")
 },
 {
 label:"교육과정",
 name:"course",
 type:"custom",
 required:true,
+hasError:isFieldInvalid("course"),
 customRender:(
 <div className="flex items-center gap-2 w-full">
 <div className="relative w-full md:w-[300px]">
@@ -156,7 +169,7 @@ customRender:(
 name="course"
 value={formData.course}
 onChange={handleChange}
-className="border border-[#AAAAAA] rounded-[8px] px-2 h-[39px] w-full appearance-none bg-white text-[#333639] pr-8 text-sm md:text-[15px] font-medium"
+className={`border rounded-[8px] px-2 h-[39px] w-full appearance-none bg-white text-[#333639] pr-8 text-sm md:text-[15px] font-medium ${isFieldInvalid("course")?"border-red-500":"border-[#AAAAAA]"}`}
 >
 <option value="">선택</option>
 {(categoryCourseMap[formData.category]||[]).map(course=>(
@@ -172,8 +185,8 @@ className="border border-[#AAAAAA] rounded-[8px] px-2 h-[39px] w-full appearance
 </div>
 )
 },
-{label:"교육명",name:"eduName",type:"text",required:true},
-{label:"교육기간",name:"educationPeriod",type:"daterange",required:true},
+{label:"교육명",name:"eduName",type:"text",required:true,hasError:isFieldInvalid("eduName")},
+{label:"교육기간",name:"educationPeriod",type:"daterange",required:true,hasError:isFieldInvalid("startDate")||isFieldInvalid("endDate")},
 {label:"교육시간",name:"educationTime",type:"timeRange",required:true},
 {
 label:"교육방식",
@@ -251,6 +264,7 @@ navigate("/safety-education")
 })
 
 const handleSave=()=>{
+if(!validateForm(valuesForForm))return
 handleTableSave()
 }
 

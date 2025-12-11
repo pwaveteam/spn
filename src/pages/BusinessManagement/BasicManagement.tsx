@@ -5,7 +5,7 @@ import PageTitle from"@/components/common/base/PageTitle"
 import FormScreen,{Field}from"@/components/common/forms/FormScreen"
 import TabMenu from"@/components/common/base/TabMenu"
 import useTableActions from"@/hooks/tableActions"
-import { basicManagementMockData } from "@/data/mockData"
+import { basicManagementMockData } from "@/data/mockBusinessData"
 
 const columns:Column[]=[
 {key:"factory",label:"사업장명",type:"input"},

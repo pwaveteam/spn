@@ -1,11 +1,10 @@
-import React,{useCallback,useState}from"react"
+import React,{useCallback,useState,useMemo}from"react"
 import Button from"@/components/common/base/Button"
 import FormScreen,{Field}from"@/components/common/forms/FormScreen"
 import ToggleSwitch from"@/components/common/base/ToggleSwitch"
 import RadioGroup from"@/components/common/base/RadioGroup"
 import ChemicalAutocomplete from"@/components/common/inputs/ChemicalAutocomplete"
-import Checkbox from"@/components/common/base/Checkbox"
-import useTableActions from"@/hooks/tableActions"
+import useFormValidation,{ValidationRules}from"@/hooks/useFormValidation"
 
 type AlertWhen="1일 전"|"1주일 전"|"1개월 전"
 
@@ -14,10 +13,13 @@ chemicalName:string
 casNo:string
 exposureLimitValue:string
 exposureLimitUnit:string
+exposureLimitUnitCustom:string
 dailyUsageValue:string
 dailyUsageUnit:string
+dailyUsageUnitCustom:string
 storageAmountValue:string
 storageAmountUnit:string
+storageAmountUnitCustom:string
 corrosive:"예"|"아니오"
 toxicity:string
 adverseReaction:string
@@ -74,14 +76,6 @@ const storageUnits:Option[]=[
 {value:"m³",label:"m³"}
 ]
 
-const inspectionCycleOptions:Option[]=[
-{value:"상시",label:"상시"},
-{value:"주간",label:"주간"},
-{value:"월간",label:"월간"},
-{value:"분기",label:"분기"},
-{value:"연간",label:"연간"}
-]
-
 const alertTimingOptions:Option[]=[
 {value:"1일 전",label:"1일 전"},
 {value:"1주일 전",label:"1주일 전"},
@@ -94,10 +88,13 @@ chemicalName:"",
 casNo:"",
 exposureLimitValue:"",
 exposureLimitUnit:"",
+exposureLimitUnitCustom:"",
 dailyUsageValue:"",
 dailyUsageUnit:"",
+dailyUsageUnitCustom:"",
 storageAmountValue:"",
 storageAmountUnit:"",
+storageAmountUnitCustom:"",
 corrosive:"예",
 toxicity:"",
 adverseReaction:"",
@@ -109,6 +106,19 @@ notify:false,
 notifyWhen:"1일 전",
 repeat:false
 })
+
+const validationRules=useMemo<ValidationRules>(()=>({
+chemicalName:{required:true},
+casNo:{required:true},
+exposureLimit_value:{required:true},
+exposureLimit_unit:{required:true},
+dailyUsage_value:{required:true},
+dailyUsage_unit:{required:true},
+storageAmount_value:{required:true},
+storageAmount_unit:{required:true}
+}),[])
+
+const{validateForm,isFieldInvalid}=useFormValidation(validationRules)
 
 const handleChange=useCallback((e:React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>):void=>{
 const{name,value,type,checked}=e.target as HTMLInputElement
@@ -139,20 +149,59 @@ return
 }
 
 if(name==="exposureLimit_unit"){
-setFormData(prev=>({...prev,exposureLimitUnit:value}))
+setFormData(prev=>({...prev,exposureLimitUnit:value,exposureLimitUnitCustom:value==="직접입력"?"":prev.exposureLimitUnitCustom}))
+return
+}
+if(name==="exposureLimit_unit_custom"){
+setFormData(prev=>({...prev,exposureLimitUnitCustom:value}))
 return
 }
 if(name==="dailyUsage_unit"){
-setFormData(prev=>({...prev,dailyUsageUnit:value}))
+setFormData(prev=>({...prev,dailyUsageUnit:value,dailyUsageUnitCustom:value==="직접입력"?"":prev.dailyUsageUnitCustom}))
+return
+}
+if(name==="dailyUsage_unit_custom"){
+setFormData(prev=>({...prev,dailyUsageUnitCustom:value}))
 return
 }
 if(name==="storageAmount_unit"){
-setFormData(prev=>({...prev,storageAmountUnit:value}))
+setFormData(prev=>({...prev,storageAmountUnit:value,storageAmountUnitCustom:value==="직접입력"?"":prev.storageAmountUnitCustom}))
+return
+}
+if(name==="storageAmount_unit_custom"){
+setFormData(prev=>({...prev,storageAmountUnitCustom:value}))
+return
+}
+if(name==="inspectionCycle"){
+setFormData(prev=>({...prev,inspectionCycle:value,repeat:value==="상시"?false:prev.repeat}))
 return
 }
 
 setFormData(prev=>({...prev,[name]:value}))
 },[])
+
+const valuesForForm:{[key:string]:string}={
+chemicalName:formData.chemicalName,
+casNo:formData.casNo,
+exposureLimit_value:formData.exposureLimitValue,
+exposureLimit_unit:formData.exposureLimitUnit,
+exposureLimit_unit_custom:formData.exposureLimitUnitCustom,
+dailyUsage_value:formData.dailyUsageValue,
+dailyUsage_unit:formData.dailyUsageUnit,
+dailyUsage_unit_custom:formData.dailyUsageUnitCustom,
+storageAmount_value:formData.storageAmountValue,
+storageAmount_unit:formData.storageAmountUnit,
+storageAmount_unit_custom:formData.storageAmountUnitCustom,
+corrosive:formData.corrosive,
+toxicity:formData.toxicity,
+adverseReaction:formData.adverseReaction,
+registrationDate:formData.registrationDate,
+inspectionCycle:formData.inspectionCycle,
+msds:formData.msds,
+note:formData.note,
+notify:formData.notify?"true":"",
+notifyWhen:formData.notifyWhen
+}
 
 const fields:Field[]=[
 {
@@ -160,6 +209,7 @@ label:"화학물질명",
 name:"chemicalName",
 type:"custom",
 required:true,
+hasError:isFieldInvalid("chemicalName"),
 customRender:(
 <ChemicalAutocomplete
 id="chemicalName"
@@ -167,14 +217,14 @@ value={formData.chemicalName}
 placeholder="화학물질명 입력 또는 선택"
 onChange={v=>setFormData(prev=>({...prev,chemicalName:v}))}
 onSelect={opt=>setFormData(prev=>({...prev,chemicalName:opt.label}))}
-className="w-full"
+className={`w-full ${isFieldInvalid("chemicalName")?"[&_input]:border-red-500":""}`}
 />
 )
 },
-{label:"CAS No",name:"casNo",type:"text",placeholder:"CAS No 입력",required:true},
-{label:"노출기준",name:"exposureLimit",type:"quantityUnit",placeholder:"0",options:concentrationUnits,required:true},
-{label:"일일사용량",name:"dailyUsage",type:"quantityUnit",placeholder:"0",options:usageUnits,required:true},
-{label:"저장량",name:"storageAmount",type:"quantityUnit",placeholder:"0",options:storageUnits,required:true},
+{label:"CAS No",name:"casNo",type:"text",placeholder:"CAS No 입력",required:true,hasError:isFieldInvalid("casNo")},
+{label:"노출기준",name:"exposureLimit",type:"quantityUnit",placeholder:"0",options:concentrationUnits,required:true,hasError:isFieldInvalid("exposureLimit_value"),hasUnitError:isFieldInvalid("exposureLimit_unit")},
+{label:"일일사용량",name:"dailyUsage",type:"quantityUnit",placeholder:"0",options:usageUnits,required:true,hasError:isFieldInvalid("dailyUsage_value"),hasUnitError:isFieldInvalid("dailyUsage_unit")},
+{label:"저장량",name:"storageAmount",type:"quantityUnit",placeholder:"0",options:storageUnits,required:true,hasError:isFieldInvalid("storageAmount_value"),hasUnitError:isFieldInvalid("storageAmount_unit")},
 {
 label:"부식성 유무",
 name:"corrosive",
@@ -195,35 +245,7 @@ onChange={handleChange}
 {label:"독성치",name:"toxicity",type:"text",placeholder:"독성치 입력",required:false},
 {label:"이상반응",name:"adverseReaction",type:"text",placeholder:"이상반응 입력",required:false},
 {label:"등록일",name:"registrationDate",type:"date",placeholder:"등록일 선택",required:false},
-{
-label:"점검주기",
-name:"inspectionCycle",
-type:"custom",
-required:false,
-customRender:(
-<div className="flex items-center gap-3 w-full">
-<select
-name="inspectionCycle"
-value={formData.inspectionCycle}
-onChange={e=>{
-const v=e.target.value
-setFormData(p=>({
-...p,
-inspectionCycle:v,
-repeat:v==="상시"?false:p.repeat
-}))
-}}
-className="h-[36px] border border-[#AAAAAA] rounded-[8px] px-3 bg-white text-sm text-[#333639]"
->
-{inspectionCycleOptions.map(opt=>(
-<option key={opt.value}value={opt.value}>{opt.label}</option>
-))}
-</select>
-<span className="text-sm text-[#333639]">반복여부</span>
-<Checkbox checked={formData.repeat}onChange={()=>setFormData(p=>({...p,repeat:!p.repeat}))}/>
-</div>
-)
-},
+{label:"점검주기",name:"inspectionCycle",type:"inspectionCycle",required:false},
 {
 label:"알림 전송여부",
 name:"notify",
@@ -244,37 +266,22 @@ required:false
 {label:"첨부파일 (MSDS)",name:"msds",type:"fileUpload",required:false}
 ]
 
-const{handleSave:handleTableSave}=useTableActions<FormDataState>({
-data:[formData],
-checkedIds:[],
-onSave:()=>onSave(formData)
-})
-
 const handleSave=():void=>{
-handleTableSave()
+const exposureLimitUnitValue=formData.exposureLimitUnit==="직접입력"?formData.exposureLimitUnitCustom:formData.exposureLimitUnit
+const dailyUsageUnitValue=formData.dailyUsageUnit==="직접입력"?formData.dailyUsageUnitCustom:formData.dailyUsageUnit
+const storageAmountUnitValue=formData.storageAmountUnit==="직접입력"?formData.storageAmountUnitCustom:formData.storageAmountUnit
+const validationValues={
+...valuesForForm,
+exposureLimit_unit:exposureLimitUnitValue,
+dailyUsage_unit:dailyUsageUnitValue,
+storageAmount_unit:storageAmountUnitValue
+}
+if(!validateForm(validationValues))return
+if(!window.confirm("저장하시겠습니까?"))return
+onSave(formData)
 }
 
 if(!isOpen)return null
-
-const valuesForForm:{[key:string]:string}={
-chemicalName:formData.chemicalName,
-casNo:formData.casNo,
-exposureLimit_value:formData.exposureLimitValue,
-exposureLimit_unit:formData.exposureLimitUnit,
-dailyUsage_value:formData.dailyUsageValue,
-dailyUsage_unit:formData.dailyUsageUnit,
-storageAmount_value:formData.storageAmountValue,
-storageAmount_unit:formData.storageAmountUnit,
-corrosive:formData.corrosive,
-toxicity:formData.toxicity,
-adverseReaction:formData.adverseReaction,
-registrationDate:formData.registrationDate,
-inspectionCycle:formData.inspectionCycle,
-msds:formData.msds,
-note:formData.note,
-notify:formData.notify?"true":"",
-notifyWhen:formData.notifyWhen
-}
 
 return(
 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -290,6 +297,8 @@ onClose={onClose}
 onSave={handleSave}
 isModal
 notifyEnabled={formData.notify}
+repeatEnabled={formData.repeat}
+onRepeatChange={checked=>setFormData(prev=>({...prev,repeat:checked}))}
 />
 <div className="mt-6 flex justify-center gap-1">
 <Button variant="primaryOutline"onClick={onClose}>닫기</Button>

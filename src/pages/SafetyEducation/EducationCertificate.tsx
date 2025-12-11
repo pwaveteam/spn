@@ -9,7 +9,7 @@ import useFilterBar from "@/hooks/useFilterBar"
 import usePagination from "@/hooks/usePagination"
 import useTabNavigation from "@/hooks/useTabNavigation"
 import useTableActions from "@/hooks/tableActions"
-import { educationCertificateMockData } from "@/data/mockData"
+import { educationCertificateMockData } from "@/data/mockBusinessData"
 import { QrCode, Trash2, Save } from "lucide-react"
 
 const TAB_LABELS = ["안전보건교육", "이수증관리"]

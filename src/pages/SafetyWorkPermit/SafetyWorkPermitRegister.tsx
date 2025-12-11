@@ -1,8 +1,9 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import Button from "@/components/common/base/Button"
 import FormScreen, { Field } from "@/components/common/forms/FormScreen"
 import RadioGroup from "@/components/common/base/RadioGroup"
 import useTableActions from "@/hooks/tableActions"
+import useFormValidation, { ValidationRules } from "@/hooks/useFormValidation"
 
 type FormData = {
 workType: string
@@ -48,17 +49,35 @@ note: "",
 fileUpload: ""
 })
 
+const validationRules = useMemo<ValidationRules>(() => ({
+workType: { required: true },
+workContent: { required: true },
+hazardFactors: { required: true },
+safetyPlan: { required: true },
+workLocation: { required: true },
+startDate: { required: true },
+endDate: { required: true },
+workerCount: { required: true }
+}), [])
+
+const { validateForm, isFieldInvalid } = useFormValidation(validationRules)
+
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
 const { name, value, type } = e.target as HTMLInputElement
 if (name === "workerCount" && value !== "" && !/^\d+$/.test(value)) return
 setFormData(prev => ({ ...prev, [name]: value }))
 }
 
-const { handleSave } = useTableActions<FormData>({
+const { handleSave: handleTableSave } = useTableActions<FormData>({
 data: [formData],
 checkedIds: [],
 onSave: () => onSave(formData)
 })
+
+const handleSave = () => {
+if (!validateForm(formData)) return
+handleTableSave()
+}
 
 const workTypeOptions = [
 { value: "밀폐공간", label: "밀폐공간 작업" },
@@ -77,15 +96,15 @@ const workTypeOptions = [
 ]
 
 const fields: Field[] = [
-{ label: "작업유형", name: "workType", type: "select", options: workTypeOptions, placeholder: "작업유형 선택", required: true },
-{ label: "작업내용", name: "workContent", type: "textarea", placeholder: "작업내용 입력", required: true },
-{ label: "잠재 위험요소", name: "hazardFactors", type: "text", placeholder: "잠재 위험요소 입력", required: true },
+{ label: "작업유형", name: "workType", type: "select", options: workTypeOptions, placeholder: "작업유형 선택", required: true, hasError: isFieldInvalid("workType") },
+{ label: "작업내용", name: "workContent", type: "textarea", placeholder: "작업내용 입력", required: true, hasError: isFieldInvalid("workContent") },
+{ label: "잠재 위험요소", name: "hazardFactors", type: "text", placeholder: "잠재 위험요소 입력", required: true, hasError: isFieldInvalid("hazardFactors") },
 { label: "위험수준", name: "hazardLevel", type: "custom", customRender: (<RadioGroup name="hazardLevel" value={formData.hazardLevel} options={[{ value: "높음", label: "높음" }, { value: "중간", label: "중간" }, { value: "낮음", label: "낮음" }]} onChange={handleChange} />) },
-{ label: "안전조치 계획", name: "safetyPlan", type: "textarea", placeholder: "안전조치 계획 입력", required: true },
-{ label: "작업장소", name: "workLocation", type: "text", placeholder: "작업장소 입력", required: true },
-{ label: "작업기간", name: "workPeriod", type: "daterange", required: true },
+{ label: "안전조치 계획", name: "safetyPlan", type: "textarea", placeholder: "안전조치 계획 입력", required: true, hasError: isFieldInvalid("safetyPlan") },
+{ label: "작업장소", name: "workLocation", type: "text", placeholder: "작업장소 입력", required: true, hasError: isFieldInvalid("workLocation") },
+{ label: "작업기간", name: "workPeriod", type: "daterange", required: true, hasError: isFieldInvalid("startDate") || isFieldInvalid("endDate") },
 { label: "작업시간", name: "workTime", type: "timeRange", required: true },
-{ label: "작업인원", name: "workerCount", type: "quantity", placeholder: "인원수 입력", required: true },
+{ label: "작업인원", name: "workerCount", type: "quantity", placeholder: "인원수 입력", required: true, hasError: isFieldInvalid("workerCount") },
 { label: "비고", name: "note", type: "textarea", placeholder: "비고 입력", required: false },
 { label: "첨부파일", name: "fileUpload", type: "fileUpload", required: false }
 ]

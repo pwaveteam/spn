@@ -1,8 +1,8 @@
-import React,{useState}from"react"
+import React,{useState,useMemo}from"react"
 import Button from"@/components/common/base/Button"
 import FormScreen,{Field}from"@/components/common/forms/FormScreen"
 import ToggleSwitch from"@/components/common/base/ToggleSwitch"
-import useTableActions from"@/hooks/tableActions"
+import useFormValidation,{ValidationRules}from"@/hooks/useFormValidation"
 
 type TrainingStatusFormData={
 name:string
@@ -34,6 +34,17 @@ fileUpload:"",
 remarks:""
 })
 
+const validationRules=useMemo<ValidationRules>(()=>({
+name:{required:true},
+riskAssessment:{required:true,custom:v=>v==="true"},
+hazardousMaterial:{required:true,custom:v=>v==="true"},
+responseManual:{required:true,custom:v=>v==="true"},
+allSigned:{required:true,custom:v=>v==="true"},
+updatedAt:{required:true}
+}),[])
+
+const{validateForm,isFieldInvalid}=useFormValidation(validationRules)
+
 const handleChange=(e:React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>):void=>{
 const{name,type,checked,value}=e.target as HTMLInputElement
 if(type==="checkbox"){
@@ -43,37 +54,18 @@ return
 setFormData(prev=>({...prev,[name]:value}))
 }
 
-const renderToggle=(fieldName:keyof Pick<TrainingStatusFormData,"riskAssessment"|"hazardousMaterial"|"responseManual"|"allSigned">):React.ReactNode=>(
+const renderToggle=(fieldName:keyof Pick<TrainingStatusFormData,"riskAssessment"|"hazardousMaterial"|"responseManual"|"allSigned">):React.ReactNode=>{
+const hasError=isFieldInvalid(fieldName)
+return(
+<div className="flex flex-col gap-1">
 <ToggleSwitch
 checked={formData[fieldName]}
 onChange={checked=>setFormData(prev=>({...prev,[fieldName]:checked}))}
 />
+{hasError&&<span className="text-red-600 text-xs">필수 입력 항목입니다.</span>}
+</div>
 )
-
-const fields:Field[]=[
-{label:"도급협의체명",name:"name",type:"text",placeholder:"도급협의체명을 입력하세요",required:true},
-{label:"위험성평가 확인",name:"riskAssessment",type:"custom",customRender:renderToggle("riskAssessment"),required:true},
-{label:"유해물질 확인",name:"hazardousMaterial",type:"custom",customRender:renderToggle("hazardousMaterial"),required:true},
-{label:"대응매뉴얼 확인",name:"responseManual",type:"custom",customRender:renderToggle("responseManual"),required:true},
-{label:"전체서류 서명",name:"allSigned",type:"custom",customRender:renderToggle("allSigned"),required:true},
-{label:"최종 업데이트 일자",name:"updatedAt",type:"date",required:true},
-{label:"첨부파일",name:"fileUpload",type:"fileUpload",required:false},
-{label:"비고",name:"remarks",type:"textarea",placeholder:"비고를 입력하세요",required:false}
-]
-
-const{handleSave:handleTableSave}=useTableActions<TrainingStatusFormData>({
-data:[formData],
-checkedIds:[],
-onSave:()=>{onSave(formData);onClose()}
-})
-
-const handleSave=():void=>{
-if(!formData.name.trim()){alert("도급협의체명을 입력하세요");return}
-if(!formData.updatedAt){alert("최종 업데이트 일자를 입력하세요");return}
-handleTableSave()
 }
-
-if(!isOpen)return null
 
 const valuesForForm:{[key:string]:string}={
 name:formData.name,
@@ -85,6 +77,26 @@ updatedAt:formData.updatedAt,
 fileUpload:formData.fileUpload,
 remarks:formData.remarks
 }
+
+const fields:Field[]=[
+{label:"도급협의체명",name:"name",type:"text",placeholder:"도급협의체명을 입력하세요",required:true,hasError:isFieldInvalid("name")},
+{label:"위험성평가 확인",name:"riskAssessment",type:"custom",customRender:renderToggle("riskAssessment"),required:true},
+{label:"유해물질 확인",name:"hazardousMaterial",type:"custom",customRender:renderToggle("hazardousMaterial"),required:true},
+{label:"대응매뉴얼 확인",name:"responseManual",type:"custom",customRender:renderToggle("responseManual"),required:true},
+{label:"전체서류 서명",name:"allSigned",type:"custom",customRender:renderToggle("allSigned"),required:true},
+{label:"최종 등록일",name:"updatedAt",type:"date",required:true,hasError:isFieldInvalid("updatedAt")},
+{label:"첨부파일",name:"fileUpload",type:"fileUpload",required:false},
+{label:"비고",name:"remarks",type:"textarea",placeholder:"비고를 입력하세요",required:false}
+]
+
+const handleSave=():void=>{
+if(!validateForm(valuesForForm))return
+if(!window.confirm("저장하시겠습니까?"))return
+onSave(formData)
+onClose()
+}
+
+if(!isOpen)return null
 
 return(
 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">

@@ -1,5 +1,5 @@
 import React,{useState,useEffect}from"react"
-import{useLocation}from"react-router-dom"
+import{useLocation,useSearchParams}from"react-router-dom"
 import PageTitle from"@/components/common/base/PageTitle"
 import TabMenu from"@/components/common/base/TabMenu"
 import PTWWorkPermit from"./forms/PTWWorkPermit"
@@ -13,6 +13,7 @@ const tabs:string[]=["위험작업허가서","작업위험분석(JSA)","현장 �
 
 export default function PTWManage():React.ReactElement{
 const location=useLocation()
+const[searchParams,setSearchParams]=useSearchParams()
 const initialTab=(location.state as{activeTab?:number}|undefined)?.activeTab??0
 const[activeTab,setActiveTab]=useState<number>(initialTab)
 const[attachedFiles,setAttachedFiles]=useState<PTWFile[]>([])
@@ -22,7 +23,8 @@ const ptwId="TEMP_ID"
 
 useEffect(()=>{
 setPageTitle(`관리 · ${tabs[activeTab]}`)
-},[activeTab])
+setSearchParams({tab:tabs[activeTab]})
+},[activeTab,setSearchParams])
 
 return(
 <div className="bg-white rounded-lg shadow-sm p-0 md:p-6">

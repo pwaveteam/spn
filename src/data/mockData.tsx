@@ -270,57 +270,6 @@ export const sentApprovalMockData: DataRow[] = [
   { id: 7, date: "2025-11-25(화)", document: "협력업체 안전보건 관리 실태 점검 보고", status: { text: "반려", color: "red" }, progress: "1/3", finalApprover: "김공장장" }
 ]
 
-// Business
-export const basicManagementMockData: DataRow[] = [
-  { id: 3, factory: "포항제철소 슬래그 공장", manager: "최관리", contact: "054-123-4567", address: "경상북도 포항시 남구 동해안로 6213" },
-  { id: 2, factory: "당진 슬래그공장", manager: "홍길동", contact: "041-987-6543", address: "충청남도 당진시 송악읍 고대공단2길 220" },
-  { id: 1, factory: "부산물류센터", manager: "이영희", contact: "051-987-6543", address: "부산광역시 해운대구 좌동 789-10" }
-]
-
-export const policyGoalMockData = {
-  year: "2025",
-  goalTitle: "현장 위험요인 실시간 식별 및 제거",
-  content: `(주)***은 경영활동 전반에 전 사원의 안전과 보건을 기업의 최우선 가치로 인식하고,
-법규 및 기준을 준수하는 안전보건관리체계를 구축하여 전 직원이 안전하고 쾌적한 환경에서 근무할 수 있도록 최선을 다한다.
-
-이를 위해 다음과 같은 안전보건활동을 통해 지속적으로 안전보건환경을 개선한다.
-
-1. 경영책임자는 '근로자의 생명 보호'와 '안전한 작업환경 조성'을 기업경영활동의 최우선 목표로 삼는다.
-2. 경영책임자는 사업장에 안전보건관리체계를 구축하여 사업장의 위험요인 제거·통제를 위한 충분한 인적·물적 자원을 제공한다.
-3. 안전보건 목표를 설정하고, 이를 달성하기 위한 세부적인 실행계획을 수립하여 이행한다.
-4. 안전보건 관계 법령 및 관련 규정을 준수하는 내부규정을 수립하여 충실히 이행한다.
-5. 근로자의 참여를 통해 위험요인을 파악하고, 파악된 위험요인은 반드시 개선하고, 교육을 통해 공유한다.
-6. 모든 구성원이 자신의 직무와 관련된 위험요인을 알도록 하고, 위험요인 제거·대체 및 통제기법에 관해 교육·훈련을 실시한다.
-7. 모든 공급자와 계약자가 우리의 안전보건 방침과 안전 요구사항을 준수하도록 한다.
-8. 모든 구성원은 안전보건활동에 대한 책임과 의무를 성실히 준수토록 한다.`
-}
-
-export const budgetMockData: DataRow[] = [
-  { id: 1, year: "2026", itemName: "슬래그 밀 정비 특화 안전 장비 구입", category: "밀폐/고소 작업 안전 장비 확보", budget: "50000000", spent: "3000000", remaining: "47000000", carryOver: true, attachment: "장비목록.pdf", author: "김안전", entryDate: "2025-12-01" },
-  { id: 2, year: "2025", itemName: "유압 설비 안전 진단 용역", category: "유압 라인 및 어큐뮬레이터 정기 점검", budget: "30000000", spent: "28000000", remaining: "2000000", carryOver: false, attachment: "용역계약서.pdf", author: "이설비", entryDate: "2025-01-15" },
-  { id: 3, year: "2025", itemName: "중대재해 비상 대응 훈련 (4분기)", category: "가상 시나리오 기반 전사 훈련", budget: "25000000", spent: "25000000", remaining: "0", carryOver: false, attachment: "훈련보고서.pdf", author: "박교육", entryDate: "2025-10-01" },
-  { id: 4, year: "2026", itemName: "위험 작업 허가 시스템 개발 및 유지보수", category: "PTW/JSA 전산화 시스템 구축", budget: "60000000", spent: "0", remaining: "60000000", carryOver: true, attachment: "개발계획.pdf", author: "최장비", entryDate: "2025-12-15" },
-  { id: 5, year: "2025", itemName: "협력업체 안전보건 컨설팅 비용", category: "협력업체 위험성평가 및 교육 지원", budget: "15000000", spent: "15000000", remaining: "0", carryOver: false, attachment: "컨설팅계약.pdf", author: "정안전", entryDate: "2025-03-20" }
-]
-
-export const organizationMockData: DataRow[] = [
-  { id: 1, name: "박대표", safetyPosition: "경영책임자", department: "경영지원팀", position: "대표이사", phone: "010-1234-5678", entryDate: "-", assignDate: "2022-01-10" },
-  { id: 2, name: "최책임", safetyPosition: "안전보건관리책임자", department: "생산관리팀", position: "부장", phone: "010-3333-7777", entryDate: "2021-05-10", assignDate: "2022-03-10" },
-  { id: 3, name: "박안전", safetyPosition: "안전관리자", department: "안전관리팀", position: "과장", phone: "010-8888-1234", entryDate: "2020-08-15", assignDate: "2020-09-01" },
-  { id: 4, name: "이보건", safetyPosition: "보건관리자", department: "보건팀", position: "주임", phone: "010-5555-4321", entryDate: "2019-11-20", assignDate: "2019-12-10" },
-  { id: 5, name: "김반장", safetyPosition: "관리감독자", department: "생산1팀", position: "반장", phone: "010-1111-2222", entryDate: "2023-01-15", assignDate: "2023-02-01" },
-  { id: 6, name: "조반장", safetyPosition: "관리감독자", department: "생산2팀", position: "반장", phone: "010-3333-4444", entryDate: "2022-06-12", assignDate: "2022-07-01" },
-  { id: 7, name: "이영수", safetyPosition: "관리감독자", department: "설비보전팀", position: "반장", phone: "010-5555-6666", entryDate: "2021-03-18", assignDate: "2021-04-01" }
-]
-
-export const educationCertificateMockData: DataRow[] = [
-  { id: 1, name: "홍길동", phone: "010-1234-5678", submitDate: "2025-11-20(목)", eduName: "신규채용자 교육", eduDate: "2025-11-15(토)", certificate: "certificate_1.pdf", confirm: { text: "확인", color: "blue" } },
-  { id: 2, name: "김철수", phone: "010-2345-6789", submitDate: "2025-12-05(금)", eduName: "관리감독자 교육 (4분기)", eduDate: "2025-12-01(월)", certificate: "certificate_2.pdf", confirm: { text: "확인", color: "blue" } },
-  { id: 3, name: "이영희", phone: "010-3456-7890", submitDate: "2025-11-01(토)", eduName: "유압 설비 특별 교육", eduDate: "2025-10-28(화)", certificate: "", confirm: { text: "미확인", color: "red" } },
-  { id: 4, name: "최안전", phone: "010-4444-5555", submitDate: "2025-12-10(화)", eduName: "밀폐공간 작업 특별 교육", eduDate: "2025-12-08(월)", certificate: "certificate_4.pdf", confirm: { text: "확인", color: "blue" } },
-  { id: 5, name: "박현장", phone: "010-5555-6666", submitDate: "2025-10-25(토)", eduName: "화기 작업 특별 교육", eduDate: "2025-10-20(월)", certificate: "certificate_5.pdf", confirm: { text: "확인", color: "blue" } }
-]
-
 // Safety Work Permit
 export const safetyWorkPermitMockData: DataRow[] = [
   { id: 1, workType: "용접 (화기 작업)", workerCount: "3명", hazardLevel: "높음", workPeriod: "2025-12-01 ~ 2025-12-02", registrationDate: "2025-11-29", approvalStatus: { text: "완료", color: "blue" }, attachment: "화기_PTW.pdf", manage: "컨베이어 벨트 보수" },

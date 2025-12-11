@@ -1,7 +1,7 @@
 import React,{useState,useEffect,useCallback}from"react"
 import{NavLink,useNavigate}from"react-router-dom"
 import{PanelRightClose}from"lucide-react"
-import{HomeIcon,BuildingOffice2Icon,DocumentTextIcon,CurrencyDollarIcon,UserGroupIcon}from"@heroicons/react/24/outline"
+import{HomeIcon,BuildingOffice2Icon,DocumentTextIcon,CurrencyDollarIcon,UserGroupIcon,IdentificationIcon}from"@heroicons/react/24/outline"
 
 interface SidebarProps{
 isOpen:boolean
@@ -14,7 +14,8 @@ const businessSubMenu=[
 {label:"기본사업장관리",path:"/business-management/basic",Icon:BuildingOffice2Icon},
 {label:"경영방침",path:"/business-management/policy-goal",Icon:DocumentTextIcon},
 {label:"예산/목표",path:"/business-management/budget",Icon:CurrencyDollarIcon},
-{label:"조직도",path:"/business-management/organization",Icon:UserGroupIcon}
+{label:"조직도",path:"/business-management/organization",Icon:UserGroupIcon},
+{label:"결재선관리",path:"/business-management/approval-line",Icon:IdentificationIcon}
 ]
 
 const BusinessSidebar:React.FC<SidebarProps>=({

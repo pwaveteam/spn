@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
 import Checkbox from "@/components/common/base/Checkbox"
 import Button from "@/components/common/base/Button"
@@ -6,6 +6,7 @@ import FormScreen, { Field } from "@/components/common/forms/FormScreen"
 import RiskLevelTable3x3 from "@/components/snippetRisk/RiskLevelTable3x3"
 import RiskLevelTable5x4 from "@/components/snippetRisk/RiskLevelTable5x4"
 import Spinner from "@/components/common/base/Spinner"
+import useFormValidation, { ValidationRules } from "@/hooks/useFormValidation"
 
 type Props = { onClose: () => void }
 
@@ -28,20 +29,36 @@ const { name, value } = e.target
 setFormValues(prev => ({ ...prev, [name]: value }))
 }
 
+const validationRules = useMemo<ValidationRules>(() => ({
+riskAssessmentName: { required: true },
+evaluationType: { required: true },
+evaluationMethod: { required: true }
+}), [])
+
+const { validateForm, isFieldInvalid } = useFormValidation(validationRules)
+
 const baseFields: Field[] = [
-{ label: "위험성평가명", name: "riskAssessmentName", type: "text", required: true, placeholder: "위험성평가명 입력" },
-{ label: "평가구분", name: "evaluationType", type: "select", required: true, options: [{ value: "최초평가", label: "최초평가" }, { value: "정기평가", label: "정기평가" }, { value: "수시평가", label: "수시평가" }, { value: "상시평가", label: "상시평가" }] },
-{ label: "평가방법", name: "evaluationMethod", type: "select", required: true, options: [{ value: "빈도·강도법", label: "빈도·강도법" }, { value: "위험성수준 3단계 판단법", label: "위험성수준 3단계 판단법" }, { value: "화학물질 평가법", label: "화학물질 평가법" }, { value: "체크리스트법", label: "체크리스트법" }] },
-{ label: "실시규정", name: "regulationFile", type: "fileUpload", required: true },
+{ label: "위험성평가명", name: "riskAssessmentName", type: "text", required: true, placeholder: "위험성평가명 입력", hasError: isFieldInvalid("riskAssessmentName") },
+{ label: "평가구분", name: "evaluationType", type: "select", required: true, options: [{ value: "최초평가", label: "최초평가" }, { value: "정기평가", label: "정기평가" }, { value: "수시평가", label: "수시평가" }, { value: "상시평가", label: "상시평가" }], hasError: isFieldInvalid("evaluationType") },
+{ label: "평가방법", name: "evaluationMethod", type: "select", required: true, options: [{ value: "빈도·강도법", label: "빈도·강도법" }, { value: "위험성수준 3단계 판단법", label: "위험성수준 3단계 판단법" }, { value: "화학물질 평가법", label: "화학물질 평가법" }, { value: "체크리스트법", label: "체크리스트법" }], hasError: isFieldInvalid("evaluationMethod") },
+{ label: "실시규정", name: "regulationFile", type: "fileUpload", required: false },
 ]
 
 const additionalFields: Field[] = formValues.evaluationMethod === "빈도·강도법" ? [{ label: "평가척도", name: "scale", type: "radio", options: [{ value: "3x3", label: "3×3" }, { value: "5x4", label: "5×4" }] }] : []
 
 const fields: Field[] = [...baseFields.slice(0, 3), ...additionalFields, ...baseFields.slice(3)]
 
+const [checklistError, setChecklistError] = useState(false)
+
 const handleSubmit = async () => {
-if (!formValues.evaluationMethod) {
-alert("평가방법을 선택해주세요.")
+if (checked.length !== 3) {
+setChecklistError(true)
+if (!validateForm(formValues)) return
+return
+}
+setChecklistError(false)
+if (!validateForm(formValues)) return
+if (formValues.evaluationMethod === "체크리스트법") {
 return
 }
 setIsLoading(true)
@@ -51,10 +68,6 @@ switch (formValues.evaluationMethod) {
 case "빈도·강도법":
 navigate("/risk-assessment/methods/frequency/step1")
 break
-case "체크리스트법":
-alert("준비중입니다.")
-setIsLoading(false)
-return
 case "위험성수준 3단계 판단법":
 navigate("/risk-assessment/methods/threestep/step1")
 break
@@ -72,10 +85,10 @@ return (
 <h3 className="font-semibold text-base md:text-lg mb-2">위험성평가 사전 체크리스트</h3>
 <div className="space-y-2 mb-3">
 {items.map(item => (
+<div key={item.id}>
 <div
-key={item.id}
 onClick={() => handleCheck(item.id)}
-className="flex gap-2 items-start border border-[var(--border)] rounded-lg p-2 md:p-2.5 bg-white hover:bg-gray-50 transition-colors cursor-pointer select-none"
+className={`flex gap-2 items-start border rounded-lg p-2 md:p-2.5 bg-white hover:bg-gray-50 transition-colors cursor-pointer select-none ${checklistError && !checked.includes(item.id) ? "border-red-600" : "border-[var(--border)]"}`}
 >
 <div className="flex-1">
 {item.content.map((line, i) => (
@@ -85,6 +98,8 @@ className="flex gap-2 items-start border border-[var(--border)] rounded-lg p-2 m
 <div className="flex-shrink-0" onClick={(e) => e.stopPropagation()}>
 <Checkbox checked={checked.includes(item.id)} onChange={() => handleCheck(item.id)} />
 </div>
+</div>
+{checklistError && !checked.includes(item.id) && <p className="text-red-600 text-xs mt-1">필수 항목입니다.</p>}
 </div>
 ))}
 </div>

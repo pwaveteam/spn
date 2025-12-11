@@ -1,7 +1,7 @@
-import React,{useState}from"react"
+import React,{useState,useMemo}from"react"
 import Button from"@/components/common/base/Button"
 import FormScreen,{Field}from"@/components/common/forms/FormScreen"
-import useTableActions from"@/hooks/tableActions"
+import useFormValidation,{ValidationRules}from"@/hooks/useFormValidation"
 
 type ContractFormData={
 contractDate:string
@@ -24,17 +24,6 @@ onSave:(data:ContractFormData)=>void
 isEdit?:boolean
 }
 
-const fields:Field[]=[
-{label:"회의일",name:"contractDate",type:"date",placeholder:"날짜 선택",required:true},
-{label:"회의시간",name:"contractTime",type:"timeRange",placeholder:"시간 선택",required:true},
-{label:"회의장소",name:"meetingPlace",type:"text",placeholder:"회의장소 입력",required:true},
-{label:"참석자(도급인)",name:"attendeeClient",type:"text",placeholder:"도급인 참석자 입력",required:false},
-{label:"참석자(수급인)",name:"attendeeSubcontractor",type:"text",placeholder:"수급인 참석자 입력",required:false},
-{label:"회의내용",name:"note",type:"textarea",placeholder:"회의내용 입력",required:true},
-{label:"회의록",name:"contractFile",type:"fileUpload",placeholder:"파일명 입력",required:true},
-{label:"현장사진",name:"fileUpload",type:"photoUpload",required:false}
-]
-
 export default function ContractDocumentRegister({isOpen,onClose,onSave,isEdit}:Props){
 const[formData,setFormData]=useState<ContractFormData>({
 contractDate:"",
@@ -50,16 +39,37 @@ contractFile:"",
 fileUpload:""
 })
 
+const validationRules=useMemo<ValidationRules>(()=>({
+contractDate:{required:true},
+startHour:{required:true},
+meetingPlace:{required:true},
+note:{required:true},
+contractFile:{required:true}
+}),[])
+
+const{validateForm,isFieldInvalid}=useFormValidation(validationRules)
+
 const handleFormChange=(e:React.ChangeEvent<HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement>)=>{
 const{name,value}=e.target
 setFormData(prev=>({...prev,[name]:value}))
 }
 
-const{handleSave}=useTableActions<ContractFormData>({
-data:[formData],
-checkedIds:[],
-onSave:()=>onSave(formData)
-})
+const handleSave=()=>{
+if(!validateForm(formData))return
+if(!window.confirm("저장하시겠습니까?"))return
+onSave(formData)
+}
+
+const fields:Field[]=[
+{label:"회의일",name:"contractDate",type:"date",placeholder:"날짜 선택",required:true,hasError:isFieldInvalid("contractDate")},
+{label:"회의시간",name:"contractTime",type:"timeRange",placeholder:"시간 선택",required:true,hasError:isFieldInvalid("startHour")},
+{label:"회의장소",name:"meetingPlace",type:"text",placeholder:"회의장소 입력",required:true,hasError:isFieldInvalid("meetingPlace")},
+{label:"참석자(도급인)",name:"attendeeClient",type:"text",placeholder:"도급인 참석자 입력",required:false},
+{label:"참석자(수급인)",name:"attendeeSubcontractor",type:"text",placeholder:"수급인 참석자 입력",required:false},
+{label:"회의내용",name:"note",type:"textarea",placeholder:"회의내용 입력",required:true,hasError:isFieldInvalid("note")},
+{label:"회의록",name:"contractFile",type:"fileUpload",placeholder:"파일명 입력",required:true,hasError:isFieldInvalid("contractFile")},
+{label:"현장사진",name:"fileUpload",type:"photoUpload",required:false}
+]
 
 if(!isOpen)return null
 

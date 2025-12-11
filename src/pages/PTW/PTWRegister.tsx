@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { useLocation } from "react-router-dom"
+import { useLocation, useSearchParams } from "react-router-dom"
 import PageTitle from "@/components/common/base/PageTitle"
 import TabMenu from "@/components/common/base/TabMenu"
 import PTWWorkPermit from "./forms/PTWWorkPermit"
@@ -13,8 +13,13 @@ const tabs: string[] = ["위험작업허가서", "작업위험분석(JSA)", "현
 
 export default function PTWRegister(): React.ReactElement {
   const location = useLocation()
+  const [searchParams, setSearchParams] = useSearchParams()
   const initialTab = (location.state as { activeTab?: number })?.activeTab ?? 0
   const [activeTab, setActiveTab] = useState<number>(initialTab)
+
+  useEffect(() => {
+    setSearchParams({ tab: tabs[activeTab] })
+  }, [activeTab, setSearchParams])
   const [attachedFiles, setAttachedFiles] = useState<PTWFile[]>([])
   const [ptwName, setPtwName] = useState<string>("")
   const [pageTitle, setPageTitle] = useState<string>("PTW 등록")

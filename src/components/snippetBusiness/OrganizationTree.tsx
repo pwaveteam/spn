@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef } from "react"
-import Tree from "react-d3-tree"
+import React from "react"
 
 export type OrgNode = {
 id: number | string
@@ -15,261 +14,155 @@ data: OrgNode | OrgNode[]
 supervisors?: OrgNode[]
 }
 
-// 레벨별 스타일 정의
-const LEVEL_STYLES = {
-1: { width: 180, height: 80, titleSize: 14, nameSize: 17, bgColor: "#F0F9FF" },
-2: { width: 170, height: 75, titleSize: 13, nameSize: 16, bgColor: "#FEFCE8" },
-3: { width: 160, height: 70, titleSize: 12, nameSize: 15, bgColor: "#FEF3C7" },
-4: { width: 150, height: 65, titleSize: 11, nameSize: 14, bgColor: "#FFF" }
+const OrgCard: React.FC<{ node: OrgNode; size?: "default" | "small" | "mini" }> = ({ node, size = "default" }) => {
+const sizeClasses = {
+default: "w-[130px] sm:w-[150px] p-2.5 sm:p-3",
+small: "w-[100px] sm:w-[120px] p-2 sm:p-2.5",
+mini: "w-[85px] sm:w-[100px] p-1.5 sm:p-2",
 }
 
-const renderNode = ({ nodeDatum }: { nodeDatum: OrgNode }) => {
-const level = (nodeDatum.level || 1) as 1 | 2 | 3 | 4
-const style = LEVEL_STYLES[level] || LEVEL_STYLES[4]
+const titleClasses = {
+default: "text-[10px] sm:text-xs",
+small: "text-[9px] sm:text-[11px]",
+mini: "text-[8px] sm:text-[10px]",
+}
+
+const nameClasses = {
+default: "text-xs sm:text-base",
+small: "text-[11px] sm:text-sm",
+mini: "text-[10px] sm:text-xs",
+}
+
+const posClasses = {
+default: "text-[9px] sm:text-xs",
+small: "text-[8px] sm:text-[11px]",
+mini: "text-[7px] sm:text-[10px]",
+}
 
 return (
-<g>
-<foreignObject 
-x={-style.width / 2} 
-y={-style.height / 2} 
-width={style.width} 
-height={style.height}
->
-<div style={{
-display: "flex",
-flexDirection: "column",
-alignItems: "center",
-justifyContent: "center",
-width: "100%",
-height: "100%",
-border: "1px solid #D1D5DB",
-borderRadius: 8,
-background: style.bgColor,
-boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
-padding: "4px"
-}}>
-<div style={{
-fontSize: style.titleSize,
-fontWeight: 600,
-color: "#6B7280"
-}}>
-{nodeDatum.title}
+<div className={`${sizeClasses[size]} bg-white border border-[#DFDFDF] rounded-lg text-center flex-shrink-0`}>
+<div className={`${titleClasses[size]} font-medium text-gray-500 mb-0.5 sm:mb-1`}>
+{node.title}
 </div>
-{nodeDatum.name && (
-<div style={{
-fontSize: style.nameSize,
-fontWeight: 700,
-color: "#111827",
-marginTop: 2
-}}>
-{nodeDatum.name}
+{node.name && (
+<div className={`${nameClasses[size]} font-semibold text-gray-900`}>
+{node.name}
 </div>
 )}
-{nodeDatum.position && (
-<div style={{
-fontSize: style.titleSize - 1,
-color: "#4B5563"
-}}>
-{nodeDatum.position}
+{node.position && (
+<div className={`${posClasses[size]} text-gray-400 mt-0.5`}>
+{node.position}
 </div>
 )}
 </div>
-</foreignObject>
-</g>
+)
+}
+
+const ManagerGroup: React.FC<{ title: string; managers: OrgNode[] }> = ({ title, managers }) => {
+if (managers.length === 0) return null
+
+if (managers.length === 1) {
+return <OrgCard node={managers[0]} size="small" />
+}
+
+return (
+<div className="flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-2.5 bg-[#F8F9FA] rounded-lg border border-dashed border-gray-200">
+<div className="text-[9px] sm:text-xs text-gray-500 font-medium">
+{title} ({managers.length}명)
+</div>
+<div className="flex gap-1.5 sm:gap-2 flex-wrap justify-center max-w-[220px] sm:max-w-[380px]">
+{managers.map((manager) => (
+<OrgCard key={manager.id} node={manager} size="small" />
+))}
+</div>
+</div>
 )
 }
 
 const OrganizationTree: React.FC<OrganizationTreeProps> = ({ data, supervisors = [] }) => {
-const [translate, setTranslate] = useState<{ x: number, y: number }>({ x: 0, y: 0 })
-const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
-const [lastLevelInfo, setLastLevelInfo] = useState({ midX: 0, y: 0 })
-const containerRef = useRef<HTMLDivElement>(null)
+const rootNode = Array.isArray(data) ? data[0] : data
+if (!rootNode) return null
 
-// 컨테이너 크기 감지 및 중앙 정렬
-useEffect(() => {
-const updateDimensions = () => {
-if (containerRef.current) {
-const { width, height } = containerRef.current.getBoundingClientRect()
-setDimensions({ width, height })
-setTranslate({ x: width / 2, y: 80 })
+const safetyManager = rootNode.children?.[0]
+const managers = safetyManager?.children || []
+
+const safetyManagers = managers.filter(m => m.title === "안전관리자")
+const healthManagers = managers.filter(m => m.title === "보건관리자")
+
+const supervisorRows: OrgNode[][] = []
+for (let i = 0; i < supervisors.length; i += 5) {
+supervisorRows.push(supervisors.slice(i, i + 5))
 }
-}
 
-updateDimensions()
-window.addEventListener("resize", updateDimensions)
-
-return () => window.removeEventListener("resize", updateDimensions)
-}, [])
-
-// 마지막 레벨 위치 계산
-useEffect(() => {
-const timer = setTimeout(() => {
-const nodes = document.querySelectorAll(".rd3t-node")
-if (nodes.length === 0) return
-
-let maxY = 0
-const xPositions: number[] = []
-
-nodes.forEach(node => {
-const transform = (node as SVGGElement).getAttribute("transform")
-if (transform) {
-const match = /translate\(([-\d.]+),([-\d.]+)\)/.exec(transform)
-if (match) {
-const x = parseFloat(match[1])
-const y = parseFloat(match[2])
-if (y > maxY) maxY = y
-xPositions.push(x)
-}
-}
-})
-
-if (xPositions.length > 0) {
-const midX = xPositions.reduce((a, b) => a + b, 0) / xPositions.length
-setLastLevelInfo({ midX, y: maxY })
-}
-}, 500)
-
-return () => clearTimeout(timer)
-}, [data, dimensions])
-
-const renderCustomNode = useCallback(renderNode, [])
+const hasBothManagers = safetyManagers.length > 0 && healthManagers.length > 0
 
 return (
-<div 
-ref={containerRef}
-style={{
-width: "100%",
-height: "700px",
-background: "#FAFAFA",
-borderRadius: "12px",
-position: "relative",
-overflow: "auto",
-border: "1px solid #E5E7EB"
-}}
->
-<Tree
-data={data as any}
-translate={translate}
-orientation="vertical"
-pathFunc="elbow"
-renderCustomNodeElement={renderCustomNode as any}
-zoomable={true}
-scaleExtent={{ min: 0.5, max: 2 }}
-nodeSize={{ x: 200, y: 130 }}
-separation={{ siblings: 1.3, nonSiblings: 1.6 }}
-pathClassFunc={() => "custom-link"}
-/>
+<div className="w-full p-4 sm:p-6 bg-[#FAFAFA] rounded-xl border border-gray-200 overflow-x-auto">
+<div className="flex flex-col items-center min-w-fit">
+<OrgCard node={rootNode} />
 
-{supervisors.length > 0 && lastLevelInfo.y !== 0 && (
+{safetyManager && (
 <>
-<svg 
-style={{
-position: "absolute",
-top: 0,
-left: 0,
-width: "100%",
-height: "100%",
-pointerEvents: "none"
-}}
->
-{/* 수직선 */}
-<line 
-x1={lastLevelInfo.midX} 
-x2={lastLevelInfo.midX} 
-y1={lastLevelInfo.y + 35} 
-y2={lastLevelInfo.y + 70} 
-stroke="#9CA3AF" 
-strokeWidth={2}
-/>
+<div className="w-px h-5 bg-[#DFDFDF]" />
+<OrgCard node={safetyManager} />
+</>
+)}
 
-{/* 수평선 */}
-<line 
-x1={lastLevelInfo.midX - 450} 
-x2={lastLevelInfo.midX + 450} 
-y1={lastLevelInfo.y + 70} 
-y2={lastLevelInfo.y + 70} 
-stroke="#9CA3AF" 
-strokeWidth={2}
-/>
+{managers.length > 0 && (
+<>
+{hasBothManagers ? (
+<div className="relative">
+<div className="absolute top-0 left-1/2 -translate-x-1/2 h-5 w-px bg-[#DFDFDF]" />
+<div className="flex pt-5">
+<div className="relative flex flex-col items-center">
+<div className="absolute top-0 right-0 w-1/2 h-px bg-[#DFDFDF]" />
+<div className="absolute top-0 -right-2 sm:-right-3 w-2 sm:w-3 h-px bg-[#DFDFDF]" />
+<div className="w-px h-4 bg-[#DFDFDF]" />
+<ManagerGroup title="안전관리자" managers={safetyManagers} />
+</div>
+<div className="w-4 sm:w-6" />
+<div className="relative flex flex-col items-center">
+<div className="absolute top-0 left-0 w-1/2 h-px bg-[#DFDFDF]" />
+<div className="absolute top-0 -left-2 sm:-left-3 w-2 sm:w-3 h-px bg-[#DFDFDF]" />
+<div className="w-px h-4 bg-[#DFDFDF]" />
+<ManagerGroup title="보건관리자" managers={healthManagers} />
+</div>
+</div>
+</div>
+) : (
+<>
+<div className="w-px h-5 bg-[#DFDFDF]" />
+<div className="flex flex-col items-center">
+{safetyManagers.length > 0 && (
+<ManagerGroup title="안전관리자" managers={safetyManagers} />
+)}
+{healthManagers.length > 0 && (
+<ManagerGroup title="보건관리자" managers={healthManagers} />
+)}
+</div>
+</>
+)}
+</>
+)}
 
-{/* 각 supervisor로 내려가는 선 */}
-{supervisors.map((_, i) => {
-const spacing = 220
-const startX = lastLevelInfo.midX - (spacing * (supervisors.length - 1)) / 2
-const x = startX + i * spacing
-return (
-<line 
-key={i} 
-x1={x} 
-x2={x} 
-y1={lastLevelInfo.y + 70} 
-y2={lastLevelInfo.y + 120} 
-stroke="#9CA3AF" 
-strokeWidth={2}
-/>
-)
-})}
-</svg>
-
-{/* Supervisor 노드들 */}
-<div style={{
-position: "absolute",
-top: lastLevelInfo.y + 120,
-left: "50%",
-transform: "translateX(-50%)",
-display: "flex",
-gap: "70px",
-justifyContent: "center"
-}}>
-{supervisors.map(supervisor => (
-<div 
-key={supervisor.id} 
-style={{
-display: "flex",
-flexDirection: "column",
-alignItems: "center",
-justifyContent: "center",
-width: 150,
-height: 65,
-border: "1px solid #D1D5DB",
-borderRadius: 8,
-background: "#FFFFFF",
-boxShadow: "0 2px 4px rgba(0,0,0,0.08)"
-}}
->
-<div style={{
-fontSize: 11,
-fontWeight: 600,
-color: "#6B7280"
-}}>
-{supervisor.title}
+{supervisors.length > 0 && (
+<>
+<div className="w-px h-5 bg-[#DFDFDF]" />
+<div className="flex flex-col items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 bg-[#F8F9FA] rounded-lg border border-dashed border-gray-200 max-w-full">
+<div className="text-[10px] sm:text-xs text-gray-500 font-medium">
+관리감독자 ({supervisors.length}명)
 </div>
-<div style={{
-fontSize: 14,
-fontWeight: 700,
-color: "#111827",
-marginTop: 2
-}}>
-{supervisor.name}
-</div>
-<div style={{
-fontSize: 10,
-color: "#4B5563"
-}}>
-{supervisor.position}
-</div>
+{supervisorRows.map((row, rowIndex) => (
+<div key={rowIndex} className="flex gap-1 sm:gap-1.5 flex-wrap justify-center">
+{row.map((supervisor) => (
+<OrgCard key={supervisor.id} node={supervisor} size="mini" />
+))}
 </div>
 ))}
 </div>
 </>
 )}
-
-<style>{`
-.custom-link {
-stroke: #9CA3AF !important;
-stroke-width: 2px !important;
-}
-`}</style>
+</div>
 </div>
 )
 }

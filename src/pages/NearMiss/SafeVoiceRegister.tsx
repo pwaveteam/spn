@@ -1,8 +1,9 @@
-import React,{useState}from"react"
+import React,{useState,useMemo}from"react"
 import Button from"@/components/common/base/Button"
 import FormScreen,{Field}from"@/components/common/forms/FormScreen"
 import ToggleSwitch from"@/components/common/base/ToggleSwitch"
 import useTableActions from"@/hooks/tableActions"
+import useFormValidation,{ValidationRules}from"@/hooks/useFormValidation"
 
 type SafeVoiceFormData={
 content:string
@@ -19,6 +20,12 @@ onSave:(data:SafeVoiceFormData)=>void
 export default function SafeVoiceRegisterModal({isOpen,onClose,onSave}:Props){
 const[formData,setFormData]=useState<SafeVoiceFormData>({content:"",photo:"",anonymous:false})
 
+const validationRules=useMemo<ValidationRules>(()=>({
+content:{required:true}
+}),[])
+
+const{validateForm,isFieldInvalid}=useFormValidation(validationRules)
+
 const handleChange=(e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>)=>{
 const{name,value}=e.target
 setFormData(prev=>({...prev,[name]:value}))
@@ -32,17 +39,22 @@ onChange={checked=>setFormData(prev=>({...prev,anonymous:checked}))}
 )
 
 const fields:Field[]=[
-{label:"내용",name:"content",type:"textarea",placeholder:"내용을 입력하세요",required:true},
+{label:"내용",name:"content",type:"textarea",placeholder:"내용을 입력하세요",required:true,hasError:isFieldInvalid("content")},
 {label:"현장사진",name:"photo",type:"photoUpload",required:false},
 {label:"익명",name:"anonymous",type:"custom",customRender:AnonymousToggle,required:false}
 ]
 
-const{handleSave:handleActionSave}=useTableActions<SafeVoiceFormData>({
+const{handleSave:handleTableSave}=useTableActions<SafeVoiceFormData>({
 data:[formData],
 checkedIds:[],
 onSave:()=>onSave(formData),
 saveMessage:"저장되었습니다"
 })
+
+const handleSave=()=>{
+if(!validateForm({content:formData.content}))return
+handleTableSave()
+}
 
 if(!isOpen)return null
 
@@ -55,12 +67,12 @@ fields={fields}
 values={{...formData,anonymous:formData.anonymous?"true":"false"}as{[key:string]:string}}
 onChange={handleChange}
 onClose={onClose}
-onSave={handleActionSave}
+onSave={handleSave}
 isModal
 />
 <div className="mt-6 flex justify-center gap-1">
 <Button variant="primaryOutline"onClick={onClose}>닫기</Button>
-<Button variant="primary"onClick={handleActionSave}>저장하기</Button>
+<Button variant="primary"onClick={handleSave}>저장하기</Button>
 </div>
 </div>
 </div>

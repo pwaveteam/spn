@@ -1,7 +1,8 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import FormScreen, { Field } from "@/components/common/forms/FormScreen"
 import PageTitle from "@/components/common/base/PageTitle"
 import Button from "@/components/common/base/Button"
+import useFormValidation, { ValidationRules } from "@/hooks/useFormValidation"
 
 export default function Support() {
 const [values, setValues] = useState({ type: "", title: "", content: "", writer: "최문의", emailId: "", emailDomain: "", emailDomainSelect: "" })
@@ -16,25 +17,31 @@ const handleEmailDomainSelect = (domain: string) => {
 setValues(prev => ({ ...prev, emailDomain: domain, emailDomainSelect: domain }))
 }
 
+const validationRules = useMemo<ValidationRules>(() => ({
+type: { required: true },
+title: { required: true },
+emailId: { required: true },
+emailDomain: { required: true }
+}), [])
+
+const { validateForm, isFieldInvalid } = useFormValidation(validationRules)
+
 const handleSubmit = () => {
+if (!validateForm(values)) return
 const email = `${values.emailId}@${values.emailDomain}`
-if (!values.type.trim()) return alert("문의유형을 선택하세요")
-if (!values.title.trim()) return alert("제목을 입력하세요")
-if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert("유효한 이메일을 입력해주세요")
 console.log({ ...values, replyEmail: email })
-alert("제출 완료")
 }
 
 const fields: Field[] = [
-{ label: "문의유형", name: "type", type: "select", placeholder: "문의유형 선택", required: true, options: [
+{ label: "문의유형", name: "type", type: "select", placeholder: "문의유형 선택", required: true, hasError: isFieldInvalid("type"), options: [
 { value: "기술문의", label: "기술문의" },
 { value: "서비스문의", label: "서비스문의" },
 { value: "기타문의", label: "기타문의" }
 ] },
-{ label: "제목", name: "title", type: "text", placeholder: "제목 입력", required: true },
+{ label: "제목", name: "title", type: "text", placeholder: "제목 입력", required: true, hasError: isFieldInvalid("title") },
 { label: "내용", name: "content", type: "textarea", placeholder: "내용 입력", required: false },
 { label: "작성자 이름", name: "writer", type: "readonly", required: false },
-{ label: "답변 받을 이메일", name: "email", type: "email", placeholder: "이메일 입력", required: true }
+{ label: "답변 받을 이메일", name: "email", type: "email", placeholder: "이메일 입력", required: true, hasError: isFieldInvalid("emailId") || isFieldInvalid("emailDomain") }
 ]
 
 return (

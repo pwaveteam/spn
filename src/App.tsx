@@ -38,6 +38,7 @@ import BasicManagement from "./pages/BusinessManagement/BasicManagement"
 import PolicyGoal from "./pages/BusinessManagement/PolicyGoal"
 import Budget from "./pages/BusinessManagement/Budget"
 import Organization from "./pages/BusinessManagement/Organization"
+import ApprovalLine from "./pages/BusinessManagement/ApprovalLine"
 
 import EvaluationList from "./pages/RiskAssessment/EvaluationList"
 
@@ -183,6 +184,7 @@ return (
 <Route path="/business-management/policy-goal" element={<PolicyGoal />} />
 <Route path="/business-management/budget" element={<Budget />} />
 <Route path="/business-management/organization" element={<Organization />} />
+<Route path="/business-management/approval-line" element={<ApprovalLine />} />
 </Route>
 
 <Route element={<RiskAssessmentLayout />}>

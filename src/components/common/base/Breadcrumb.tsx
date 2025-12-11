@@ -53,6 +53,7 @@ const pathNameMap: PathMap = {
     "/approval-box": "결재함",
     "/approval-box/received": "받은결재함",
     "/approval-box/sent": "보낸결재함",
+    "/business-management/approval-line": "결재선관리",
     "/qr-management": "QR관리",
     "/mypage": "마이페이지",
     "/support": "1:1 지원",
@@ -69,6 +70,8 @@ const location=useLocation()
 const navigate=useNavigate()
 const state=location.state as LocationState
 const pathnames:string[]=location.pathname.split("/").filter(Boolean)
+const searchParams=new URLSearchParams(location.search)
+const tabName=searchParams.get("tab")
 
 const findParentName=(url:string):string=>{
 if(pathNameMap[url])return pathNameMap[url]
@@ -125,6 +128,14 @@ style={{color:"#333639",fontSize:13}}
 </span>
 </React.Fragment>
 ))}
+{tabName && (
+<>
+<ChevronRight size={13}strokeWidth={2}color="#999999" className="select-none"/>
+<span className="font-normal" style={{color:"#999999",userSelect:"none",fontSize:13}}>
+{tabName}
+</span>
+</>
+)}
 </nav>
 )
 }
